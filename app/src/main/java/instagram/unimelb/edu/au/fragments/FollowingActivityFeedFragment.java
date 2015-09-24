@@ -1,32 +1,22 @@
 package instagram.unimelb.edu.au.fragments;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
 import instagram.unimelb.edu.au.R;
-import instagram.unimelb.edu.au.DetailsActivity;
 import instagram.unimelb.edu.au.adapters.FollowingActivityFeedAdapter;
-import instagram.unimelb.edu.au.adapters.ProfileAdapter;
-import instagram.unimelb.edu.au.businessobject.boFollowers;
-import instagram.unimelb.edu.au.businessobject.boProfile;
-import instagram.unimelb.edu.au.models.FollowerActivityFeed;
-import instagram.unimelb.edu.au.models.ImageItem;
+import instagram.unimelb.edu.au.adapters.SubFollowingActivityFeedAdapter;
+import instagram.unimelb.edu.au.businessobject.boFollowing;
+import instagram.unimelb.edu.au.models.FollowingActivityFeed;
 import instagram.unimelb.edu.au.utils.Globals;
 
 /**
@@ -53,7 +43,7 @@ public class FollowingActivityFeedFragment extends Fragment {
     private ListView listView;
     private FollowingActivityFeedAdapter gridAdapter;
 
-    boFollowers objFollowers;
+    boFollowing objFollowers;
     public FollowingActivityFeedFragment followingActivityFragment;
     Boolean userScrolled = false;
     //Integer nposts = 38;
@@ -106,17 +96,17 @@ public class FollowingActivityFeedFragment extends Fragment {
         followingActivityFragment = this;
 
         listView = (ListView)rootView.findViewById(R.id.lv_followeractivityfeed);
-        gridAdapter = new FollowingActivityFeedAdapter(this.getActivity(),R.layout.item_followingactivityfeed,new ArrayList<FollowerActivityFeed>());
+        gridAdapter = new FollowingActivityFeedAdapter(this.getActivity(),R.layout.item_followingactivityfeed,new ArrayList<FollowingActivityFeed>());
         listView.setAdapter(gridAdapter);
 
-        objFollowers = new boFollowers();
+        objFollowers = new boFollowing();
         objFollowers.getProfileMedia(followingActivityFragment, mParam1, mParam2, gridAdapter);
 
         return rootView;
     }
 
 
-    public void addProfileMedia(ArrayList<FollowerActivityFeed> follower) {
+    public void addProfileMedia(FollowingActivityFeed follower) {
 
         gridAdapter.addAll(follower);
 
