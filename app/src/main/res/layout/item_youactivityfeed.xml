@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_photo"
+        android:id="@+id/iv_follower_photo"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignBottom="@+id/iv_unfollow" />
+
+    <TextView
+
+        android:layout_width="250dip"
+        android:layout_height="wrap_content"
+        android:text="biestrada started following you"
+        android:id="@+id/tv_description"
+        android:singleLine="false"
+        android:layout_toRightOf="@id/iv_follower_photo"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_photo"
+        android:id="@+id/iv_you_photo"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="gone"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_user_followed"
+        android:id="@+id/iv_unfollow"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="visible"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_add_follower"
+        android:id="@+id/iv_addfollower"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="gone"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp" />
+
+
+
+</RelativeLayout>

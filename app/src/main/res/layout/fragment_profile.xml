@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/layout_fragment_profile"
+    tools:context="au.edu.au.instagrammobilecomputing.fragments.ProfileFragment">
+
+
+    <in.srain.cube.views.GridViewWithHeaderAndFooter
+        android:id="@+id/gv_userphotos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="100dp"
+        android:drawSelectorOnTop="true"
+        android:gravity="center"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="0dp"
+        android:horizontalSpacing="0dp"
+        android:focusable="true"
+        android:clickable="true">
+
+    </in.srain.cube.views.GridViewWithHeaderAndFooter>
+
+</LinearLayout>

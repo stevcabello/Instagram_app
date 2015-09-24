@@ -1,0 +1,26 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/AppTabTextAppearance</item>
+    </style>
+
+    <style name="AppTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">16sp</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <color name="text_tab_selected">#fff</color>
+    <color name="text_tab_unselected">#808080</color>
+    <color name="blue_facebook">#3b5998</color>
+
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimaryDark">#1565C0</color>
+    <color name="colorAccent">#E91E63</color>
+</resources>
+

@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">Instragam</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="facebook_login">Log in with facebook</string>
+    <string name="email_login">Log in with your email</string>
+    <string name="action_compose">compose</string>
+    <string name="logout">Log out</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="activityfeed_title"><b>ACTIVITY</b></string>
+    <string name="comments_title"><b>COMMENTS</b></string>
+    <string name="likes_title"><b>LIKES</b></string>
+
+    <string-array name="image_ids">
+        <item>@drawable/image_1</item>
+        <item>@drawable/image_2</item>
+        <item>@drawable/image_3</item>
+        <item>@drawable/image_4</item>
+        <item>@drawable/image_5</item>
+        <item>@drawable/image_6</item>
+        <item>@drawable/image_7</item>
+        <item>@drawable/image_8</item>
+        <item>@drawable/image_9</item>
+        <item>@drawable/image_1</item>
+        <item>@drawable/image_2</item>
+        <item>@drawable/image_3</item>
+        <item>@drawable/image_4</item>
+        <item>@drawable/image_5</item>
+        <item>@drawable/image_6</item>
+        <item>@drawable/image_7</item>
+        <item>@drawable/image_8</item>
+        <item>@drawable/image_9</item>
+    </string-array>
+    <string name="title_activity_details">DetailsActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_photo">PhotoActivity</string>
+    <string name="title_activity_comments">CommentsActivity</string>
+
+</resources>

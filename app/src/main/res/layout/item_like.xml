@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:adjustViewBounds="true"
+        android:id="@+id/iv_profilepic"
+        android:background="@drawable/btn_photo"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="username"
+        android:id="@+id/tv_username"
+        android:textColor="@color/primary_dark_material_dark"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/iv_profilepic"
+        android:layout_toEndOf="@+id/iv_profilepic"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginStart="17dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="user fullname"
+        android:id="@+id/tv_fullname"
+        android:layout_below="@id/tv_username"
+        android:layout_marginBottom="20dp"
+        android:layout_alignLeft="@+id/tv_username"
+        android:layout_alignStart="@+id/tv_username" />
+</RelativeLayout>

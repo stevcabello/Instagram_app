@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/lly_comments"
+    android:background="@color/primary_text_default_material_dark">
+
+
+    <ListView
+        android:id="@+id/lv_comments"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:scrollbars="none"
+        android:stackFromBottom="true"
+        android:layout_above="@+id/fly_addcomment">
+    </ListView>
+
+    <FrameLayout
+        android:id="@+id/fly_addcomment"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_addcomment"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.85"
+                android:hint="Add a comment"
+                android:layout_gravity="bottom" />
+
+            <ImageButton
+                android:id="@+id/btn_addcomment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.15"
+                android:background="@drawable/blue_arrow"/>
+
+
+        </LinearLayout>
+    </FrameLayout>
+
+
+
+</RelativeLayout>

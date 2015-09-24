@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rly_tile"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone"
+        android:layout_marginLeft="10dp">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_photo"
+            android:id="@+id/iv_tile_photo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="stevcabello"
+            android:id="@+id/tv_tile_username"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/iv_tile_photo"
+            android:layout_toEndOf="@+id/iv_tile_photo"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="13 min"
+            android:id="@+id/tv_timestamp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:src="@drawable/btn_photo"
+        android:layout_gravity="center_horizontal" />
+
+    <RelativeLayout
+        android:id="@+id/rly_likephoto"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="10dp">
+
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_like"
+            android:id="@+id/ibtn_like"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_comment"
+            android:id="@+id/ibtn_comment"
+            android:layout_alignBottom="@+id/ibtn_like"
+            android:layout_toRightOf="@+id/ibtn_like"
+            android:layout_toEndOf="@+id/ibtn_like" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rly_likescounter"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginLeft="10dp">
+
+        <ImageButton
+            android:id="@+id/btn_likes"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_small_blue_like"
+            android:layout_alignTop="@+id/btn_likesnumber"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:id="@+id/btn_likesnumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/btn_likes"
+            android:layout_toEndOf="@+id/btn_likes"
+            android:layout_marginLeft="5dp"
+            android:text="27 likes"
+            android:gravity="start"
+            android:visibility="visible"
+            android:textAllCaps="false"
+            android:clickable="true"
+            android:textColor="@color/text_tab_unselected"
+            android:background="@android:color/transparent"/>
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="27 likes"-->
+            <!--android:id="@+id/tv_likesnumber"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_toRightOf="@+id/btn_likes"-->
+            <!--android:layout_toEndOf="@+id/btn_likes" />-->
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:text="stevcabello Working on Instagram app #working #coding #instagram #music #life #beer"/>
+
+
+    <Button
+        android:id="@+id/btn_morecomments"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="10dp"
+        android:text="view all 98 comments"
+        android:gravity="start"
+        android:visibility="visible"
+        android:textAllCaps="false"
+        android:clickable="true"
+        android:textColor="@color/text_tab_unselected"
+        android:background="@android:color/transparent"/>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/lly_comments">
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_comments"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:text="biestrada what a great app!"-->
+            <!--android:visibility="visible"-->
+            <!--/>-->
+    </LinearLayout>
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/lly_comments"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical">-->
+    <!--</LinearLayout>-->
+
+    <Button
+        android:id="@+id/btn_addcomment"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="10dp"
+        android:text="Add a comment"
+        android:gravity="start"
+        android:textAllCaps="false"
+        android:textColor="@color/text_tab_unselected"
+        android:background="@android:color/transparent"/>
+
+</LinearLayout>
