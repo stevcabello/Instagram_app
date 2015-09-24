@@ -19,8 +19,10 @@ import java.util.ArrayList;
 
 import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.adapters.CommentAdapter;
+import instagram.unimelb.edu.au.adapters.UserFeedAdapter;
 import instagram.unimelb.edu.au.businessobject.boComments;
 import instagram.unimelb.edu.au.models.Comments;
+import instagram.unimelb.edu.au.models.UserFeed;
 import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Globals;
 
@@ -39,6 +41,9 @@ public class CommentsFragment extends Fragment {
     private static String media_id;
     private static String access_token;
     private static Context context;
+    private static UserFeedAdapter userfeedAdapter;
+    private static UserFeed userfeedItem;
+    private static Integer userfeedItemposition;
 
     private OnFragmentInteractionListener mListener;
 
@@ -65,13 +70,16 @@ public class CommentsFragment extends Fragment {
      * @return A new instance of fragment CommentsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CommentsFragment newInstance(Comments param1, ArrayList<Comments> param2, String id, String token, Context ctx) {
+    public static CommentsFragment newInstance(Comments param1, ArrayList<Comments> param2, String id, String token, Context ctx, UserFeedAdapter adapter, Integer pos) {
         CommentsFragment fragment = new CommentsFragment();
         userComment = param1;
         userfeedComments = param2;
         media_id = id;
         access_token = token;
         context = ctx;
+        userfeedAdapter = adapter;
+        userfeedItemposition = pos;
+       //userfeedItem = item;
 
         return fragment;
     }
@@ -115,7 +123,11 @@ public class CommentsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_comments,container,false);
 
         ArrayList<Comments> comments= new ArrayList<>();
-        comments.add(userComment);
+
+        //Only if the user post the media file with a description (text) it is passed as a comment too
+        if (userComment.getText()!="")
+            comments.add(userComment);
+
 
         //Add the comments, but the first row will be the user's text
         adapter = new CommentAdapter(getActivity(),R.layout.item_comment ,comments);
@@ -134,13 +146,14 @@ public class CommentsFragment extends Fragment {
         sendComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               String comment = writeComment.getText().toString();
-                if (comment!= "")
+                String comment = writeComment.getText().toString();
+                if (comment != ""){
                     objComments.sendComment(commentsFragment, access_token, media_id, writeComment.getText().toString(), adapter);
-                else Toast.makeText(getActivity(),"Comment is empty!",Toast.LENGTH_SHORT).show();
+                    writeComment.setText("");
+                }
+                else Toast.makeText(getActivity(), "Comment is empty!", Toast.LENGTH_SHORT).show();
             }
         });
-
 
 
         return rootView;
@@ -162,9 +175,24 @@ public class CommentsFragment extends Fragment {
         //Create a comment
         Comments comment = new Comments(Globals.USERNAME,commentText,String.valueOf(current_time),profilepic);
 
-
+        //Update the comments's listview
         adapter.addAll(comment);
 
+        // Get the userfeed item from the position
+        UserFeed userfeedItem = userfeedAdapter.getItem(userfeedItemposition);
+
+        //Get the comments from that user's post
+        ArrayList<Comments> userfeedItemComments= userfeedItem.getComments();
+
+        //Add the new comment into the comments' list
+        userfeedItemComments.add(comment);
+
+        //Set the new list of comments to the user's post
+        userfeedItem.setComments(userfeedItemComments);
+
+        //Get the number of comments, add 1 and set the new number of comments
+        Integer numberComments = userfeedItem.getNumcomments();
+        userfeedItem.setNumcomments(numberComments + 1);
 
 
     }

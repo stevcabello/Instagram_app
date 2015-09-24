@@ -2,6 +2,7 @@ package instagram.unimelb.edu.au.businessobject;
 
 import android.app.ProgressDialog;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -78,7 +79,10 @@ public class boComments {
                             e.printStackTrace();
                         }
 
-                        Toast.makeText(commentsFragment.getActivity(), "Leaving comment fails due to: " + jsonErr , Toast.LENGTH_LONG).show();
+
+                        Toast toast = Toast.makeText(commentsFragment.getActivity(), "Leaving comment fails due to: " + jsonErr , Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.CENTER_VERTICAL,0,0);
+                        toast.show();
 
                         //Simulates the update of the comment in the UI
                         commentsFragment.simulateLeavingComment(text);

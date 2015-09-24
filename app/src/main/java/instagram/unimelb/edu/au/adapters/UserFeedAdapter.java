@@ -227,7 +227,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
 
         //Show the comments received for the user's post
         FragmentTransaction fragmentTransaction = Globals.mainActivity.getSupportFragmentManager().beginTransaction();
-        CommentsFragment cf= CommentsFragment.newInstance(comments, item.getComments(),item.getMedia_id(), access_token, context);
+        CommentsFragment cf= CommentsFragment.newInstance(comments, item.getComments(),item.getMedia_id(), access_token, context, this, getPosition(item));
         fragmentTransaction.replace(R.id.fly_userfeed_fragment, cf);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
