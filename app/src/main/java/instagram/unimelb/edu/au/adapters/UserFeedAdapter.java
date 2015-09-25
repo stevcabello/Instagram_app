@@ -10,18 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 
 import instagram.unimelb.edu.au.R;
+import instagram.unimelb.edu.au.businessobject.boLikes;
 import instagram.unimelb.edu.au.fragments.CommentsFragment;
 import instagram.unimelb.edu.au.fragments.LikesFragment;
 import instagram.unimelb.edu.au.models.Comments;
+import instagram.unimelb.edu.au.models.Likes;
 import instagram.unimelb.edu.au.models.UserFeed;
 import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Globals;
@@ -35,6 +38,8 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
     private int layoutResourceId;
     private ArrayList<UserFeed> data = new ArrayList();
     private String access_token;
+    private boLikes objLikes = new boLikes();
+    private int like_position;
 
     public UserFeedAdapter(Context context,int resource, String access_token ,ArrayList data) {
         super(context, resource, data);
@@ -45,10 +50,20 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
 
     }
 
+
+
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public int getItemViewType(int position) {
+
+        return position;
+    }
+
+
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View row = convertView;
         ViewHolder holder = null;
+        final boolean[] myChecks = new boolean[data.size()];
 
         if (row == null) {
             LayoutInflater inflater = ((FragmentActivity) context).getLayoutInflater();
@@ -61,7 +76,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
             holder.morecomments = (Button) row.findViewById(R.id.btn_morecomments);
             holder.btn_addcomment = (Button) row.findViewById(R.id.btn_addcomment);
             holder.ibtn_addcomment = (ImageButton) row.findViewById(R.id.ibtn_comment);
-            holder.ibtn_likes = (ImageButton) row.findViewById(R.id.ibtn_like);
+            holder.ibtn_likes = (ToggleButton) row.findViewById(R.id.ibtn_like);
 
             row.setTag(holder);
         } else {
@@ -71,6 +86,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
         final UserFeed item = (UserFeed) data.get(position);
 
         holder.comments.removeAllViews(); //to remove the previous TextViews added into the Linear Layout
+
 
         Bitmap photo_bitmap = Utils.getBitmap(item.getPhoto());
         holder.uploadedphoto.setImageBitmap(photo_bitmap);
@@ -101,7 +117,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
         final String username = "<font color='#0000A0'><b>"+ item.getUsername() +"</b></font>";
 
         String description = item.getDescription();
-        if (description=="")
+        if (description.equals(""))
             holder.description.setText(description);
         else
             holder.description.setText(Html.fromHtml(username + " " + description));
@@ -150,15 +166,22 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
             }
         });
 
-
-        //Handles giving likes
-        holder.ibtn_likes.setOnClickListener(new View.OnClickListener() {
+        holder.ibtn_likes.setChecked(myChecks[position]);
+        holder.ibtn_likes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                //TODO: Provide functionality
-                Toast.makeText(context,"Giving like to the user's post",Toast.LENGTH_SHORT).show();
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                myChecks[position] = isChecked;
             }
         });
+
+
+
+//        holder.ibtn_likes.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //setLike(v,item);
+//            }
+//        });
 
         return row;
     }
@@ -212,7 +235,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
         Button morecomments;
         Button btn_addcomment;
         ImageButton ibtn_addcomment;
-        ImageButton ibtn_likes;
+        ToggleButton ibtn_likes;
     }
 
 
@@ -246,6 +269,69 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
         fragmentTransaction.replace(R.id.fly_userfeed_fragment, lf);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+
+    /**
+     *  Handles giving likes : even if the request returns error (due to authorization issue)
+     *  The heart image will turn red and the number of likes will increase in one.
+     *  Also the info about the user will appears as if he/she really was able to give like.
+     * @param item
+     */
+    public void setLike(View v,UserFeed item) {
+
+        //Toogle between giving like and not giving like
+        if (v.getTag().toString().equals("not_like")) {
+
+            //Make post request to give a Like
+            objLikes.sendLike(context,access_token,item.getMedia_id());
+
+            //set red heart
+//            v.setBackgroundResource(R.drawable.btn_like);
+//            v.setTag("like");
+
+            //Increasing number of likes
+            Integer numlikes = item.getNumLikes() + 1;
+            item.setNumLikes(numlikes);
+
+            //Adding user to list of people how liked the published media
+            ArrayList<Likes> arrLikes = item.getLikes();
+
+            ImageView profile_pic =new ImageView(context);
+            ImageRequest.makeImageRequest(Globals.PROFILE_PIC_URL, context, profile_pic, UserFeedAdapter.this);
+
+            Likes like = new Likes(Globals.USERNAME,Globals.FULL_NAME,profile_pic);
+
+            like_position = arrLikes.size();
+            arrLikes.add(like_position,like);
+
+            //Set the updated list of likes
+            item.setLikes(arrLikes);
+
+
+
+        } else {
+
+            //Make post request for delete the Like
+            objLikes.deleteLike(context,access_token,item.getMedia_id());
+
+            //set empty heart
+//            v.setBackgroundResource(R.drawable.btn_not_like);
+//            v.setTag("not_like");
+
+            //Decreasing number of likes
+            Integer numlikes = item.getNumLikes() - 1;
+            item.setNumLikes(numlikes);
+
+
+            //Removing user from list of people how liked the published media
+            ArrayList<Likes> arrLikes = item.getLikes();
+            arrLikes.remove(like_position);
+
+            item.setLikes(arrLikes);
+
+        }
+
     }
 
 }

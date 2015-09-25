@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Instragam</string>
+    <string name="app_name">InstragamApp</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="username">Username</string>
@@ -8,6 +8,15 @@
     <string name="email_login">Log in with your email</string>
     <string name="action_compose">compose</string>
     <string name="logout">Log out</string>
+
+    <string name="title_activity_filter_activity">Filter activity</string>
+    <string name="title_activity_camera_activity">Camera activity</string>
+    <string name="main_text_display">Press button to enter camera</string>
+    <string name="camera_text_display">Take a picture</string>
+    <string name="filter_text_display">Apply a filter</string>
+    <string name="opencamera">Camera</string>
+    <string name="applyfilter0">Original</string>
+    <string name="applyfilter">Apply filter</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

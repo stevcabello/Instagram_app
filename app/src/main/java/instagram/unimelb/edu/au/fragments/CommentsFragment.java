@@ -159,6 +159,7 @@ public class CommentsFragment extends Fragment {
         return rootView;
     }
 
+
     /**
      * Simulates the leave of a comment.
      * @param commentText

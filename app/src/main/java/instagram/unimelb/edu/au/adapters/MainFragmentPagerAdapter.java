@@ -39,7 +39,7 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
         else if (position==1)
              return DiscoverFragment.newInstance(accesstoken,clientid);
         else if (position==2)
-            return PhotoFragment.newInstance("", "");
+            return PhotoFragment.newInstance(accesstoken, clientid);
         else if (position==3)
             return ActivityFeedFragment.newInstance(accesstoken,clientid);
         else

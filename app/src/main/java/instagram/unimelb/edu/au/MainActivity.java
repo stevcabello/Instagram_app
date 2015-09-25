@@ -13,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import instagram.unimelb.edu.au.adapters.CustomViewPager;
 import instagram.unimelb.edu.au.adapters.MainFragmentPagerAdapter;
 import instagram.unimelb.edu.au.networking.Connection;
 import instagram.unimelb.edu.au.utils.Globals;
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     TabLayout tabLayout;
+    CustomViewPager viewPager;
 
 
     @Override
@@ -50,15 +51,15 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
-        //CustomViewPager viewPager = (CustomViewPager) findViewById(R.id.viewpager); //use this custom viewpager to avoid the user to sliding through tabs
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = (CustomViewPager) findViewById(R.id.viewpager); //use this custom viewpager to avoid the user to sliding through tabs
+        //ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         MainFragmentPagerAdapter pagerAdapter = new MainFragmentPagerAdapter(getSupportFragmentManager(), MainActivity.this, intent);
         viewPager.setAdapter(pagerAdapter);
 
 
         // Give the TabLayout the ViewPager
 
-        //viewPager.setPagingEnabled(false);
+        viewPager.setPagingEnabled(false); //to avoid the swip gesture between tabs
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -72,18 +73,28 @@ public class MainActivity extends AppCompatActivity {
                 if (position == 0) {
                     getSupportActionBar().setTitle(null);
                     getSupportActionBar().setLogo(R.drawable.instagram_text_logo);
+                    tabLayout.setVisibility(View.VISIBLE);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 } else if (position == 1) {
                     getSupportActionBar().setTitle("Search");
                     getSupportActionBar().setLogo(R.drawable.abc_ic_search_api_mtrl_alpha);
+                    tabLayout.setVisibility(View.VISIBLE);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false); //hide the back button
                 } else if (position == 2) {
-                    getSupportActionBar().setTitle(null);
+                    getSupportActionBar().setTitle("GALLERY"); //set with Gallery because is the tab 0 inside photofragment
                     getSupportActionBar().setLogo(null);
+                    tabLayout.setVisibility(View.GONE);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true); //show the back button
                 } else if (position == 3) {
                     getSupportActionBar().setTitle(R.string.activityfeed_title);
                     getSupportActionBar().setLogo(null);
+                    tabLayout.setVisibility(View.VISIBLE);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false); //hide the back button
                 } else {
                     getSupportActionBar().setTitle(Html.fromHtml("<b>" + Globals.USERNAME.toUpperCase() + "</b>"));
                     getSupportActionBar().setLogo(null);
+                    tabLayout.setVisibility(View.VISIBLE);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false); //hide the back button
                 }
             }
 
@@ -140,12 +151,26 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == android.R.id.home) { //This can be pressed when user is Comments or Likes fragment
-            onBackPressed();
+
+            String title = getSupportActionBar().getTitle().toString();
+            if (title.equals("COMMENTS") || title.equals("LIKES") ) {
+                onBackPressed();
+                tabLayout.setVisibility(View.VISIBLE);
+                getSupportActionBar().setTitle(null);
+                getSupportActionBar().setLogo(R.drawable.instagram_text_logo);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false); //hide the back button
+            }else if (title.equals("FILTER")){ //this will be useful in case we work with the FilterFragment
+                onBackPressed();
+            }
+
+            else
+                viewPager.setCurrentItem(0);
+
+            //onBackPressed();
             //Show to tabs,title and logo that are by default in UserFeed
-            tabLayout.setVisibility(View.VISIBLE);
-            getSupportActionBar().setTitle(null);
-            getSupportActionBar().setLogo(R.drawable.instagram_text_logo);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false); //hide the back button
+
+
+
         }
 
 
@@ -188,10 +213,10 @@ public class MainActivity extends AppCompatActivity {
     //To avoid to the user's log in when exit from main activity
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            Log.d(this.getClass().getName(), "back button pressed");
-            moveTaskToBack(true);
-        }
+//        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+//            Log.d(this.getClass().getName(), "back button pressed");
+//            moveTaskToBack(true);
+//        }
         return super.onKeyDown(keyCode, event);
     }
 }
