@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_photo"
+        android:id="@+id/iv_profilepic"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/tv_fullname" />
+
+    <TextView
+
+        android:layout_width="250dip"
+        android:layout_height="wrap_content"
+        android:text="biestrada started following you"
+        android:id="@+id/tv_username"
+        android:singleLine="false"
+        android:layout_toRightOf=  "@id/iv_profilepic"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+
+        android:layout_width="250dip"
+        android:layout_height="wrap_content"
+        android:text="aaalskdla aksjakjfajs"
+        android:id="@+id/tv_fullname"
+        android:singleLine="false"
+        android:layout_alignTop="@+id/tv_username"
+        android:layout_toRightOf=  "@id/iv_profilepic"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp" />
+
+
+
+</RelativeLayout>
