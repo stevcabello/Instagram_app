@@ -128,11 +128,13 @@ public class SearchFragment extends Fragment {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int currentFirstVisPos = view.getFirstVisiblePosition();
                 //To only send a new request when user has scrolled down until reach the bottom and while the totalitemcount is lesser than the number of posts
-                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos) {
+                /*TODO: Pagination was giving error, not sure why so i commented this part */
+                //if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos) {
                     //Toast.makeText(getActivity(), "reach bottom", Toast.LENGTH_SHORT).show();
                     userScrolled = false;
-                    objsearch.getSearch(searchFragment, mParam1, querySearch, adapter);
-                }
+
+                    //objsearch.getSearch(searchFragment, mParam1, querySearch, adapter);
+                //}
                 myLastVisiblePos = currentFirstVisPos;
             }
         });
