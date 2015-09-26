@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -50,13 +49,20 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
 
     }
 
+    //Use these two methods to avoid the recycled views, specifically when user give a like to avoid
+    //to avoid that other likes (hearts) turn red too.
+
+    @Override
+    public int getViewTypeCount() {
+        return 500; //it should be data.size(), but as in the instance the adapter is created with no data we put just a large number
+    }
 
 
     @Override
     public int getItemViewType(int position) {
-
         return position;
     }
+
 
 
     @Override
@@ -76,7 +82,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
             holder.morecomments = (Button) row.findViewById(R.id.btn_morecomments);
             holder.btn_addcomment = (Button) row.findViewById(R.id.btn_addcomment);
             holder.ibtn_addcomment = (ImageButton) row.findViewById(R.id.ibtn_comment);
-            holder.ibtn_likes = (ToggleButton) row.findViewById(R.id.ibtn_like);
+            holder.tbtn_likes = (ToggleButton) row.findViewById(R.id.ibtn_like);
 
             row.setTag(holder);
         } else {
@@ -96,6 +102,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
                 //Toast.makeText(context,"post by " + username,Toast.LENGTH_SHORT).show();
                 ImageView imageView = new ImageView(context);
                 ImageRequest.makeImageRequest(item.getPhoto_url(),context,imageView,UserFeedAdapter.this);
+                //ImageRequest.makeImageRequest(item.getPhoto_url(),context,imageView,);
                 item.setPhoto(imageView);
             }
         });
@@ -166,22 +173,14 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
             }
         });
 
-        holder.ibtn_likes.setChecked(myChecks[position]);
-        holder.ibtn_likes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        //Handles set like to user's post
+        holder.tbtn_likes.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                myChecks[position] = isChecked;
+            public void onClick(View v) {
+                setLike(v,item);
             }
         });
-
-
-
-//        holder.ibtn_likes.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //setLike(v,item);
-//            }
-//        });
 
         return row;
     }
@@ -235,7 +234,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
         Button morecomments;
         Button btn_addcomment;
         ImageButton ibtn_addcomment;
-        ToggleButton ibtn_likes;
+        ToggleButton tbtn_likes;
     }
 
 
@@ -280,15 +279,15 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
      */
     public void setLike(View v,UserFeed item) {
 
+
         //Toogle between giving like and not giving like
         if (v.getTag().toString().equals("not_like")) {
 
             //Make post request to give a Like
             objLikes.sendLike(context,access_token,item.getMedia_id());
 
-            //set red heart
-//            v.setBackgroundResource(R.drawable.btn_like);
-//            v.setTag("like");
+            //change the tag
+            v.setTag("like");
 
             //Increasing number of likes
             Integer numlikes = item.getNumLikes() + 1;
@@ -312,12 +311,9 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
 
         } else {
 
-            //Make post request for delete the Like
-            objLikes.deleteLike(context,access_token,item.getMedia_id());
 
-            //set empty heart
-//            v.setBackgroundResource(R.drawable.btn_not_like);
-//            v.setTag("not_like");
+            //change the tag
+            v.setTag("not_like");
 
             //Decreasing number of likes
             Integer numlikes = item.getNumLikes() - 1;
@@ -329,6 +325,12 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
             arrLikes.remove(like_position);
 
             item.setLikes(arrLikes);
+
+            //Make post request for delete the Like
+            objLikes.deleteLike(context,access_token,item.getMedia_id());
+
+            notifyDataSetChanged(); //to update the change
+
 
         }
 
