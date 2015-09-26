@@ -50,7 +50,7 @@ public class DiscoverFragment extends Fragment {
     Boolean discoverScrolled = false;
     boDiscover objdiscover;
     Globals globals;
-    private View rootView;
+    private View rootView = null;
     //ImageView discoverPic;
 
     /**
@@ -94,22 +94,25 @@ public class DiscoverFragment extends Fragment {
             return rootView;
         }
 
+
+
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_discover,container,false);
 
+
         discoverFragment = this;
 
-        gridView = (GridView)rootView.findViewById(R.id.gv_discover);
-        gridAdapter = new DiscoverAdapter(this.getActivity(),R.layout.item_discover, new ArrayList<ImageItem>());
+        gridView = (GridView) rootView.findViewById(R.id.gv_discover);
+        gridAdapter = new DiscoverAdapter(this.getActivity(), R.layout.item_discover, new ArrayList<ImageItem>());
         gridView.setAdapter(gridAdapter);
 
         objdiscover = new boDiscover();
         //objdiscover.getDiscoverData(discoverFragment, mParam1, mParam2);
         objdiscover.getDiscoverMedia(discoverFragment, mParam1, mParam2, gridAdapter);
 
+
         return rootView;
 
-        //return inflater.inflate(R.layout.fragment_discover, container, false);
 
     }
 

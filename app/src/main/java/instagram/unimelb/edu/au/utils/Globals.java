@@ -19,6 +19,7 @@ public class Globals {
     public static String FOLLOWERACTIVITY_MEDIA_MAX_ID = "";
     public static String USERFEED_MAX_ID = "";
     public static String USERNAME = "";
+    public static String FULL_NAME = "";
     public static String PROFILE_PIC_URL = "";
     public static MainActivity mainActivity=null;
 

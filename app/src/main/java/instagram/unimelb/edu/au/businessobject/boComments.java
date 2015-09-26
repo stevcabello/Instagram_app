@@ -20,7 +20,7 @@ import instagram.unimelb.edu.au.networking.Controller;
 import instagram.unimelb.edu.au.utils.Globals;
 
 /**
- * Handles leaving of comments to Instagram API
+ * Handles sending post requests of comments to Instagram API
  */
 public class boComments {
 

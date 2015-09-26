@@ -143,6 +143,7 @@ public class Connection{
 
                     String name = jsonObj.getJSONObject("user").getString(
                             "full_name");
+                    Globals.FULL_NAME = name;
 
                     mSession.storeAccessToken(mAccessToken, id, user, name);
 

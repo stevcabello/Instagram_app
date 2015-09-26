@@ -3,27 +3,22 @@ package instagram.unimelb.edu.au.fragments;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import instagram.unimelb.edu.au.R;
-import instagram.unimelb.edu.au.adapters.PhotoViewPagerAdapter;
-import instagram.unimelb.edu.au.utils.Globals;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link PhotoFragment.OnFragmentInteractionListener} interface
+ * {@link PhotoFromGalleryFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link PhotoFragment#newInstance} factory method to
+ * Use the {@link PhotoFromGalleryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PhotoFragment extends Fragment {
+public class PhotoFromGalleryFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -34,10 +29,7 @@ public class PhotoFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-
     private View rootView;
-
-
 
     /**
      * Use this factory method to create a new instance of
@@ -45,11 +37,11 @@ public class PhotoFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment PhotoFragment.
+     * @return A new instance of fragment PhotoFromGalleryFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PhotoFragment newInstance(String param1, String param2) {
-        PhotoFragment fragment = new PhotoFragment();
+    public static PhotoFromGalleryFragment newInstance(String param1, String param2) {
+        PhotoFromGalleryFragment fragment = new PhotoFromGalleryFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -57,7 +49,7 @@ public class PhotoFragment extends Fragment {
         return fragment;
     }
 
-    public PhotoFragment() {
+    public PhotoFromGalleryFragment() {
         // Required empty public constructor
     }
 
@@ -68,60 +60,21 @@ public class PhotoFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+
+        //To avoid reloading the view everytime user access to discover
+        if (rootView != null) {
+            return rootView;
+        }
 
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_photo,container,false);
+        rootView = inflater.inflate(R.layout.fragment_photo_from_gallery,container,false);
 
-
-        final ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
-        PhotoViewPagerAdapter adapter = new PhotoViewPagerAdapter(getChildFragmentManager(),getActivity(),mParam1, mParam2);
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                //Change the toolbar according to the Fragment
-
-                if (position == 0) {
-                    Globals.mainActivity.getSupportActionBar().setTitle("GALLERY");
-                } else {
-                    Globals.mainActivity.getSupportActionBar().setTitle("PHOTO");
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-
-        final TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
-        //tabLayout.setupWithViewPager(viewPager);
-
-        //need to add this because of a bug in Design Library 22.2.1 that makes Tabs invisible when they are inside a Fragment
-        //https://code.google.com/p/android/issues/detail?id=180462
-        if (ViewCompat.isLaidOut(tabLayout)) {
-            tabLayout.setupWithViewPager(viewPager);
-        } else {
-            tabLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    tabLayout.setupWithViewPager(viewPager);
-                    tabLayout.removeOnLayoutChangeListener(this);
-                }
-            });
-        }
 
 
         return rootView;
@@ -137,12 +90,7 @@ public class PhotoFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-       /* try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
+
     }
 
     @Override
