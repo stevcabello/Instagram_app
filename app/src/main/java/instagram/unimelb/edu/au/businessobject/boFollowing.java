@@ -23,8 +23,6 @@ import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Globals;
 import instagram.unimelb.edu.au.utils.Utils;
 
-import static android.text.TextUtils.substring;
-
 /**
  * Created by Angela on 9/21/2015.
  */

@@ -3,6 +3,7 @@ package instagram.unimelb.edu.au.businessobject;
 /**
  * Created by Angela on 9/17/2015.
  */
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -21,23 +22,18 @@ import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 import instagram.unimelb.edu.au.R;
-import instagram.unimelb.edu.au.adapters.FollowingActivityFeedAdapter;
 import instagram.unimelb.edu.au.adapters.YouActivityFeedAdapter;
 import instagram.unimelb.edu.au.fragments.YouActivityFeedFragment;
-import instagram.unimelb.edu.au.models.ImageItem;
-import instagram.unimelb.edu.au.models.Profile;
 import instagram.unimelb.edu.au.models.YouActivityFeed;
 import instagram.unimelb.edu.au.networking.Controller;
 import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Globals;
-import instagram.unimelb.edu.au.utils.Utils;
 
 public class boActivityFeed {
     private String TAG = boActivityFeed.class

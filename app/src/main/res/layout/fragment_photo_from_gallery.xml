@@ -23,8 +23,8 @@
         android:verticalSpacing="1dp"
         android:focusable="true"
         android:clickable="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
+        android:horizontalSpacing="0dp"
+
         android:layout_alignParentBottom="true"
 
    />

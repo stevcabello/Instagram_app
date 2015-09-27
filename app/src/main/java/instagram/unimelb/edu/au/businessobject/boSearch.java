@@ -15,11 +15,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import instagram.unimelb.edu.au.adapters.ProfileAdapter;
 import instagram.unimelb.edu.au.adapters.SearchAdapter;
-import instagram.unimelb.edu.au.fragments.ProfileFragment;
 import instagram.unimelb.edu.au.fragments.SearchFragment;
-import instagram.unimelb.edu.au.models.ImageItem;
 import instagram.unimelb.edu.au.models.Search;
 import instagram.unimelb.edu.au.networking.Controller;
 import instagram.unimelb.edu.au.networking.ImageRequest;

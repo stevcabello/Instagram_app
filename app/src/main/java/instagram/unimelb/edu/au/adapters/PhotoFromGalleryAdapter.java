@@ -8,8 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
+
 import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.models.ImageItem;
 
@@ -83,7 +86,7 @@ public class PhotoFromGalleryAdapter extends ArrayAdapter<ImageItem> {
        // holder.image.setImageBitmap(bitmap);
         Picasso.with(getContext())
                 .load(item.getImageurl())
-                .resize(150,150)
+                .resize(150, 150)
                 .into(holder.image);
         Log.i("PhotofromGallery", "Adapter" + item.getImageurl());
 
