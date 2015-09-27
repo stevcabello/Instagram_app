@@ -45,6 +45,11 @@ public class ImageItem {
         super();
         this.imageview = imageview;
     }
+    public ImageItem(ImageView imageview, String imageurl){
+        super();
+        this.imageview = imageview;
+        this.imageurl = imageurl;
+    }
 
     //not in use
     public Bitmap getImage() {
