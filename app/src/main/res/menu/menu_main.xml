@@ -6,13 +6,24 @@
     <item android:id="@+id/action_settings" android:title="@string/logout"
         android:orderInCategory="100" app:showAsAction="never" />
 
-    //TODO: possible action search for Carina
+    <item
+        android:id="@+id/action_bar_search"
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:title=""/>
+
     <item
         android:id="@+id/action_search"
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="always"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        android:title="Search"/>
+        android:title=""/>
 
+
+    <item android:id="@+id/action_switch"
+        android:title=""
+        app:showAsAction="always"
+        android:actionLayout="@layout/actionbar_switchsortby">
+    </item>
 
 </menu>
