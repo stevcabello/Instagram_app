@@ -107,9 +107,9 @@ public class UserFeedFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_userfeed,container,false);
 
+        setHasOptionsMenu(true); //To enable the switch
 
         userfeedFragment = this;
-
 
         // Create the adapter to convert the array to views
         adapter = new UserFeedAdapter(getActivity(),R.layout.item_userfeed, mParam1 ,new ArrayList<UserFeed>());

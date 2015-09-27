@@ -95,6 +95,7 @@ public class DiscoverFragment extends Fragment {
         }
 
 
+        setHasOptionsMenu(true); //to enable the search button view
 
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_discover,container,false);
