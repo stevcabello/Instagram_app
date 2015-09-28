@@ -34,6 +34,12 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     List<Camera.Size> mSupportedPreviewSizes;
     boolean mSurfaceCreated = false;
     static String myApp = "InstagramApp"; //A folder with this name will be created and all the photos taken will be stored here
+    int width;
+    int height;
+    int vmid1;
+    int vmid2;
+    int hmid1;
+    int hmid2;
 
 
     public CapturePreview(Context context) {
@@ -42,6 +48,7 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
         holder = getHolder();         // Allows access to the SurfaceHolder for this SurfaceViiew.
         holder.addCallback(this);     // Adds a Callback interface (itself) to the holder object.
         // holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);  Apparantly this is automatic..
+        this.setWillNotDraw(false);
     }
 
     // This method is from SurfaceHolder.Callback interface.
@@ -82,8 +89,21 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
         mCamera.release();
     }
 
+    @Override
+    protected void onDraw(Canvas canvas)
+    {
+        width = canvas.getWidth();
+        height = canvas.getWidth();
+        vmid1 = width/3;
+        vmid2 = 2*width/3;
+        hmid1 = height/3;
+        hmid2 = 2*height/3;
 
-
+        canvas.drawLine(vmid1, 0, vmid1, height, paint);
+        canvas.drawLine(vmid2, 0, vmid2, height, paint);
+        canvas.drawLine(0, hmid1, width, hmid1, paint);
+        canvas.drawLine(0, hmid2, width, hmid2, paint);
+    }
 
     /***
      *
