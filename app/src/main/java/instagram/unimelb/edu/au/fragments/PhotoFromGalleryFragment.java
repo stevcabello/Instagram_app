@@ -159,9 +159,7 @@ public class PhotoFromGalleryFragment extends Fragment {
             toShow = sizeGallery;
         }
         for(int j = Globals.GALLERY_MEDIA_MAX_ID; j < toShow; j++){
-            ImageView imageView = new ImageView(this.getActivity());
-            ImageRequest.makeImageRequest(imageItems.get(j), this.getActivity(), imageView, gridAdapter);
-            usermedia.add(new ImageItem(imageView, imageItems.get(j)));
+            usermedia.add(new ImageItem( imageItems.get(j)));
             Globals.GALLERY_MEDIA_MAX_ID = Globals.GALLERY_MEDIA_MAX_ID + 1;
         }
         if  (Globals.GALLERY_MEDIA_MAX_ID>= sizeGallery){
