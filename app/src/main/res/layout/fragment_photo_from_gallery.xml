@@ -19,7 +19,7 @@
         android:drawSelectorOnTop="true"
         android:gravity="center_horizontal"
         android:numColumns="4"
-        android:stretchMode="none"
+        android:stretchMode="columnWidth"
         android:verticalSpacing="1dp"
         android:focusable="true"
         android:clickable="true"
