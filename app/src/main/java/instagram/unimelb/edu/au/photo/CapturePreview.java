@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import instagram.unimelb.edu.au.FilterActivity;
 
@@ -29,6 +30,10 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     static Camera mCamera;    // Camera class deprecated in much later API 21.
     public static final int MEDIA_TYPE_IMAGE = 1;
     private static final String TAG = "CapturePreview";
+    Camera.Size mPreviewSize;
+    List<Camera.Size> mSupportedPreviewSizes;
+    boolean mSurfaceCreated = false;
+    static String myApp = "InstagramApp"; //A folder with this name will be created and all the photos taken will be stored here
 
 
     public CapturePreview(Context context) {
@@ -71,10 +76,13 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     // This method is from SurfaceHolder.Callback interface.
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        //trying to fix the camera crash
         this.getHolder().removeCallback(this);
         mCamera.stopPreview();
         mCamera.release();
     }
+
+
 
 
     /***
@@ -150,7 +158,6 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
         surfaceDestroyed(holder);
     }
 
-    public void CameraActivityResume() {surfaceCreated(holder);}
 
 
 
@@ -162,14 +169,14 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
         Log.i(TAG, "Attempt to create file with getOutputMediaFile");
 
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "InstagramCamera_API14");
+                Environment.DIRECTORY_PICTURES), myApp);
         // This location works best if you want the created images to be shared
         // between applications and persist after your app has been uninstalled.
 
         // Create the storage directory if it does not exist
         if (! mediaStorageDir.exists()){
             if (! mediaStorageDir.mkdirs()){
-                Log.d("InstagramCamera_API14", "failed to create directory");
+                Log.d(TAG, "failed to create directory");
                 return null;
             }
         }

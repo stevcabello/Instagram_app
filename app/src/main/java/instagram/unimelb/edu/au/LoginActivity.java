@@ -1,6 +1,5 @@
 package instagram.unimelb.edu.au;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -8,6 +7,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,9 +23,7 @@ import java.util.HashMap;
 import instagram.unimelb.edu.au.networking.Connection;
 import instagram.unimelb.edu.au.utils.Globals;
 
-//import android.support.v7.app.AppCompatActivity;
-
-public class LoginActivity extends Activity {
+public class LoginActivity extends AppCompatActivity {
 
     public Button btn_login;
 
@@ -50,8 +48,6 @@ public class LoginActivity extends Activity {
     });
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +63,7 @@ public class LoginActivity extends Activity {
 
                 mConnection.fetchUserName(handler);
 
+                // Open the MainActivity and send the accesstoken and clientid
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.putExtra("accesstoken", mConnection.getTOken());
                 intent.putExtra("clientid",mConnection.getId());
@@ -84,9 +81,7 @@ public class LoginActivity extends Activity {
 
 
         if (mConnection.hasAccessToken()) {
-
             mConnection.fetchUserName(handler);
-
         }
 
 
@@ -99,42 +94,13 @@ public class LoginActivity extends Activity {
         });
 
         mSpinner = new ProgressDialog(LoginActivity.this);
-        //mSpinner.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mSpinner.setMessage("Loading...");
-
 
     }
 
 
     private void connectUser() {
-//        if (mConnection.hasAccessToken()) {
-//            final AlertDialog.Builder builder = new AlertDialog.Builder(
-//                    LoginActivity.this);
-//            builder.setMessage("Disconnect from Instagram?")
-//                    .setCancelable(false)
-//                    .setPositiveButton("Yes",
-//                            new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog,
-//                                                    int id) {
-//                                    mConnection.resetAccessToken();
-//
-//
-//                                }
-//                            })
-//                    .setNegativeButton("No",
-//                            new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog,
-//                                                    int id) {
-//                                    dialog.cancel();
-//                                }
-//                            });
-//            final AlertDialog alert = builder.create();
-//            alert.show();
-//        } else {
-            //mConnection.authorize();
-            logindialog = new AlertDialog.Builder(
-                    LoginActivity.this);
-
+            logindialog = new AlertDialog.Builder(LoginActivity.this);
             LayoutInflater inflater = LoginActivity.this.getLayoutInflater();
             View loginView = inflater.inflate(R.layout.custom_insta_login, null);
             WebView webView = (WebView)loginView.findViewById(R.id.wv_instagram_login);
@@ -144,10 +110,10 @@ public class LoginActivity extends Activity {
             webView.setFocusableInTouchMode(true);
             webView.loadUrl(mConnection.getmAuthUrl());
 
+            //Opens the webView for the client implicit authentication
             logindialog.setView(loginView);
             logindialog.create().show();
-
-        //}
+            logindialog.setCancelable(true);
     }
 
 
@@ -186,11 +152,7 @@ public class LoginActivity extends Activity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-//            String title = mWebView.getTitle();
-//            if (title != null && title.length() > 0) {
-//                mTitle.setText(title);
-//            }
-//            Log.d(TAG, "onPageFinished URL: " + url);
+
             mSpinner.dismiss();
         }
 
@@ -212,7 +174,6 @@ public class LoginActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }

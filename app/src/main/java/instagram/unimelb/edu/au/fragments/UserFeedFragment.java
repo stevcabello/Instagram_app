@@ -14,12 +14,15 @@ import android.widget.AbsListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.adapters.UserFeedAdapter;
 import instagram.unimelb.edu.au.businessobject.boUserFeed;
 import instagram.unimelb.edu.au.models.UserFeed;
 import instagram.unimelb.edu.au.utils.Globals;
+import instagram.unimelb.edu.au.utils.Utils;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
@@ -38,22 +41,22 @@ public class UserFeedFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private static String mParam1;
     private String mParam2;
 
-    private UserFeedAdapter adapter;
+    private static UserFeedAdapter adapter;
 
     //private ListView listView;
-    private StickyListHeadersListView listView;
-    boUserFeed objuserfeed;
+    private static StickyListHeadersListView listView;
+    static boUserFeed objuserfeed;
 
-    Boolean userScrolled = false; //user scrolling down throug list
+    static Boolean userScrolled = false; //user scrolling down throug list
     Boolean userSwiped = false; //user swiping to refresh
-    Boolean lockScroll = false; //to avoid duplicated requests due to scroll issues
+    static Boolean lockScroll = false; //to avoid duplicated requests due to scroll issues
 
     private String TAG = "UserFeedFragment";
 
-    public UserFeedFragment userfeedFragment;
+    public static UserFeedFragment userfeedFragment;
 
     private View rootView;
 
@@ -61,7 +64,14 @@ public class UserFeedFragment extends Fragment {
 
     private SwipeRefreshLayout swipeLayout;
 
-    //private boolean fadeHeader = true;
+    private static Boolean changeSortType = false;
+
+    private static int sortType = 0; //Initialized to just sort by datetime (as we get it from Instagram API)
+
+    private static double userLatitude;
+    private static  double userLongitude;
+
+    private ArrayList<UserFeed> byLocationUserFeed = new ArrayList<>();
 
     /**
      * Use this factory method to create a new instance of
@@ -124,7 +134,7 @@ public class UserFeedFragment extends Fragment {
 
         objuserfeed = new boUserFeed();
         Log.i("uriimages", "e1");
-        objuserfeed.getUserFeedData(userfeedFragment, mParam1, adapter);
+        objuserfeed.getUserFeedData(userfeedFragment, mParam1, adapter, sortType); // the first sort is by the default type (Datetime)
 
         //To handle refresh of userfeed when user swipe down onto the screen
         swipeLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.swipe_container);
@@ -136,7 +146,8 @@ public class UserFeedFragment extends Fragment {
                 Globals.USERFEED_MAX_ID = "";
                 adapter.clear();
                 Log.i("uriimages", "e3");
-                objuserfeed.getUserFeedData(userfeedFragment, mParam1, adapter);
+                byLocationUserFeed.clear();
+                objuserfeed.getUserFeedData(userfeedFragment, mParam1, adapter, sortType);
 
             }
         });
@@ -146,30 +157,72 @@ public class UserFeedFragment extends Fragment {
 
     }
 
+    /**
+     * Is called from MainActivity to initialize the feed and sort the data based on datetime or location
+     * @param sortBy
+     */
+    public static void getData(int sortBy, double latitude, double longitude){
+
+        userLatitude = latitude;
+        userLongitude = longitude;
+
+        if (sortBy != sortType) { // If there is a change in the type of sorting all the list is refreshed
+            Log.i("uriimages", "change in sorttype");
+            changeSortType = true;
+            adapter.clear();
+
+            //just to avoid any bug with the onscrolllistener method
+            userScrolled = false;
+            lockScroll = true;
+
+            Globals.USERFEED_MAX_ID = "";
+        }
+        sortType = sortBy;
+        objuserfeed.getUserFeedData(userfeedFragment, mParam1, adapter, sortBy);
+    }
+
 
     /**
      * Adds data to the user feed listview
      * @param userfeeddata
      */
-    public void addUserFeedData(ArrayList<UserFeed> userfeeddata) {
+    public void addUserFeedData(ArrayList<UserFeed> userfeeddata, final int sortBy) {
 
+        ArrayList<UserFeed> newUserfeeddata;
         Log.i("uriimages", "e4");
         lockScroll = false; //release the scroll to sense when user reach bottom of list
 
         if (userSwiped) adapter.clear();
 
-        adapter.addAll(userfeeddata);
+        if (sortBy == 1) { // If sort feed by Location
+            Log.i("uriimages", "e5");
+            byLocationUserFeed.addAll(userfeeddata); //we store all the by location userfeed data
+            newUserfeeddata = sortByLocation(byLocationUserFeed,userLatitude,userLongitude);
+            adapter.clear();
+            adapter.addAll(newUserfeeddata);
+            //listView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            if (changeSortType) listView.setAdapter(adapter);
+            Globals.switchState = true;
+        }else {
+            Log.i("uriimages", "e6");
+            adapter.addAll(userfeeddata);
+            if (changeSortType) listView.setAdapter(adapter);
+            Globals.switchState = false;
+        }
+
+        changeSortType = false;
 
         if (userSwiped) {
             userSwiped = false;
             //adapter.notifyDataSetChanged();
+            //if (sortBy!=1)
             listView.setAdapter(adapter);
 
             Toast toast = Toast.makeText(getActivity(), "UserFeed is up to date", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.TOP, 0, 0);
+            toast.setGravity(Gravity.TOP, 0, 10);
             toast.show();
         }
-
 
 
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -186,16 +239,39 @@ public class UserFeedFragment extends Fragment {
                 int currentFirstVisPos = view.getFirstVisiblePosition();
 
                 //To only send a new request when user has scrolled down until reach the bottom and while the totalitemcount is lesser than the number of posts
-                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos -1 && !userSwiped && !lockScroll) {
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos - 1 && !userSwiped && !lockScroll) {
                     userScrolled = false;
                     lockScroll = true; // lock the scroll to avoi duplicated requests
                     Log.i("uriimages", "e2");
-                    objuserfeed.getUserFeedData(userfeedFragment, mParam1,adapter);
+                    objuserfeed.getUserFeedData(userfeedFragment, mParam1, adapter, sortBy);
                 }
                 myLastVisiblePos = currentFirstVisPos;
             }
         });
 
+
+    }
+
+
+    public ArrayList<UserFeed> sortByLocation(ArrayList<UserFeed> arrUserFeed, final double userLat, final double userLon) {
+
+        float distance;
+
+        //Set the distance to authenticated user in all the elements of the arraylist
+        for (UserFeed userFeed : arrUserFeed) {
+            distance = Utils.DistanceBetween(userLat,userLon,userFeed.getLatitud(),userFeed.getLongitude());
+            userFeed.setDistanceToAuthUser(distance);
+        }
+
+        //Sort the array based on the distance to the authenticated user
+        Collections.sort(arrUserFeed, new Comparator<UserFeed>() {
+            @Override
+            public int compare(UserFeed lhs, UserFeed rhs) {
+                return Float.valueOf(lhs.getDistanceToAuthUser()).compareTo(rhs.getDistanceToAuthUser());
+            }
+        });
+
+        return arrUserFeed;
 
     }
 
@@ -210,12 +286,6 @@ public class UserFeedFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-/*        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
     }
 
     @Override

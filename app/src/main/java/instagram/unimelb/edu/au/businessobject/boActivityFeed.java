@@ -21,23 +21,18 @@ import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 import instagram.unimelb.edu.au.R;
-import instagram.unimelb.edu.au.adapters.FollowingActivityFeedAdapter;
 import instagram.unimelb.edu.au.adapters.YouActivityFeedAdapter;
 import instagram.unimelb.edu.au.fragments.YouActivityFeedFragment;
-import instagram.unimelb.edu.au.models.ImageItem;
-import instagram.unimelb.edu.au.models.Profile;
 import instagram.unimelb.edu.au.models.YouActivityFeed;
 import instagram.unimelb.edu.au.networking.Controller;
 import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Globals;
-import instagram.unimelb.edu.au.utils.Utils;
 
 public class boActivityFeed {
     private String TAG = boActivityFeed.class
@@ -49,11 +44,11 @@ public class boActivityFeed {
 
     public void getProfileMedia(final YouActivityFeedFragment youActivityFeedFragment, String accesstoken, String clientid,final YouActivityFeedAdapter adapter) {
 
-//        pDialog = new ProgressDialog(profileFragment.getActivity());
-//        pDialog.setMessage("Loading...");
+        Globals.numberLoads++;
 
         pDialog = new ProgressDialog(youActivityFeedFragment.getActivity());
         pDialog.setMessage("Loading...");
+        if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
         pDialog.show();
 
         final ArrayList<YouActivityFeed> userActivity = new ArrayList<>();
@@ -65,7 +60,7 @@ public class boActivityFeed {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
+                        Log.i(TAG, response.toString());
                         YouActivityFeed.typeActivity type= YouActivityFeed.typeActivity.LIKE;
                         String comment= "";
                         String username="";
