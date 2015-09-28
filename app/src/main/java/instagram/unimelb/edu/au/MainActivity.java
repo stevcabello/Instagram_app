@@ -5,8 +5,15 @@ package instagram.unimelb.edu.au;
 //import android.app.Activity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -15,6 +22,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
@@ -23,12 +31,17 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import instagram.unimelb.edu.au.adapters.CustomViewPager;
 import instagram.unimelb.edu.au.adapters.MainFragmentPagerAdapter;
+import instagram.unimelb.edu.au.businessobject.boUserFeed;
 import instagram.unimelb.edu.au.fragments.ActivityFeedFragment;
 import instagram.unimelb.edu.au.fragments.DiscoverFragment;
 import instagram.unimelb.edu.au.fragments.PhotoFragment;
@@ -37,6 +50,7 @@ import instagram.unimelb.edu.au.fragments.SearchFragment;
 import instagram.unimelb.edu.au.fragments.UserFeedFragment;
 import instagram.unimelb.edu.au.networking.Connection;
 import instagram.unimelb.edu.au.utils.Globals;
+import instagram.unimelb.edu.au.utils.Utils;
 
 //import android.app.Activity;
 
@@ -50,7 +64,15 @@ public class MainActivity extends AppCompatActivity {
     Fragment visibleFragment;
     String accessToken;
     String clientId;
-    String TAG;
+    String TAG = MainActivity.class.getSimpleName();
+    ProgressDialog dialog;
+    double userLatitude;
+    double userLongitude;
+    SwitchCompat sortBy = null;
+
+    public static final int SORT_BY_DATETIME = 0;
+    public static final int SORT_BY_LOCATION = 1;
+
 
 
     @Override
@@ -82,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         // Give the TabLayout the ViewPager
 
         viewPager.setPagingEnabled(false); //to avoid the swip gesture between tabs
+        viewPager.setOffscreenPageLimit(20);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -161,14 +184,12 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        MenuItem item_switch = menu.findItem(R.id.action_switch);
-        item_switch.setActionView(R.layout.actionbar_switchsortby);
-
         MenuItem item_search = menu.findItem(R.id.action_search);
-
         MenuItem item_settings = menu.findItem(R.id.action_settings);
-
         MenuItem item_bar_search = menu.findItem(R.id.action_bar_search);
+        MenuItem item_switch = menu.findItem(R.id.action_switch);
+
+        HandleSwitchSortBy(item_switch); //To handle the Switch sort by
 
         Fragment whichFragment = getVisibleFragment();
         //The Fragments that use item from the menu main are:
@@ -255,8 +276,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         else if (id == R.id.action_switch) {
-            Log.i("Fff","action switch");
-            Toast.makeText(MainActivity.this,"Sort user feed by Location",Toast.LENGTH_SHORT).show();
+           // The behaviour of the Switch is handled in OnCreateOptionsMenu
         }
 
 
@@ -291,6 +311,8 @@ public class MainActivity extends AppCompatActivity {
             });
 
         }
+
+        Log.i(TAG, item.toString());
 
         return super.onOptionsItemSelected(item);
     }
@@ -328,6 +350,40 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Handles the behaviour of the Switch sort by Date/Time (not checked) or Location (checked)
+     * @param item_switch
+     */
+    public void HandleSwitchSortBy(MenuItem item_switch) {
+
+        final boUserFeed objUserFeed = new boUserFeed();
+
+        item_switch.setActionView(R.layout.actionbar_switchsortby);
+
+        sortBy = (SwitchCompat)item_switch.getActionView().findViewById(R.id.switchSortBy);
+
+        sortBy.setChecked(Globals.switchState);
+
+        sortBy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    GPSLocation gpsLocation = new GPSLocation();
+                    gpsLocation.execute();
+                } else {
+                    Toast.makeText(getApplication(), "Feeds based on Date/Time", Toast.LENGTH_SHORT).show();
+                    UserFeedFragment.getData(SORT_BY_DATETIME, 0, 0);
+                    Globals.switchState = false;
+
+                }
+            }
+        });
+
+    }
+
+
+
+
     public Fragment getVisibleFragment() {
         return visibleFragment;
     }
@@ -345,4 +401,168 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
+
+    /**
+     * Handles the getting of gps coordinates from the mobile phone
+     * both providers (network and GPS) make the requestlocation
+     */
+    public class GPSLocation extends AsyncTask<String, Integer, String> {
+
+        ProgressDialog progDailog = null;
+
+        public int time = 0;
+        public boolean outOfTime = false;
+
+        public double lati = 0;
+        public double longi = 0;
+
+        public LocationManager mLocationManager;
+        public MyLocationListener mLocationListener;
+
+        String provider1,provider2;
+
+        @Override
+        protected void onPreExecute() {
+            mLocationListener = new MyLocationListener();
+            mLocationManager = (LocationManager) MainActivity.this.getSystemService(Context.LOCATION_SERVICE);
+
+            if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                Utils.displayPromptForEnablingGPS(MainActivity.this);
+                sortBy.setChecked(false); //the switch continue in its default state (Datetime)
+                Globals.switchState = false;
+                GPSLocation.this.cancel(true);
+            }else{
+                //Network provider criteria
+                Criteria criteria1 = new Criteria();
+                criteria1.setAccuracy(Criteria.ACCURACY_COARSE);
+                criteria1.setPowerRequirement(Criteria.POWER_LOW);
+                provider1 = mLocationManager.getBestProvider(criteria1,true);
+
+                //GPS provider criteria
+                Criteria criteria2 = new Criteria();
+                criteria2.setAccuracy(Criteria.ACCURACY_FINE);
+                provider2 = mLocationManager.getBestProvider(criteria2,true);
+
+
+                if (mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                    mLocationManager.requestLocationUpdates(
+                            provider1, 0, 0,
+                            mLocationListener);
+                }
+
+                mLocationManager.requestLocationUpdates(
+                        provider2, 0, 0,
+                        mLocationListener);
+            }
+
+            progDailog = new ProgressDialog(MainActivity.this);
+            progDailog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    GPSLocation.this.cancel(true);
+                }
+            });
+            progDailog.setMessage("Getting GPS location... ");
+            progDailog.setIndeterminate(true);
+            progDailog.setCancelable(true);
+            progDailog.show();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            Timer t =new Timer();
+
+            TimerTask tk = new TimerTask() {
+
+                @Override
+                public void run() {
+                    outOfTime = true;
+                }
+            };
+
+            t.schedule(tk, 1700000); //to wait approximately 30 secs.
+
+            while(!outOfTime){
+                if (lati != 0 && longi != 0) {
+                    t.cancel();
+                    tk.cancel();
+                    break;
+                }
+            }
+
+            if (outOfTime) return "err";
+
+            return "ok";
+        }
+
+
+        @Override
+        protected void onCancelled(){
+            System.out.println("Cancelled by user!");
+            progDailog.dismiss();
+            mLocationManager.removeUpdates(mLocationListener);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            progDailog.dismiss();
+            mLocationManager.removeUpdates(mLocationListener);
+
+            if (result.equals("ok")) {
+                userLatitude = lati;
+                userLongitude = longi;
+
+                UserFeedFragment.getData(SORT_BY_LOCATION, userLatitude, userLongitude);
+                Globals.switchState = true;
+                Toast.makeText(getApplication(), "Feeds based on Location", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "GPS location: " + String.valueOf(userLatitude) + " "+ String.valueOf(userLongitude) , Toast.LENGTH_LONG).show();
+
+            }else {
+                Toast.makeText(MainActivity.this,
+                        "Please be located in an area of greater coverage or try again",
+                        Toast.LENGTH_LONG).show();
+                sortBy.setChecked(false);
+
+            }
+
+        }
+
+
+        public class MyLocationListener implements LocationListener {
+
+            @Override
+            public void onLocationChanged(Location location) {
+                try {
+                    lati = location.getLatitude();
+                    longi = location.getLongitude();
+                } catch (Exception e) {
+                    Log.i(TAG,e.getMessage());
+                }
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Log.i(TAG, "OnProviderDisabled");
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+                Log.i(TAG, "onProviderEnabled");
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status,
+                                        Bundle extras) {
+                Log.i(TAG, "onStatusChanged");
+
+            }
+
+        }
+
+    }
+
+
+
 }

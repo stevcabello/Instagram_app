@@ -19,6 +19,10 @@ public class UserFeed {
     private Integer numlikes;
     private String description;
     private Integer numcomments;
+    private Double latitud=0.0;
+    private Double longitude=0.0;
+    private String location="";
+    private float distanceToAuthUser;
     private ArrayList<Comments> comments;
     private ArrayList<Likes> likes;
 
@@ -120,7 +124,37 @@ public class UserFeed {
         this.likes = likes;
     }
 
+    public Double getLongitude() {
+        return longitude;
+    }
 
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public float getDistanceToAuthUser() {
+        return distanceToAuthUser;
+    }
+
+    public void setDistanceToAuthUser(float distanceToAuthUser) {
+        this.distanceToAuthUser = distanceToAuthUser;
+    }
 
 
 

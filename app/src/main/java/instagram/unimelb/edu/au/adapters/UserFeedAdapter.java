@@ -195,6 +195,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
             convertView = inflater.inflate(R.layout.header_userfeed, parent, false);
             holder.profilepic = (ImageView) convertView.findViewById(R.id.iv_tile_photo);
             holder.username = (TextView) convertView.findViewById(R.id.tv_tile_username);
+            holder.location = (TextView) convertView.findViewById(R.id.tv_location);
             holder.created_time = (TextView) convertView.findViewById(R.id.tv_timestamp);
             convertView.setTag(holder);
         } else {
@@ -208,6 +209,9 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
 
         final String username = "<font color='#0000A0'><b>"+ item.getUsername() +"</b></font>";
         holder.username.setText(Html.fromHtml(username));
+
+        holder.location.setText(item.getLocation());
+
         holder.created_time.setText(Utils.getElapsedtime(item.getCreated_time(), "short"));
 
 
@@ -223,6 +227,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
     static class HeaderViewHolder {
         ImageView profilepic;
         TextView username;
+        TextView location;
         TextView created_time;
     }
 
@@ -318,7 +323,6 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
             //Decreasing number of likes
             Integer numlikes = item.getNumLikes() - 1;
             item.setNumLikes(numlikes);
-
 
             //Removing user from list of people how liked the published media
             ArrayList<Likes> arrLikes = item.getLikes();

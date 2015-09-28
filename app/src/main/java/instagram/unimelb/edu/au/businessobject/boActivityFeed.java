@@ -45,11 +45,11 @@ public class boActivityFeed {
 
     public void getProfileMedia(final YouActivityFeedFragment youActivityFeedFragment, String accesstoken, String clientid,final YouActivityFeedAdapter adapter) {
 
-//        pDialog = new ProgressDialog(profileFragment.getActivity());
-//        pDialog.setMessage("Loading...");
+        Globals.numberLoads++;
 
         pDialog = new ProgressDialog(youActivityFeedFragment.getActivity());
         pDialog.setMessage("Loading...");
+        if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
         pDialog.show();
 
         final ArrayList<YouActivityFeed> userActivity = new ArrayList<>();
@@ -61,7 +61,7 @@ public class boActivityFeed {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
+                        Log.i(TAG, response.toString());
                         YouActivityFeed.typeActivity type= YouActivityFeed.typeActivity.LIKE;
                         String comment= "";
                         String username="";

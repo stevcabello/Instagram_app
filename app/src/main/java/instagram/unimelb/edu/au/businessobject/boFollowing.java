@@ -35,8 +35,12 @@ public class boFollowing {
     ProgressDialog pDialog;
 
     public void getProfileMedia(final FollowingActivityFeedFragment followingActivityFragment, final String accesstoken, String clientid, final FollowingActivityFeedAdapter adapter) {
+
+        Globals.numberLoads++;
+
         pDialog = new ProgressDialog(followingActivityFragment.getActivity());
         pDialog.setMessage("Loading...");
+        if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
         pDialog.show();
 
         final ArrayList<FollowingActivityFeed> followingActivity = new ArrayList<>();
@@ -78,7 +82,7 @@ public class boFollowing {
                             getMedia(followingActivity,accesstoken,followingActivityFragment,adapter);
                           //  followingActivityFragment.addProfileMedia(followingActivity);
 
-                            pDialog.dismiss();
+                          //  pDialog.dismiss();
 
                         } catch (Exception e) {
                             Log.i(TAG,e.getMessage());
@@ -166,7 +170,7 @@ public class boFollowing {
                     tag_json_obj);
 
         }
-
+        pDialog.dismiss();
 
     }
 

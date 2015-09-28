@@ -24,6 +24,11 @@ public class Globals {
     public static int GALLERY_MEDIA_MAX_ID = 0;
     public static MainActivity mainActivity=null;
 
+    public static Boolean switchState = false; //to save the state of the userfeed sort by switch
+
+    public static int numberLoads = 0; // to know when the 5 initial image loading fragment has completed their loads.
+
+
 
 
 }

@@ -11,6 +11,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -41,10 +42,13 @@ public class boUserFeed {
      * @param accesstoken
      * @param adapter
      */
-    public void getUserFeedData(final UserFeedFragment userFeedFragment, String accesstoken, final ArrayAdapter adapter) {
+    public void getUserFeedData(final UserFeedFragment userFeedFragment, String accesstoken, final ArrayAdapter adapter, final int sortBy) {
+
+        Globals.numberLoads++;
 
         pDialog = new ProgressDialog(userFeedFragment.getActivity());
         pDialog.setMessage("Loading...");
+        if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
         pDialog.show();
 
 
@@ -57,7 +61,7 @@ public class boUserFeed {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i(TAG, response.toString());
+                        Log.i("uriimages", response.toString());
 
                         try {
 
@@ -103,7 +107,19 @@ public class boUserFeed {
 
                                 mUserfeed.setNumcomments(array.getJSONObject(i).getJSONObject("comments").getInt("count"));
 
+                                try {
+                                    mUserfeed.setLatitud((double) array.getJSONObject(i).getJSONObject("location").getLong("latitude"));
+                                    mUserfeed.setLongitude((double) array.getJSONObject(i).getJSONObject("location").getLong("longitude"));
+                                    mUserfeed.setLocation(array.getJSONObject(i).getJSONObject("location").getString("name"));
+                                }catch (JSONException e){
+                                    Log.i(TAG,e.getMessage());
+//                                    mUserfeed.setLatitud(0.00);
+//                                    mUserfeed.setLongitude(0.00);
+//                                    mUserfeed.setLocation("");
+                                }
 
+                                //Log.i("uriimages",mUserfeed.getUsername());
+                               // Log.i("uriimages",mUserfeed.getLocation());
                                 JSONArray arrayComments = array.getJSONObject(i).getJSONObject("comments").getJSONArray("data");
                                 ArrayList<Comments> comments = new ArrayList<Comments>();
 
@@ -157,7 +173,7 @@ public class boUserFeed {
 
 
                             //The user feed array is sent to user feed fragment.
-                            userFeedFragment.addUserFeedData(arrayUserfeed);
+                            userFeedFragment.addUserFeedData(arrayUserfeed,sortBy);
 
                             pDialog.dismiss();
 

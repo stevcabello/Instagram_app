@@ -22,7 +22,7 @@
 
     <item android:id="@+id/action_switch"
         android:title=""
-        app:showAsAction="always"
+        app:showAsAction="always|withText"
         android:actionLayout="@layout/actionbar_switchsortby">
     </item>
 
