@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.models.YouActivityFeed;
-import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Utils;
 
 

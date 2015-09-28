@@ -3,7 +3,6 @@ package instagram.unimelb.edu.au.models;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Angela on 9/21/2015.

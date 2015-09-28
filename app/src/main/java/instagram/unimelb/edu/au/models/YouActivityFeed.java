@@ -1,6 +1,5 @@
 package instagram.unimelb.edu.au.models;
 
-import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import java.util.Date;

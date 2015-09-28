@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.adapters.FollowingActivityFeedAdapter;
-import instagram.unimelb.edu.au.adapters.SubFollowingActivityFeedAdapter;
 import instagram.unimelb.edu.au.businessobject.boFollowing;
 import instagram.unimelb.edu.au.models.FollowingActivityFeed;
 import instagram.unimelb.edu.au.utils.Globals;

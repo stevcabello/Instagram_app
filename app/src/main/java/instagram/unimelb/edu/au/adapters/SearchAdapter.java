@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.util.ArrayList;
+
 import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.models.Search;
 import instagram.unimelb.edu.au.utils.Utils;
