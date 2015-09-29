@@ -33,6 +33,7 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     static Camera mCamera;    // Camera class deprecated in much later API 21.
     public static final int MEDIA_TYPE_IMAGE = 1;
     private static final String TAG = "CapturePreview";
+    public boolean active = false;
     Camera.Size mPreviewSize;
     List<Camera.Size> mSupportedPreviewSizes;
     boolean mSurfaceCreated = false;
@@ -53,6 +54,9 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
         holder.addCallback(this);     // Adds a Callback interface (itself) to the holder object.
         // holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);  Apparantly this is automatic..
         this.setWillNotDraw(false);
+
+        Log.i(TAG, "CapturePreview object constructed.");
+        active = true;
     }
 
     // This method is from SurfaceHolder.Callback interface.
@@ -79,12 +83,13 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
         }
         catch (Exception e) {
             // Camera is not available (in use or does not exist)
-            Log.e("getCameraInstance", "Failed to open Camera");
+            Log.e(TAG, "Failed to open Camera");
             e.printStackTrace();
         }
 
         paint = new Paint();
         paint.setColor(Color.WHITE);
+        Log.i(TAG, "Surface created. Camera opened.");
     }
 
     // This method is from SurfaceHolder.Callback interface.
@@ -92,8 +97,13 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     public void surfaceDestroyed(SurfaceHolder holder) {
         //trying to fix the camera crash
         this.getHolder().removeCallback(this);
-        mCamera.stopPreview();
-        mCamera.release();
+        if (mCamera != null) {
+            mCamera.stopPreview();
+            mCamera.release();
+            Log.i(TAG, "Surface destroyed. Camera released.");
+            mCamera = null;
+        }
+        active = false;
     }
 
     @Override
@@ -183,7 +193,8 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
 
 
     public void CameraActivityPause() {
-        surfaceDestroyed(holder);
+        //surfaceDestroyed(holder);
+        Log.i(TAG, "CameraActivityPause");
     }
 
 

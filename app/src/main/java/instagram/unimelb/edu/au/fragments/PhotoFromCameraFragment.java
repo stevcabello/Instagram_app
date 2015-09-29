@@ -84,6 +84,7 @@ public class PhotoFromCameraFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate called.");
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -98,6 +99,7 @@ public class PhotoFromCameraFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_photo_from_camera,container,false);
 
+        Log.i(TAG, "onCreateView called.");
         // Create a container that will hold a SurfaceView for camera previews
         cPreview = new CapturePreview(getActivity());
 
@@ -174,9 +176,16 @@ public class PhotoFromCameraFragment extends Fragment {
     }
 
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume called.");
+        if (!cPreview.active) {
+            cPreview = new CapturePreview(getActivity());
+            FrameLayout preview = (FrameLayout) rootView.findViewById(R.id.SurfaceView);
+            preview.addView(cPreview);
+        }
+
 //
 //        // Use mCurrentCamera to select the camera desired to safely restore
 //        // the fragment after the camera has been changed
@@ -184,7 +193,7 @@ public class PhotoFromCameraFragment extends Fragment {
 //        mCamera.setDisplayOrientation(90);
 //        mCameraCurrentlyLocked = mCurrentCamera;
 //        cPreview.setCamera(mCamera);
-//    }
+    }
 
 //    @Override
 //    public void onPause() {
@@ -205,6 +214,7 @@ public class PhotoFromCameraFragment extends Fragment {
     public void onPause() {
         super.onPause();
         cPreview.CameraActivityPause();          // release the camera immediately on pause event
+        Log.i(TAG, "onPause called.");
     }
 
 
@@ -219,6 +229,7 @@ public class PhotoFromCameraFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        Log.i(TAG, "onAttach called.");
 
     }
 
@@ -226,6 +237,7 @@ public class PhotoFromCameraFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        Log.i(TAG, "onDetach called.");
     }
 
     /**
