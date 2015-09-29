@@ -3,6 +3,9 @@ package instagram.unimelb.edu.au.photo;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.hardware.Camera;
 import android.os.Environment;
 import android.util.Log;
@@ -40,6 +43,7 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     int vmid2;
     int hmid1;
     int hmid2;
+    Paint paint;
 
 
     public CapturePreview(Context context) {
@@ -78,6 +82,9 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
             Log.e("getCameraInstance", "Failed to open Camera");
             e.printStackTrace();
         }
+
+        paint = new Paint();
+        paint.setColor(Color.WHITE);
     }
 
     // This method is from SurfaceHolder.Callback interface.
@@ -98,6 +105,7 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
         vmid2 = 2*width/3;
         hmid1 = height/3;
         hmid2 = 2*height/3;
+
 
         canvas.drawLine(vmid1, 0, vmid1, height, paint);
         canvas.drawLine(vmid2, 0, vmid2, height, paint);
