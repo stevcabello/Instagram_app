@@ -98,6 +98,7 @@ public class PhotoFromGalleryFragment extends Fragment {
         gridView.setAdapter(gridAdapter);
         imagePreview = (ImageView)rootView.findViewById(R.id.iv_preview);
         gallery=getImagesPath();
+        Globals.GALLERY_SELECTEDPATH = gallery.get(0);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -106,8 +107,9 @@ public class PhotoFromGalleryFragment extends Fragment {
                 // You know that the convertView returned from your adapter's
                 // getView method is ImageView so you can cast it here accordingly.
                 Log.d("PhotoGalleryFragment", "Position "+Integer.toString(position));
+                Globals.GALLERY_SELECTEDPATH = gallery.get(position);
                 Picasso.with(getContext())
-                        .load(gallery.get(position))
+                        .load("file://" +gallery.get(position))
                         .into(imagePreview);
             }
         });
@@ -169,7 +171,7 @@ public class PhotoFromGalleryFragment extends Fragment {
         column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
         while (cursor.moveToNext()) {
             pathOfImage = cursor.getString(column_index_data);
-            listOfAllImages.add("file://" +pathOfImage);        }
+            listOfAllImages.add(pathOfImage);        }
         return listOfAllImages;
     }
 
@@ -181,7 +183,7 @@ public class PhotoFromGalleryFragment extends Fragment {
             toShow = sizeGallery;
         }
         for(int j = Globals.GALLERY_MEDIA_MAX_ID; j < toShow; j++){
-            usermedia.add(new ImageItem( imageItems.get(j)));
+            usermedia.add(new ImageItem("file://" +imageItems.get(j)));
             Globals.GALLERY_MEDIA_MAX_ID = Globals.GALLERY_MEDIA_MAX_ID + 1;
         }
         if  (Globals.GALLERY_MEDIA_MAX_ID>= sizeGallery){

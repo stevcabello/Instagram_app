@@ -77,7 +77,7 @@ public class PhotoFragment extends Fragment {
 
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_photo,container,false);
-
+        setHasOptionsMenu(true);
 
         final ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
         PhotoViewPagerAdapter adapter = new PhotoViewPagerAdapter(getChildFragmentManager(),getActivity(),mParam1, mParam2);
@@ -94,6 +94,7 @@ public class PhotoFragment extends Fragment {
 
                 if (position == 0) {
                     Globals.mainActivity.getSupportActionBar().setTitle("GALLERY");
+                    Globals.mainActivity.setVisibleFragment(PhotoFragment.this);
                 } else {
                     Globals.mainActivity.getSupportActionBar().setTitle("PHOTO");
                 }
