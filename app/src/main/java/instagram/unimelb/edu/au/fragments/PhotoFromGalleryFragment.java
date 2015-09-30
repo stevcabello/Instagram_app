@@ -12,14 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.GridView;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 
 import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.adapters.PhotoFromGalleryAdapter;
 import instagram.unimelb.edu.au.models.ImageItem;
-import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Globals;
 
 /**
