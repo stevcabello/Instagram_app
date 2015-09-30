@@ -5,7 +5,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -54,7 +56,7 @@ public class PhotoFromGalleryAdapter extends ArrayAdapter<ImageItem> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
-        ViewHolder holder;
+        final ViewHolder holder;
 
         if (row == null) {
             //LayoutInflater inflater = ((FragmentActivity) context).getLayoutInflater();
@@ -96,6 +98,8 @@ public class PhotoFromGalleryAdapter extends ArrayAdapter<ImageItem> {
 
     static class ViewHolder {
         ImageView image;
+        /*GridView gridView;
+        ImageView imagePreview;*/
     }
 
 }

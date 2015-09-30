@@ -2,6 +2,7 @@ package instagram.unimelb.edu.au.fragments;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -11,8 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -44,6 +48,7 @@ public class PhotoFromGalleryFragment extends Fragment {
     private View rootView;
     private PhotoFromGalleryAdapter gridAdapter;
     private GridView gridView;
+    private ImageView imagePreview;
     public PhotoFromGalleryFragment galleryFragment;
     Boolean userScrolled = false;
     ArrayList<String> gallery;
@@ -92,7 +97,25 @@ public class PhotoFromGalleryFragment extends Fragment {
         gridView = (GridView)rootView.findViewById(R.id.gv_gallery);
         gridAdapter = new PhotoFromGalleryAdapter(this.getActivity(),R.layout.item_photo_gallery,new ArrayList<ImageItem>());
         gridView.setAdapter(gridAdapter);
+        imagePreview = (ImageView)rootView.findViewById(R.id.iv_preview);
         gallery=getImagesPath();
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                // You know that the convertView returned from your adapter's
+                // getView method is ImageView so you can cast it here accordingly.
+                Log.d("PhotoGalleryFragment", "Position "+Integer.toString(position));
+                Picasso.with(getContext())
+                        .load(gallery.get(position))
+                        .into(imagePreview);
+            }
+        });
+
+
+
+
         callShowGallery();
         return rootView;
     }
