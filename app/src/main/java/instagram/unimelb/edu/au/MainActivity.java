@@ -6,9 +6,12 @@ package instagram.unimelb.edu.au;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -48,6 +51,7 @@ import instagram.unimelb.edu.au.fragments.PhotoFragment;
 import instagram.unimelb.edu.au.fragments.ProfileFragment;
 import instagram.unimelb.edu.au.fragments.SearchFragment;
 import instagram.unimelb.edu.au.fragments.UserFeedFragment;
+import instagram.unimelb.edu.au.networking.Bluetooth;
 import instagram.unimelb.edu.au.networking.Connection;
 import instagram.unimelb.edu.au.utils.Globals;
 import instagram.unimelb.edu.au.utils.Utils;
@@ -177,6 +181,10 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(4).setCustomView(tab_profile);
 
 
+        //Register the bluetooth receiver
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+
     }
 
     @Override
@@ -224,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                 item_settings.setVisible(false);
             }
 
-            Log.i(TAG,"In fragment: "  + shareVisible);
+            Log.i(TAG, "In fragment: " + shareVisible);
         } else { // case visiblefragment is null
             item_search.setVisible(false);
             item_settings.setVisible(false);
@@ -380,8 +388,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-
 
 
     public Fragment getVisibleFragment() {
@@ -563,6 +569,30 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    // Create a BroadcastReceiver for ACTION_FOUND
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            // When discovery finds a device
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Get the BluetoothDevice object from the Intent
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                // Add the name and address to an array adapter to show in a ListView
+                //mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                Globals.mapPairedDevices.put(device.getAddress(), device.getName());
+            }
+        }
+    };
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
+        Bluetooth.cancel(); //close the socket
+        Bluetooth.ConnectedThread.cancel();
+    }
 
 
 }

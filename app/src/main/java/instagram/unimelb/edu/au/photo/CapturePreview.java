@@ -3,6 +3,9 @@ package instagram.unimelb.edu.au.photo;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.hardware.Camera;
 import android.os.Environment;
 import android.util.Log;
@@ -30,10 +33,18 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     static Camera mCamera;    // Camera class deprecated in much later API 21.
     public static final int MEDIA_TYPE_IMAGE = 1;
     private static final String TAG = "CapturePreview";
+    public boolean active = false;
     Camera.Size mPreviewSize;
     List<Camera.Size> mSupportedPreviewSizes;
     boolean mSurfaceCreated = false;
     static String myApp = "InstagramApp"; //A folder with this name will be created and all the photos taken will be stored here
+    int width;
+    int height;
+    int vmid1;
+    int vmid2;
+    int hmid1;
+    int hmid2;
+    Paint paint;
 
 
     public CapturePreview(Context context) {
@@ -42,6 +53,10 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
         holder = getHolder();         // Allows access to the SurfaceHolder for this SurfaceViiew.
         holder.addCallback(this);     // Adds a Callback interface (itself) to the holder object.
         // holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);  Apparantly this is automatic..
+        this.setWillNotDraw(false);
+
+        Log.i(TAG, "CapturePreview object constructed.");
+        active = true;
     }
 
     // This method is from SurfaceHolder.Callback interface.
@@ -68,9 +83,13 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
         }
         catch (Exception e) {
             // Camera is not available (in use or does not exist)
-            Log.e("getCameraInstance", "Failed to open Camera");
+            Log.e(TAG, "Failed to open Camera");
             e.printStackTrace();
         }
+
+        paint = new Paint();
+        paint.setColor(Color.WHITE);
+        Log.i(TAG, "Surface created. Camera opened.");
     }
 
     // This method is from SurfaceHolder.Callback interface.
@@ -78,12 +97,31 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     public void surfaceDestroyed(SurfaceHolder holder) {
         //trying to fix the camera crash
         this.getHolder().removeCallback(this);
-        mCamera.stopPreview();
-        mCamera.release();
+        if (mCamera != null) {
+            mCamera.stopPreview();
+            mCamera.release();
+            Log.i(TAG, "Surface destroyed. Camera released.");
+            mCamera = null;
+        }
+        active = false;
     }
 
+    @Override
+    protected void onDraw(Canvas canvas)
+    {
+        width = canvas.getWidth();
+        height = canvas.getWidth();
+        vmid1 = width/3;
+        vmid2 = 2*width/3;
+        hmid1 = height/3;
+        hmid2 = 2*height/3;
 
 
+        canvas.drawLine(vmid1, 0, vmid1, height, paint);
+        canvas.drawLine(vmid2, 0, vmid2, height, paint);
+        canvas.drawLine(0, hmid1, width, hmid1, paint);
+        canvas.drawLine(0, hmid2, width, hmid2, paint);
+    }
 
     /***
      *
@@ -155,7 +193,8 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
 
 
     public void CameraActivityPause() {
-        surfaceDestroyed(holder);
+        //surfaceDestroyed(holder);
+        Log.i(TAG, "CameraActivityPause");
     }
 
 
