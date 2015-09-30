@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,8 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
     private String access_token;
     private boLikes objLikes = new boLikes();
     private int like_position;
+    ListViewItemViewPagerAdapter swipeAdapter;
+    ViewHolder holder = null;
 
     public UserFeedAdapter(Context context,int resource, String access_token ,ArrayList data) {
         super(context, resource, data);
@@ -46,6 +49,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
         this.context = context;
         this.data = data;
         this.access_token = access_token;
+
 
     }
 
@@ -66,9 +70,10 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
 
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         View row = convertView;
-        ViewHolder holder = null;
+        //ViewHolder holder = null;
+        holder = null;
         final boolean[] myChecks = new boolean[data.size()];
 
         if (row == null) {
@@ -83,6 +88,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
             holder.btn_addcomment = (Button) row.findViewById(R.id.btn_addcomment);
             holder.ibtn_addcomment = (ImageButton) row.findViewById(R.id.ibtn_comment);
             holder.tbtn_likes = (ToggleButton) row.findViewById(R.id.ibtn_like);
+            holder.viewPager=(ViewPager)row.findViewById(R.id.pager);
 
             row.setTag(holder);
         } else {
@@ -93,19 +99,21 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
 
         holder.comments.removeAllViews(); //to remove the previous TextViews added into the Linear Layout
 
+        //Now it is used in ListViewItemViewPagerAdapter
 
-        Bitmap photo_bitmap = Utils.getBitmap(item.getPhoto());
-        holder.uploadedphoto.setImageBitmap(photo_bitmap);
-        holder.uploadedphoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Toast.makeText(context,"post by " + username,Toast.LENGTH_SHORT).show();
-                ImageView imageView = new ImageView(context);
-                ImageRequest.makeImageRequest(item.getPhoto_url(),context,imageView,UserFeedAdapter.this);
-                //ImageRequest.makeImageRequest(item.getPhoto_url(),context,imageView,);
-                item.setPhoto(imageView);
-            }
-        });
+//        Bitmap photo_bitmap = Utils.getBitmap(item.getPhoto());
+//        holder.uploadedphoto.setImageBitmap(photo_bitmap);
+//        holder.uploadedphoto.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //Toast.makeText(context,"post by " + username,Toast.LENGTH_SHORT).show();
+//                ImageView imageView = new ImageView(context);
+//                ImageRequest.makeImageRequest(item.getPhoto_url(), context, imageView, UserFeedAdapter.this);
+//                //ImageRequest.makeImageRequest(item.getPhoto_url(),context,imageView,);
+//                item.setPhoto(imageView);
+//            }
+//        });
+
 
         Integer numlikes = item.getNumLikes();
         String format_numlikes = "<font color='#0000A0'><b>"+ String.valueOf(numlikes) +" likes</b></font>";
@@ -178,12 +186,41 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
         holder.tbtn_likes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setLike(v,item);
+                setLike(v, item);
             }
         });
 
+
+        swipeAdapter = new ListViewItemViewPagerAdapter(context,this,item);
+        holder.viewPager.setAdapter(swipeAdapter);
+        holder.viewPager.setCurrentItem(1);
+        //Using the depracated method instead of addOnPageChangeListener due to the latter causes to many repetitions of the AlertDialog (OnPageSelected sensed many times)
+        holder.viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0 || position == 2) {
+                    goBack();
+                   // Bluetooth.displayPromptForSendingPhoto(Globals.mainActivity); // Ask to user permission to share the post
+                }
+            }
+
+        });
+
+
+
+
         return row;
     }
+
+
+    /**
+     * Go back to the post's image when user swipe from right to left or viceversa
+     */
+    public void goBack(){
+        holder.viewPager.setCurrentItem(1);
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public View getHeaderView(int position, View convertView, ViewGroup parent) {
@@ -240,6 +277,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
         Button btn_addcomment;
         ImageButton ibtn_addcomment;
         ToggleButton tbtn_likes;
+        ViewPager viewPager;
     }
 
 
