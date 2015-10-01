@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.adapters.PhotoFromGalleryAdapter;
@@ -50,7 +51,7 @@ public class PhotoFromGalleryFragment extends Fragment {
     private ImageView imagePreview;
     public PhotoFromGalleryFragment galleryFragment;
     Boolean userScrolled = false;
-    ArrayList<String> gallery;
+    ArrayList<ArrayList<String>> gallery;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -94,38 +95,36 @@ public class PhotoFromGalleryFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_photo_from_gallery,container,false);
         galleryFragment = this;
         gridView = (GridView)rootView.findViewById(R.id.gv_gallery);
-        gridAdapter = new PhotoFromGalleryAdapter(this.getActivity(),R.layout.item_photo_gallery,new ArrayList<ImageItem>());
+        gridAdapter = new PhotoFromGalleryAdapter(this.getActivity(),R.layout.item_photo_gallery,new ArrayList<ArrayList<String>>());
         gridView.setAdapter(gridAdapter);
         imagePreview = (ImageView)rootView.findViewById(R.id.iv_preview);
         gallery=getImagesPath();
-        Globals.GALLERY_SELECTEDPATH = gallery.get(0);
+        loadImage(gallery.get(0).get(0), imagePreview);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                // You know that the convertView returned from your adapter's
-                // getView method is ImageView so you can cast it here accordingly.
                 Log.d("PhotoGalleryFragment", "Position "+Integer.toString(position));
-                Globals.GALLERY_SELECTEDPATH = gallery.get(position);
-                Picasso.with(getContext())
-                        .load("file://" +gallery.get(position))
-                        .into(imagePreview);
+                loadImage(gallery.get(position).get(0), imagePreview);
             }
         });
-
-
-
-
         callShowGallery();
         return rootView;
     }
+    //load regular image for preview instead of thumbnail
+    public void loadImage(String imageId, ImageView image){
+        String regularImage = getImagePath(imageId);
+        Globals.GALLERY_SELECTEDPATH = regularImage;
+        Picasso.with(getContext())
+                .load("file://" + regularImage)
+                        .into(image);
+    }
     public void callShowGallery(){
-        ArrayList<ImageItem> usermedia= paginationGallery(gallery);
+        ArrayList<ArrayList<String>> usermedia= paginationGallery(gallery);
         ShowGallery(usermedia);
     }
 
-    public void ShowGallery(ArrayList<ImageItem> usermedia) {
+    public void ShowGallery(ArrayList<ArrayList<String>> usermedia) {
 
         gridAdapter.addAll(usermedia);
 
@@ -155,41 +154,59 @@ public class PhotoFromGalleryFragment extends Fragment {
         });
     }
 
-    public ArrayList<String> getImagesPath() {
+    public ArrayList<ArrayList<String>> getImagesPath() {
         Uri uri;
-        ArrayList<String> listOfAllImages = new ArrayList<String>();
+        ArrayList<ArrayList<String>> listOfAllImages = new ArrayList<ArrayList<String>>();
         Cursor cursor;
-        int column_index_data;
+        int column_index_data, column_index_id;
         String pathOfImage = null;
+        String imageId = null;
         uri = android.provider.MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI;
-
         String[] projection = { MediaStore.MediaColumns.DATA,
                 MediaStore.Images.Thumbnails.IMAGE_ID };
 
         cursor = this.getActivity().getContentResolver().query(uri, projection, null,
                 null, null);
         column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+        column_index_id = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.IMAGE_ID);
         while (cursor.moveToNext()) {
             pathOfImage = cursor.getString(column_index_data);
-            listOfAllImages.add(pathOfImage);        }
+            imageId = cursor.getString(column_index_id);
+            ArrayList<String> iteration =new ArrayList<String>();
+            iteration.add(imageId);
+            iteration.add(pathOfImage);
+            listOfAllImages.add(iteration);
+        }
         return listOfAllImages;
     }
 
-    public ArrayList<ImageItem> paginationGallery(ArrayList<String> imageItems){
-        ArrayList<ImageItem> usermedia = new ArrayList<>();
+    public ArrayList<ArrayList<String>> paginationGallery(ArrayList<ArrayList<String>> imageItems){
+        ArrayList<ArrayList<String>> usermedia = new ArrayList<>();
         int sizeGallery = imageItems.size()                ;
         int toShow = Globals.GALLERY_MEDIA_MAX_ID+15;
         if (sizeGallery < toShow){
             toShow = sizeGallery;
         }
         for(int j = Globals.GALLERY_MEDIA_MAX_ID; j < toShow; j++){
-            usermedia.add(new ImageItem("file://" +imageItems.get(j)));
+            usermedia.add(imageItems.get(j));
             Globals.GALLERY_MEDIA_MAX_ID = Globals.GALLERY_MEDIA_MAX_ID + 1;
         }
         if  (Globals.GALLERY_MEDIA_MAX_ID>= sizeGallery){
             Globals.GALLERY_MEDIA_MAX_ID=-1;
         }
         return usermedia;
+    }
+    public String getImagePath( String reterievedImageId) {
+        String[] columnsReturn = {MediaStore.Images.Media.DATA};
+        String whereimageId = MediaStore.Images.Media._ID + " LIKE ?";
+        String valuesIs[] = {"%" + reterievedImageId};
+        String imagePath ="";
+        Cursor mCursor = this.getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columnsReturn, whereimageId, valuesIs, null);
+        int rawDataPath = mCursor.getColumnIndex(MediaStore.Images.Media.DATA);
+        for (mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
+            imagePath = mCursor.getString(rawDataPath);
+        }
+        return imagePath;
     }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

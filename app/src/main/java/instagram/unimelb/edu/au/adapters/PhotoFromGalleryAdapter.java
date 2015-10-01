@@ -18,13 +18,13 @@ import java.util.ArrayList;
 import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.models.ImageItem;
 
-public class PhotoFromGalleryAdapter extends ArrayAdapter<ImageItem> {
+public class PhotoFromGalleryAdapter extends ArrayAdapter<ArrayList<String>> {
     private Context context;
     private int layoutResourceId;
-    private ArrayList<ImageItem> data = new ArrayList<ImageItem>();
+    private ArrayList<ArrayList<String>> data = new ArrayList<ArrayList<String>>();
     //private boProfile objProfile;
 
-    public PhotoFromGalleryAdapter(Context context, int resource, ArrayList<ImageItem> data) {
+    public PhotoFromGalleryAdapter(Context context, int resource, ArrayList<ArrayList<String>> data) {
         super(context, resource, data);
         this.layoutResourceId = resource;
         this.context = context;
@@ -38,7 +38,7 @@ public class PhotoFromGalleryAdapter extends ArrayAdapter<ImageItem> {
     }
 
     @Override
-    public ImageItem getItem (int position){
+    public ArrayList<String> getItem (int position){
         return data.get(position);
     }
 
@@ -49,7 +49,7 @@ public class PhotoFromGalleryAdapter extends ArrayAdapter<ImageItem> {
     }
 
     @Override
-    public int getPosition(ImageItem item) {
+    public int getPosition(ArrayList<String> item) {
         return super.getPosition(item);
     }
 
@@ -78,7 +78,7 @@ public class PhotoFromGalleryAdapter extends ArrayAdapter<ImageItem> {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         holder.image.setLayoutParams(layoutParams);
 
-        ImageItem item = getItem(position);
+        ArrayList<String> item = getItem(position);
 
         //objProfile.makeImageRequest(item.getImageurl(), context, holder.image); //not in use due to make the gridview repeat images
 
@@ -87,10 +87,10 @@ public class PhotoFromGalleryAdapter extends ArrayAdapter<ImageItem> {
        // Bitmap bitmap = Utils.getBitmap(item.getImageview());
        // holder.image.setImageBitmap(bitmap);
         Picasso.with(getContext())
-                .load(item.getImageurl())
+                .load("file://" + item.get(1))
                 .resize(150, 150)
                 .into(holder.image);
-        Log.i("PhotofromGallery", "Adapter" + item.getImageurl());
+        Log.i("PhotofromGallery", "Adapter" + item.get(1));
 
 
         return row;
