@@ -12,8 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.ToggleButton;
 
 import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.photo.CapturePreview;
@@ -52,6 +54,8 @@ public class PhotoFromCameraFragment extends Fragment {
 
 
     private Button btn_switchcamera;
+
+    private boolean flashOn = false;
 
     private Bitmap from_filter;
     private BitmapDrawable drawable_filter;
@@ -126,6 +130,8 @@ public class PhotoFromCameraFragment extends Fragment {
 
         RelativeLayout flashoptions = (RelativeLayout) rootView.findViewById(R.id.flash_op);
         flashoptions.bringToFront();
+        Log.i(TAG, "Fragment creation flash value: "+flashOn);
+        cPreview.setFlashOn(flashOn);
 
         RelativeLayout takepic = (RelativeLayout) rootView.findViewById(R.id.take_pic_button);
         takepic.bringToFront();
@@ -173,19 +179,19 @@ public class PhotoFromCameraFragment extends Fragment {
                 }
         );
 
-        Button flashButton = (Button) rootView.findViewById(R.id.btn_flash);
-        flashButton.setOnClickListener(
+        ToggleButton flashButton = (ToggleButton) rootView.findViewById(R.id.btn_flash);
+        flashButton.setOnCheckedChangeListener(
 
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // get an image from the camera
-                        Log.d(TAG, "Click to toggle flash.");
-                        cPreview.FlashToggle();
-                    }
-                }
+                        new CompoundButton.OnCheckedChangeListener() {
+
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                // get an image from the camera
+                                Log.d(TAG, "Click to toggle flash.");
+                                flashOn = isChecked;
+                                cPreview.FlashToggle();
+                            }
+                        }
         );
-
         return rootView;
     }
 
@@ -198,13 +204,15 @@ public class PhotoFromCameraFragment extends Fragment {
             cPreview = new CapturePreview(getActivity());
             FrameLayout preview = (FrameLayout) rootView.findViewById(R.id.SurfaceView);
             preview.addView(cPreview);
-        }
+            }
 
-        RelativeLayout switchcamera = (RelativeLayout) rootView.findViewById(R.id.switch_control);
-        switchcamera.bringToFront();
+            RelativeLayout switchcamera = (RelativeLayout) rootView.findViewById(R.id.switch_control);
+            switchcamera.bringToFront();
 
         RelativeLayout flashoptions = (RelativeLayout) rootView.findViewById(R.id.flash_op);
         flashoptions.bringToFront();
+        Log.i(TAG, "Fragment resume flash value: "+flashOn);
+        cPreview.setFlashOn(flashOn);
 
         RelativeLayout takepic = (RelativeLayout) rootView.findViewById(R.id.take_pic_button);
         takepic.bringToFront();
