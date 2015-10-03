@@ -173,7 +173,18 @@ public class PhotoFromCameraFragment extends Fragment {
                 }
         );
 
+        Button flashButton = (Button) rootView.findViewById(R.id.btn_flash);
+        flashButton.setOnClickListener(
 
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // get an image from the camera
+                        Log.d(TAG, "Click to toggle flash.");
+                        cPreview.FlashToggle();
+                    }
+                }
+        );
 
         return rootView;
     }

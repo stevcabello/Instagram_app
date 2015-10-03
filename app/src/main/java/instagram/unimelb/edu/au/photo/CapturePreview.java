@@ -34,6 +34,7 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     public static final int MEDIA_TYPE_IMAGE = 1;
     private static final String TAG = "CapturePreview";
     public boolean active = false;
+    public boolean flashOn = false;
     Camera.Size mPreviewSize;
     List<Camera.Size> mSupportedPreviewSizes;
     boolean mSurfaceCreated = false;
@@ -131,7 +132,7 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     public void takePicture(){
         // This is creating a new PictureCallback to pass to the takePicture method.
 
-
+        Log.i(TAG, "Flash status: "+mCamera.getParameters().getFlashMode());
         Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
             @Override
             public void onPictureTaken(byte[] data, Camera camera) {
@@ -190,6 +191,24 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
 
     }
 
+    public void FlashToggle() {
+        Log.i(TAG, "Before flash toggle launched: "+ flashOn);
+        flashOn = !flashOn;
+
+        Camera.Parameters param = mCamera.getParameters();
+        Log.i(TAG, "After flash toggle launched: "+ flashOn);
+
+        if (flashOn) {
+            //param.setFlashMode("FLASH_MODE_ON");
+            param.setFlashMode("on");
+            mCamera.setParameters(param);
+            Log.i(TAG, "Get flash mode (expect on): " + mCamera.getParameters().getFlashMode());}
+        else {
+            //param.setFlashMode("FLASH_MODE_OFF");
+            param.setFlashMode("off");
+            mCamera.setParameters(param);
+            Log.i(TAG, "Get flash mode (expect off): " + mCamera.getParameters().getFlashMode()); }
+    }
 
 
     public void CameraActivityPause() {
