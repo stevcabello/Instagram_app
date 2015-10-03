@@ -127,6 +127,9 @@ public class PhotoFromCameraFragment extends Fragment {
         RelativeLayout flashoptions = (RelativeLayout) rootView.findViewById(R.id.flash_op);
         flashoptions.bringToFront();
 
+        RelativeLayout takepic = (RelativeLayout) rootView.findViewById(R.id.take_pic_button);
+        takepic.bringToFront();
+
 
 //        btn_switchcamera = (Button)rootView.findViewById(R.id.btn_switchcamera);
 //        btn_switchcamera.setOnClickListener(new View.OnClickListener() {
@@ -186,6 +189,14 @@ public class PhotoFromCameraFragment extends Fragment {
             preview.addView(cPreview);
         }
 
+        RelativeLayout switchcamera = (RelativeLayout) rootView.findViewById(R.id.switch_control);
+        switchcamera.bringToFront();
+
+        RelativeLayout flashoptions = (RelativeLayout) rootView.findViewById(R.id.flash_op);
+        flashoptions.bringToFront();
+
+        RelativeLayout takepic = (RelativeLayout) rootView.findViewById(R.id.take_pic_button);
+        takepic.bringToFront();
 //
 //        // Use mCurrentCamera to select the camera desired to safely restore
 //        // the fragment after the camera has been changed

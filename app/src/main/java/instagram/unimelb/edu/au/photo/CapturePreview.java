@@ -110,7 +110,7 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     protected void onDraw(Canvas canvas)
     {
         width = canvas.getWidth();
-        height = canvas.getWidth();
+        height = canvas.getHeight();
         vmid1 = width/3;
         vmid2 = 2*width/3;
         hmid1 = height/3;
