@@ -11,7 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +25,10 @@ import java.util.Comparator;
 import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.adapters.UserFeedAdapter;
 import instagram.unimelb.edu.au.businessobject.boUserFeed;
+import instagram.unimelb.edu.au.models.Comments;
+import instagram.unimelb.edu.au.models.Likes;
 import instagram.unimelb.edu.au.models.UserFeed;
+import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Globals;
 import instagram.unimelb.edu.au.utils.Utils;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -259,7 +267,7 @@ public class UserFeedFragment extends Fragment {
 
         //Set the distance to authenticated user in all the elements of the arraylist
         for (UserFeed userFeed : arrUserFeed) {
-            distance = Utils.DistanceBetween(userLat,userLon,userFeed.getLatitud(),userFeed.getLongitude());
+            distance = Utils.DistanceBetween(userLat,userLon,userFeed.getLatitude(),userFeed.getLongitude());
             userFeed.setDistanceToAuthUser(distance);
         }
 
@@ -272,6 +280,103 @@ public class UserFeedFragment extends Fragment {
         });
 
         return arrUserFeed;
+
+    }
+
+
+    /**
+     * Updates the userfeed's listview with the item received via Bluetooth
+     *
+     * @param userFeedJsonStr
+     */
+    public static void setBluetoothUserFeedItem(String userFeedJsonStr) {
+
+        Toast.makeText(userfeedFragment.getActivity(),"In Range post has arrived",Toast.LENGTH_SHORT).show();
+
+        try {
+            Log.i("Bluetooth", "jsonStr: " + userFeedJsonStr);
+            JSONObject jsonObject = new JSONObject(userFeedJsonStr);
+
+
+            ArrayList<Comments> comments = new ArrayList<Comments>();
+
+            JSONArray jsonArrayComments = jsonObject.getJSONArray("comments");
+            for(int i=0; i<jsonArrayComments.length();i++){
+                String commentuser = jsonArrayComments.getJSONObject(i).getString("username");
+                String commenttext = jsonArrayComments.getJSONObject(i).getString("text");
+                String commentcreatedtime = jsonArrayComments.getJSONObject(i).getString("created_time");
+
+                String commentprofilepic_url = jsonArrayComments.getJSONObject(i).getString("profilepic_url");
+                ImageView commentprofilepic = new ImageView(userfeedFragment.getActivity());
+                ImageRequest.makeImageRequest(commentprofilepic_url, userfeedFragment.getActivity(), commentprofilepic, adapter);
+
+                Comments comment = new Comments(commentuser,commenttext,commentcreatedtime,commentprofilepic,commentprofilepic_url);
+                comments.add(comment);
+
+            }
+
+            ArrayList<Likes> likes = new ArrayList<Likes>();
+
+            JSONArray jsonArrayLikes = jsonObject.getJSONArray("likes");
+            for(int i=0; i<jsonArrayLikes.length();i++){
+                String likeusername = jsonArrayLikes.getJSONObject(i).getString("username");
+                String likefullname = jsonArrayLikes.getJSONObject(i).getString("full_name");
+
+                String likeprofilepic_url = jsonArrayLikes.getJSONObject(i).getString("profilepic_url");
+                ImageView likeprofilepic = new ImageView(userfeedFragment.getActivity());
+                ImageRequest.makeImageRequest(likeprofilepic_url, userfeedFragment.getActivity(), likeprofilepic, adapter);
+
+                Likes like = new Likes(likeusername,likefullname,likeprofilepic,likeprofilepic_url);
+                likes.add(like);
+
+            }
+
+
+            //Create the userfeed's item
+            UserFeed userFeed = new UserFeed();
+
+            //Set the photo's post
+            String photo_url = jsonObject.getString("photo_url");
+            userFeed.setPhoto_url(photo_url);
+            ImageView photo = new ImageView(userfeedFragment.getActivity());
+            ImageRequest.makeImageRequest(photo_url, userfeedFragment.getActivity(), photo, adapter);
+            userFeed.setPhoto(photo);
+
+            //Set the post's profilepic
+            String profilepic_url = jsonObject.getString("profilepic_url");
+            userFeed.setProfilepic_url(profilepic_url);
+            ImageView profilepic = new ImageView(userfeedFragment.getActivity());
+            ImageRequest.makeImageRequest(profilepic_url, userfeedFragment.getActivity(), profilepic, adapter);
+            userFeed.setProfilepic(profilepic);
+
+            userFeed.setUsername(jsonObject.getString("username"));
+            userFeed.setCreated_time(jsonObject.getString("created_time"));
+            userFeed.setNumLikes(Integer.parseInt(jsonObject.getString("numlikes")));
+            userFeed.setDescription(jsonObject.getString("description"));
+            userFeed.setNumcomments(Integer.parseInt(jsonObject.getString("numcomments")));
+            userFeed.setLatitude(Double.parseDouble(jsonObject.getString("latitude")));
+            userFeed.setLongitude(Double.parseDouble(jsonObject.getString("longitude")));
+            userFeed.setComments(comments);
+            userFeed.setLikes(likes);
+            userFeed.setTag("In Range"); //set the "In Range" tag on the post
+
+
+            ArrayList<UserFeed> userFeeds = new ArrayList<>();
+            userFeeds = adapter.getAllData(); //get all the items
+            userFeeds.add(0,userFeed); //add this item on top of the listview
+
+            adapter.clear();
+            adapter.addAll(userFeeds); //add the new ArrayList (with the new item on top of the list)
+            adapter.notifyDataSetChanged();
+
+
+
+
+        }catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(userfeedFragment.getActivity(),"In range post couldn't be delivered",Toast.LENGTH_SHORT).show();
+            Log.i("Bluetooth",e.getMessage());
+        }
 
     }
 

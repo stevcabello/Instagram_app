@@ -64,6 +64,7 @@ public class Utils {
         Long current_time = System.currentTimeMillis() / 1000L;
 
         Long difference = (current_time - created_time);
+        if (difference <= 0) return "Now";
 
         if (difference>60) { //more than 60 seconds
             difference = difference / 60;

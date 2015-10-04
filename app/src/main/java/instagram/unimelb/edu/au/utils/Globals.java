@@ -1,6 +1,10 @@
 package instagram.unimelb.edu.au.utils;
 
-import java.util.HashMap;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.widget.ArrayAdapter;
+
+import java.util.ArrayList;
 
 import instagram.unimelb.edu.au.MainActivity;
 
@@ -33,7 +37,12 @@ public class Globals {
 
     public static int numberLoads = 0; // to know when the 5 initial image loading fragment has completed their loads.
 
-    public static HashMap<String,String> mapPairedDevices = new HashMap<>();
+
+    //Used for Bluetooth communication
+    public static ArrayList<BluetoothDevice> bluetoothDevices = new ArrayList<BluetoothDevice>();
+    public static BluetoothAdapter mBluetoothAdapter = null;
+    public static ArrayAdapter<String> mPairedDevicesArrAdapter=null;
+
 
 
 

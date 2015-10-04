@@ -4,6 +4,7 @@ package instagram.unimelb.edu.au.businessobject;
 import android.app.ProgressDialog;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -79,7 +80,12 @@ public class boProfile {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(TAG,  error.getMessage());
+                try{
+                    Log.i(TAG,  error.getMessage());
+                }catch (Exception e){
+                    Toast.makeText(profileFragment.getActivity(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                    pDialog.dismiss();
+                }
 
             }
         }) {
@@ -148,7 +154,13 @@ public class boProfile {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(TAG,error.getMessage());
+                //Log.i(TAG,error.getMessage());
+                try{
+                    Log.i(TAG,  error.getMessage());
+                }catch (Exception e){
+                    Toast.makeText(profileFragment.getActivity(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                    pDialog.dismiss();
+                }
             }
 
 
