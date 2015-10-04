@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 
 
 import instagram.unimelb.edu.au.R;
@@ -35,8 +36,8 @@ public class FilterActivity extends AppCompatActivity {
     Bitmap origBitmap;
     Bitmap from_filter;
 
-    private int mImageWidth;
-    private int mImageHeight;
+    private int brightnessProgress;
+    private int contrastProgress;
 
     private Canvas canvas;
 
@@ -48,7 +49,6 @@ public class FilterActivity extends AppCompatActivity {
 
     public FilterActivity() {
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +67,55 @@ public class FilterActivity extends AppCompatActivity {
         bmOptions.inSampleSize = 4; //reduce size of image
 
         imgView = (ImageView) findViewById(R.id.filter_view);
+
+        // Define seekbars.
+        SeekBar brightness = (SeekBar) findViewById(R.id.brightness_slider);
+        brightness.setMax(25);
+        SeekBar contrast = (SeekBar) findViewById(R.id.contrast_slider);
+        contrast.setMax(25);
+
+        // Define buttons.
         Button btnOriginal = (Button) findViewById(R.id.filt_button_original);
-        Button btnInverseFilter = (Button) findViewById(R.id.filt_button_invert);
+        Button btnFilterInvert = (Button) findViewById(R.id.filt_button_invert);
+        Button btnFilter2 = (Button) findViewById(R.id.filt_button_2);
+        Button btnFilter3 = (Button) findViewById(R.id.filt_button_3);
+
+
+        brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                brightnessProgress = progress*10;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        contrast.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                contrastProgress = progress*10;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         btnOriginal.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +124,7 @@ public class FilterActivity extends AppCompatActivity {
             }
         });
 
-        btnInverseFilter.setOnClickListener(new View.OnClickListener() {
+        btnFilterInvert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 filterName = "invert";
@@ -85,12 +132,25 @@ public class FilterActivity extends AppCompatActivity {
             }
         });
 
+        btnFilter2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterName = "test2";
+                selectFilterMatrix(v);
+            }
+        });
 
-        //bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+        btnFilter3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterName = "test3";
+                selectFilterMatrix(v);
+            }
+        });
+
         bitmap = BitmapFactory.decodeFile(imagePath,bmOptions);
 
         bitmap = RotateBitmap(bitmap,90);
-        //bitmap = Bitmap.createScaledBitmap(bitmap,parent.getWidth(),parent.getHeight(),true);
         origBitmap = bitmap;
 
         imgView.setImageBitmap(bitmap);
@@ -120,9 +180,35 @@ public class FilterActivity extends AppCompatActivity {
         switch(filterName) {
             case("invert"): {
                 float[] filterMatrixArray =
-                                { -1, 0, 0, 0, 255,
+                             { -1, 0, 0, 0, 255,
                                 0, -1, 0, 0, 255,
                                 0, 0, -1, 0, 255,
+                                0, 0, 0, 1, 0 };
+
+                ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
+
+                applyFilter(filterMatrix);
+                break;
+            }
+
+            case("test2"): {
+                float[] filterMatrixArray =
+                        { 1.438f, -0.062f, -0.062f, 0, 0,
+                                -0.122f, 1.378f, -0.122f, 0, 0,
+                                -0.016f, -0.016f, 1.483f, 0, 0,
+                                0, 0, 0, 1, 0 };
+
+                ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
+
+                applyFilter(filterMatrix);
+                break;
+            }
+
+            case("test3"): {
+                float[] filterMatrixArray =
+                        { 0.393f,0.349f,0.272f, 0, 0,
+                                0.769f, 0.686f, 0.534f, 0, 0,
+                                0.189f, 0.168f, 0.131f, 0, 0,
                                 0, 0, 0, 1, 0 };
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
@@ -163,3 +249,4 @@ public class FilterActivity extends AppCompatActivity {
     }
 
 }
+

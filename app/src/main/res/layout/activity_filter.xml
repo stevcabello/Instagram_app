@@ -15,7 +15,23 @@
         android:id="@+id/filter_view"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.93" />
+        android:layout_weight="1" />
+
+    <SeekBar
+        android:id="@+id/brightness_slider"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <SeekBar
+        android:id="@+id/contrast_slider"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#000">
 
     <Button
         android:id="@+id/filt_button_original"
@@ -31,5 +47,20 @@
         android:layout_height="wrap_content"
         android:text="@string/apply_filter_invert"
         android:onClick="selectFilterMatrix"/>
+
+    <Button
+        android:id="@+id/filt_button_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/apply_filter_2"
+        android:onClick="selectFilterMatrix"/>
+
+    <Button
+        android:id="@+id/filt_button_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/apply_filter_3"
+        android:onClick="selectFilterMatrix"/>
+    </LinearLayout>
 
 </LinearLayout>
