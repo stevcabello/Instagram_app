@@ -27,5 +27,10 @@
     </item>
 
 
+    <item android:id="@+id/action_next"
+        android:title=""
+        app:showAsAction="always|collapseActionView"
+        android:actionLayout="@layout/actionbar_next">
+    </item>
 
 </menu>

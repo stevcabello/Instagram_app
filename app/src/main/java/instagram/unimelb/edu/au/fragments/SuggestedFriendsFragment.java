@@ -3,10 +3,12 @@ package instagram.unimelb.edu.au.fragments;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -14,8 +16,8 @@ import java.util.ArrayList;
 import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.adapters.SuggestedFriendsAdapter;
 import instagram.unimelb.edu.au.businessobject.boDiscover;
-import instagram.unimelb.edu.au.businessobject.boFollowing;
 import instagram.unimelb.edu.au.models.SuggestedFriends;
+import instagram.unimelb.edu.au.utils.Globals;
 
 
 /**
@@ -89,18 +91,18 @@ public class SuggestedFriendsFragment extends Fragment {
 
 
         // Inflate the layout for this
-        rootView = inflater.inflate(R.layout.fragment_following_activity_feed,container,false);
+        rootView = inflater.inflate(R.layout.fragment_suggested_friends,container,false);
 
         suggestedFriendsFragment = this;
 
-        listView = (ListView)rootView.findViewById(R.id.lv_followeractivityfeed);
+        listView = (ListView)rootView.findViewById(R.id.lv_suggestedFriends);
         gridAdapter = new SuggestedFriendsAdapter(this.getActivity(),R.layout.item_suggested_friends,new ArrayList<SuggestedFriends>());
         listView.setAdapter(gridAdapter);
 
         objDiscover = new boDiscover();
-        ////objDiscover.getProfileMedia(followingActivityFragment, mParam1, mParam2, gridAdapter);
+        objDiscover.getSuggestedFriendsMedia(suggestedFriendsFragment, mParam1, mParam2, gridAdapter);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_suggested_friends, container, false);
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -113,12 +115,12 @@ public class SuggestedFriendsFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+        //try {
+        //    mListener = (OnFragmentInteractionListener) activity;
+        //} catch (ClassCastException e) {
+        //    throw new ClassCastException(activity.toString()
+        //            + " must implement OnFragmentInteractionListener");
+        //}
     }
 
     @Override
@@ -140,6 +142,37 @@ public class SuggestedFriendsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    public void addSuggestedFriends(ArrayList<SuggestedFriends> suggestedFriends) {
+
+        Log.i("addSuggestedFriends","Fragment");
+        Log.i("Size Suggested Friends",String.valueOf(suggestedFriends.size()));
+        gridAdapter.addAll(suggestedFriends);
+
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            int myLastVisiblePos = 0;
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
+                    userScrolled = true;
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                int currentFirstVisPos = view.getFirstVisiblePosition();
+
+                //To only send a new request when user has scrolled down until reach the bottom and while the totalitemcount is lesser than the number of posts
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos && Globals.SUGGESTEDFRIENDS_MEDIA_MAX_ID != "-1") {
+                    //Toast.makeText(getActivity(), "reach bottom", Toast.LENGTH_SHORT).show();
+                    userScrolled = false;
+                    objDiscover.getSuggestedFriendsMedia(suggestedFriendsFragment, mParam1, mParam2,gridAdapter);
+                }
+                myLastVisiblePos = currentFirstVisPos;
+            }
+        });
     }
 
 }

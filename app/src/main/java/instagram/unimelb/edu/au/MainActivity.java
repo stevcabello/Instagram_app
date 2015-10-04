@@ -34,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     double userLatitude;
     double userLongitude;
     SwitchCompat sortBy = null;
-
+    ImageButton next =null;
     public static final int SORT_BY_DATETIME = 0;
     public static final int SORT_BY_LOCATION = 1;
 
@@ -245,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem item_settings = menu.findItem(R.id.action_settings);
         MenuItem item_bar_search = menu.findItem(R.id.action_bar_search);
         MenuItem item_switch = menu.findItem(R.id.action_switch);
-
+        MenuItem item_next = menu.findItem(R.id.action_next);
         HandleSwitchSortBy(item_switch); //To handle the Switch sort by
 
         Fragment whichFragment = getVisibleFragment();
@@ -262,23 +263,29 @@ public class MainActivity extends AppCompatActivity {
                 item_search.setVisible(false);
                 item_settings.setVisible(false);
                 item_bar_search.setVisible(false);
+                item_next.setVisible(false);
+
             }else if (shareVisible.equals(DiscoverFragment.class.toString())){
                 item_settings.setVisible(false);
                 item_switch.setVisible(false);
                 item_bar_search.setVisible(false);
+                item_next.setVisible(false);
             }else if (shareVisible.equals(PhotoFragment.class.toString()) || shareVisible.equals(ActivityFeedFragment.class.toString())){
                 item_search.setVisible(false);
                 item_settings.setVisible(false);
                 item_switch.setVisible(false);
                 item_bar_search.setVisible(false);
+                item_next.setVisible(true);
             } else if (shareVisible.equals(ProfileFragment.class.toString())){
                 item_search.setVisible(false);
                 item_switch.setVisible(false);
                 item_bar_search.setVisible(false);
+                item_next.setVisible(false);
             } else { //SearchFragment
                 item_search.setVisible(false);
                 item_switch.setVisible(false);
                 item_settings.setVisible(false);
+                item_next.setVisible(false);
             }
 
             Log.i(TAG, "In fragment: " + shareVisible);
@@ -344,6 +351,15 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.replace(R.id.fly_discover_fragment, sf);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
+        }
+        else if (id == R.id.action_next) {
+            //Call to filter activity
+            if(!Globals.GALLERY_SELECTEDPATH.equals("")) {
+                Intent intent = new Intent(MainActivity.this, FilterActivity.class);
+                Log.i(TAG, Globals.GALLERY_SELECTEDPATH);
+                intent.putExtra("photo", Globals.GALLERY_SELECTEDPATH);
+                MainActivity.this.startActivity(intent);
+            }
         }
 
         else if (id == R.id.action_bar_search) {

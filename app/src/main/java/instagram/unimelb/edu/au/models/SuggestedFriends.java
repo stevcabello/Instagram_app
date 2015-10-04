@@ -15,11 +15,15 @@ public class SuggestedFriends {
     private String id;
     private ArrayList<ImageItem> imageItems;
 
-    public SuggestedFriends(String username, String fullname, String id, String urlprofilepic) {
+    public SuggestedFriends(String username, String fullname, String id, ImageView profilepic) {
         this.username = username;
         this.fullname = fullname;
         this.id = id;
-        this.urlprofilepic = urlprofilepic;
+        this.profilepic = profilepic;
+    }
+
+    public SuggestedFriends(String id) {
+        this.id = id;
     }
 
     public ImageView getProfilepic() {

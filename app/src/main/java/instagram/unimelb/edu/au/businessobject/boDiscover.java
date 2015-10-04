@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import instagram.unimelb.edu.au.adapters.DiscoverAdapter;
 import instagram.unimelb.edu.au.adapters.FollowingActivityFeedAdapter;
 import instagram.unimelb.edu.au.adapters.SubSuggestedFriendsAdapter;
+import instagram.unimelb.edu.au.adapters.SuggestedFriendsAdapter;
 import instagram.unimelb.edu.au.fragments.DiscoverFragment;
 import instagram.unimelb.edu.au.fragments.FollowingActivityFeedFragment;
 import instagram.unimelb.edu.au.fragments.SuggestedFriendsFragment;
@@ -35,7 +37,7 @@ public class boDiscover {
             .getSimpleName();
     private String tag_json_obj = "jobj_req";
     ProgressDialog pDialog;
-
+    private ArrayList<SuggestedFriends> friendsFriends = new ArrayList<>();
 
     public void getDiscoverMedia(final DiscoverFragment discoverFragment, String accesstoken, String clientid, final DiscoverAdapter adapter) {
 
@@ -104,7 +106,7 @@ public class boDiscover {
 
     }
 
-    public void getSuggestedFriendsMedia(final SuggestedFriendsFragment suggestedFriendsFragment, final String accesstoken, String clientid, final SubSuggestedFriendsAdapter adapter) {
+    public void getSuggestedFriendsMedia(final SuggestedFriendsFragment suggestedFriendsFragment, final String accesstoken, String clientid, final SuggestedFriendsAdapter adapter) {
 
         Globals.numberLoads++;
 
@@ -115,9 +117,10 @@ public class boDiscover {
 
         final ArrayList<SuggestedFriends> friends = new ArrayList<>();
 
+
         // https://api.instagram.com/v1/users/{user-id}/media/recent/?access_token=ACCESS-TOKEN
         ///v1/users/2108719533/followed-by?access_token=
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, Globals.API_URL + "/users/" + clientid + "/media/recent"
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, Globals.API_URL + "/users/" + clientid + "/followed-by"
                 + "/?access_token=" + accesstoken, null,
 
                 new Response.Listener<JSONObject>() {
@@ -130,31 +133,27 @@ public class boDiscover {
 
                             for(int i=0; i<array.length(); i++)
                             {
-
-                                String username = array.getJSONObject(i).getString("username");
-                                String fullname = array.getJSONObject(i).getString("full_name");
                                 String id = array.getJSONObject(i).getString("id");
-                                String profile_picture = array.getJSONObject(i).getString("profile_picture");
-                                friends.add(new SuggestedFriends(username, fullname, id, profile_picture ));
-
-
+                                friends.add(new SuggestedFriends(id));
                             }
-                            try {
 
-                                String next_max_id = pagination.getString("next_max_id");
-                                Log.i(TAG, next_max_id );
-                                Globals.FRIENDS_MEDIA_MAX_ID = next_max_id;
-                            }catch (Exception e) {
-                                Log.i(TAG,e.getMessage());
-                                Globals.FRIENDS_MEDIA_MAX_ID ="-1";
-                            }
+
+//                            try {
+//
+//                                String next_max_id = pagination.getString("next_max_id");
+//                                Log.i(TAG, next_max_id );
+//                                Globals.FRIENDS_MEDIA_MAX_ID = next_max_id;
+//                            }catch (Exception e) {
+//                                Log.i(TAG,e.getMessage());
+//                                Globals.FRIENDS_MEDIA_MAX_ID ="-1";
+//                            }
 
                             Log.i(TAG, "Getting media inside" + friends.isEmpty());
                             for(final SuggestedFriends f : friends ) {
                                 Log.i(TAG, "Getting media from : "+ f.getUsername());
                             }
-                            //getMedia(friends, accesstoken, suggestedFriendsFragment, adapter);
-                            //  followingActivityFragment.addProfileMedia(followingActivity);
+                             //getMedia(friends, accesstoken, suggestedFriendsFragment, adapter);
+                             //suggestedFriendsFragment.addSuggestedFriends(friendsFriends);
 
                             //  pDialog.dismiss();
 
@@ -164,7 +163,8 @@ public class boDiscover {
                         }
                         //aqui
 
-
+                        friendsFromFriends(suggestedFriendsFragment,friends,accesstoken, adapter);
+                        pDialog.dismiss();
 
                     }
                 }, new Response.ErrorListener() {
@@ -178,16 +178,94 @@ public class boDiscover {
         // Adding request to request queue
         Controller.getInstance(suggestedFriendsFragment.getActivity()).addToRequestQueue(req,
                 tag_json_obj);
-
-
-
-
-
-
     }
 
 
+    public void friendsFromFriends(final SuggestedFriendsFragment suggestedFriendsFragment, final ArrayList<SuggestedFriends> array, String accesstoken, final SuggestedFriendsAdapter adapter){
 
+        //TODO: Change the number of suggested friends.
+        //for(int i=0; i<array.size(); i++)
+        for(int i=0; i<4; i++)
+        {
+            JsonObjectRequest reqFF = new JsonObjectRequest(Request.Method.GET, Globals.API_URL + "/users/" + array.get(i).getId() + "/followed-by"
+                    + "/?access_token=" + accesstoken, null,
+
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, response.toString());
+                            try {
+                                JSONArray arrayFriends = response.getJSONArray("data");
+                                JSONObject pagination = response.getJSONObject("pagination");
+
+                                for(int i=0; i<arrayFriends.length(); i++)
+                                {
+                                    String id = arrayFriends.getJSONObject(i).getString("id");
+
+                                    if(!array.get(i).equals(id)){
+                                        String username = arrayFriends.getJSONObject(i).getString("username");
+                                        String fullname = arrayFriends.getJSONObject(i).getString("full_name");
+                                        String profile_picture = arrayFriends.getJSONObject(i).getString("profile_picture");
+                                        ImageView sugFriendPic = new ImageView(suggestedFriendsFragment.getActivity());
+                                        ImageRequest.makeImageRequest(profile_picture, suggestedFriendsFragment.getActivity(), sugFriendPic, adapter);
+
+                                        friendsFriends.add(new SuggestedFriends(username, fullname, id, sugFriendPic));
+                                    }
+                                }
+
+                                try {
+
+                                    String next_max_id = pagination.getString("next_max_id");
+                                    Log.i(TAG, next_max_id );
+                                    Globals.SUGGESTEDFRIENDS_MEDIA_MAX_ID = next_max_id;
+                                }catch (Exception e) {
+                                    Log.i(TAG,e.getMessage());
+                                    Globals.SUGGESTEDFRIENDS_MEDIA_MAX_ID ="-1";
+                                }
+
+                                Log.i(TAG, "Getting media inside" + friendsFriends.isEmpty());
+                                for(final SuggestedFriends f : friendsFriends ) {
+                                    Log.i(TAG, "Getting media from : "+ f.getUsername());
+                                }
+                                //getMedia(friends, accesstoken, suggestedFriendsFragment, adapter);
+                                //  followingActivityFragment.addProfileMedia(followingActivity);
+                                suggestedFriendsFragment.addSuggestedFriends(friendsFriends);
+                                //  pDialog.dismiss();
+
+                            } catch (Exception e) {
+                                Log.i(TAG, e.getMessage());
+                                e.printStackTrace();
+                            }
+                            //aqui
+
+
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    String json = null;
+                    NetworkResponse response = error.networkResponse;
+                    if(response != null && response.data != null){
+                        switch(response.statusCode){
+                            case 400:
+                                json = new String(response.data);
+                                Log.e(TAG,json);
+                                break;
+                        }
+                    }
+                }
+            });
+
+            Log.i(TAG, "Getting media outside" + friendsFriends.isEmpty());
+
+            // Adding request to request queue
+            Controller.getInstance(suggestedFriendsFragment.getActivity()).addToRequestQueue(reqFF,
+                    tag_json_obj);
+
+        }
+
+    }
 
 
 }

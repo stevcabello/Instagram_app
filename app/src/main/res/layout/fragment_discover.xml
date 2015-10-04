@@ -34,7 +34,7 @@
                     android:layout_alignLeft="@+id/tv_peopletofollow_title"
                     android:layout_alignStart="@+id/tv_peopletofollow_title" />
 
-                <ImageView
+                <ImageButton
                     android:layout_width="100dp"
                     android:layout_height="20dp"
                     android:src="@drawable/btn_people_to_follow_example"
@@ -42,6 +42,9 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true" />
+
+
+
             </RelativeLayout>
 
             <GridView

@@ -30,6 +30,7 @@ public class Globals {
     public static String FULL_NAME = "";
     public static String PROFILE_PIC_URL = "";
     public static int GALLERY_MEDIA_MAX_ID = 0;
+    public static String GALLERY_SELECTEDPATH = "";
     public static MainActivity mainActivity=null;
 
     public static Boolean switchState = false; //to save the state of the userfeed sort by switch

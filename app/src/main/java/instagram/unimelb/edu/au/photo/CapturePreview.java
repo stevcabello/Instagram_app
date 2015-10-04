@@ -34,6 +34,7 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     public static final int MEDIA_TYPE_IMAGE = 1;
     private static final String TAG = "CapturePreview";
     public boolean active = false;
+    public boolean flashOn;
     Camera.Size mPreviewSize;
     List<Camera.Size> mSupportedPreviewSizes;
     boolean mSurfaceCreated = false;
@@ -50,7 +51,7 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     public CapturePreview(Context context) {
         super(context);
 
-        holder = getHolder();         // Allows access to the SurfaceHolder for this SurfaceViiew.
+        holder = getHolder();         // Allows access to the SurfaceHolder for this SurfaceView.
         holder.addCallback(this);     // Adds a Callback interface (itself) to the holder object.
         // holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);  Apparantly this is automatic..
         this.setWillNotDraw(false);
@@ -80,6 +81,7 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
             mCamera = Camera.open(); // attempt to get a Camera instance
             mCamera.setPreviewDisplay(holder);
             mCamera.setDisplayOrientation(90);
+            updateFlash(flashOn);
         }
         catch (Exception e) {
             // Camera is not available (in use or does not exist)
@@ -110,7 +112,7 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     protected void onDraw(Canvas canvas)
     {
         width = canvas.getWidth();
-        height = canvas.getWidth();
+        height = canvas.getHeight();
         vmid1 = width/3;
         vmid2 = 2*width/3;
         hmid1 = height/3;
@@ -131,7 +133,7 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     public void takePicture(){
         // This is creating a new PictureCallback to pass to the takePicture method.
 
-
+        Log.i(TAG, "Flash status: " + mCamera.getParameters().getFlashMode());
         Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
             @Override
             public void onPictureTaken(byte[] data, Camera camera) {
@@ -190,7 +192,33 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
 
     }
 
+    public void setFlashOn(Boolean flashState) {
+        flashOn = flashState;
+    }
 
+    // This is called whenever toggle changes.
+    public void FlashToggle() {
+        Log.i(TAG, "Before flash toggle launched: "+ flashOn);
+        flashOn = !flashOn;
+
+        Log.i(TAG, "After flash toggle launched: "+ flashOn);
+
+        updateFlash(flashOn);
+    }
+
+    public void updateFlash(Boolean flash) {
+
+        Camera.Parameters param = mCamera.getParameters();
+
+        if (flashOn) {
+            param.setFlashMode("on");
+            mCamera.setParameters(param);
+            Log.i(TAG, "Get flash mode (expect on): " + mCamera.getParameters().getFlashMode());}
+        else {
+            param.setFlashMode("off");
+            mCamera.setParameters(param);
+            Log.i(TAG, "Get flash mode (expect off): " + mCamera.getParameters().getFlashMode()); }
+    }
 
     public void CameraActivityPause() {
         //surfaceDestroyed(holder);
