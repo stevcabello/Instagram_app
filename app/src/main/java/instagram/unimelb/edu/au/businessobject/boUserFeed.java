@@ -78,6 +78,7 @@ public class boUserFeed {
                                 Log.i(TAG,array.getJSONObject(i).getString("id"));
 
                                 String profilepic_url = array.getJSONObject(i).getJSONObject("user").getString("profile_picture");
+                                mUserfeed.setProfilepic_url(profilepic_url);
                                 ImageView profilepic = new ImageView(userFeedFragment.getActivity());
                                 ImageRequest.makeImageRequest(profilepic_url, userFeedFragment.getActivity(), profilepic, adapter);
                                 mUserfeed.setProfilepic(profilepic);
@@ -108,12 +109,12 @@ public class boUserFeed {
                                 mUserfeed.setNumcomments(array.getJSONObject(i).getJSONObject("comments").getInt("count"));
 
                                 try {
-                                    mUserfeed.setLatitud((double) array.getJSONObject(i).getJSONObject("location").getLong("latitude"));
+                                    mUserfeed.setLatitude((double) array.getJSONObject(i).getJSONObject("location").getLong("latitude"));
                                     mUserfeed.setLongitude((double) array.getJSONObject(i).getJSONObject("location").getLong("longitude"));
                                     mUserfeed.setLocation(array.getJSONObject(i).getJSONObject("location").getString("name"));
                                 }catch (JSONException e){
                                     Log.i(TAG,e.getMessage());
-//                                    mUserfeed.setLatitud(0.00);
+//                                    mUserfeed.setLatitude(0.00);
 //                                    mUserfeed.setLongitude(0.00);
 //                                    mUserfeed.setLocation("");
                                 }
@@ -133,7 +134,7 @@ public class boUserFeed {
                                     ImageView commentprofilepic = new ImageView(userFeedFragment.getActivity());
                                     ImageRequest.makeImageRequest(commentprofilepic_url, userFeedFragment.getActivity(), commentprofilepic, adapter);
 
-                                    Comments comment = new Comments(commentuser,commenttext,commentcreatedtime,commentprofilepic);
+                                    Comments comment = new Comments(commentuser,commenttext,commentcreatedtime,commentprofilepic,commentprofilepic_url);
                                     comments.add(comment);
                                 }
 
@@ -152,7 +153,7 @@ public class boUserFeed {
                                     ImageView likeprofilepic = new ImageView(userFeedFragment.getActivity());
                                     ImageRequest.makeImageRequest(likeprofilepic_url, userFeedFragment.getActivity(),likeprofilepic,adapter);
 
-                                    Likes like = new Likes(likeusername,likeuserfullname,likeprofilepic);
+                                    Likes like = new Likes(likeusername,likeuserfullname,likeprofilepic,likeprofilepic_url);
                                     likes.add(like);
                                 }
 

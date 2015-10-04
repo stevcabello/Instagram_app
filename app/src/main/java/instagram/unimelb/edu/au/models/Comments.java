@@ -10,14 +10,16 @@ public class Comments {
     private String text;
     private String created_time;
     private ImageView profilepic;
+    private String profilepic_url;
 
 
 
-    public Comments(String username, String text, String created_time, ImageView profilepic) {
+    public Comments(String username, String text, String created_time, ImageView profilepic, String profilepic_url) {
         this.username = username;
         this.text = text;
         this.created_time = created_time;
         this.profilepic = profilepic;
+        this.profilepic_url = profilepic_url;
     }
 
 
@@ -52,6 +54,14 @@ public class Comments {
 
     public void setCreated_time(String created_time) {
         this.created_time = created_time;
+    }
+
+    public String getProfilepic_url() {
+        return profilepic_url;
+    }
+
+    public void setProfilepic_url(String profilepic_url) {
+        this.profilepic_url = profilepic_url;
     }
 
 

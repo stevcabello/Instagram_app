@@ -174,7 +174,7 @@ public class CommentsFragment extends Fragment {
         Long current_time = System.currentTimeMillis() / 1000L;
 
         //Create a comment
-        Comments comment = new Comments(Globals.USERNAME,commentText,String.valueOf(current_time),profilepic);
+        Comments comment = new Comments(Globals.USERNAME,commentText,String.valueOf(current_time),profilepic, Globals.PROFILE_PIC_URL);
 
         //Update the comments's listview
         adapter.addAll(comment);

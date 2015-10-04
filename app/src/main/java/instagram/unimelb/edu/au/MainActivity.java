@@ -1,11 +1,9 @@
 package instagram.unimelb.edu.au;
 
 
-//import android.support.v7.app.ActionBar;
-//import android.app.Activity;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,6 +16,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -35,7 +34,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,7 +54,7 @@ import instagram.unimelb.edu.au.networking.Connection;
 import instagram.unimelb.edu.au.utils.Globals;
 import instagram.unimelb.edu.au.utils.Utils;
 
-//import android.app.Activity;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -64,12 +62,10 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     TabLayout tabLayout;
     CustomViewPager viewPager;
-    Switch switchAB;
     Fragment visibleFragment;
     String accessToken;
     String clientId;
-    String TAG = MainActivity.class.getSimpleName();
-    ProgressDialog dialog;
+    public static String TAG = MainActivity.class.getSimpleName();
     double userLatitude;
     double userLongitude;
     SwitchCompat sortBy = null;
@@ -78,11 +74,20 @@ public class MainActivity extends AppCompatActivity {
     public static final int SORT_BY_LOCATION = 1;
 
 
+    final int handlerState = 0;
+    private StringBuilder strBuilder = new StringBuilder();
+    public static Handler bluetoothIn;
+    public static Handler bluetoothErr;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Gets the BluetoothAdapter
+        Globals.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         Globals.mainActivity = this;
 
@@ -181,14 +186,58 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(4).setCustomView(tab_profile);
 
 
-        //Register the bluetooth receiver
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+        //To start listening oncreate when Bluetooth is already ON
+        if (Globals.mBluetoothAdapter.isEnabled())
+            new Bluetooth.AcceptThread().start();
+
+        //Filter for the BroadcastReceiver
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
+
+
+        bluetoothIn = new Handler() {
+            public void handleMessage(android.os.Message msg) {
+                if (msg.what == handlerState) {
+                    String readMessage = (String) msg.obj.toString();
+                    //Toast.makeText(MainActivity.this,readMessage,Toast.LENGTH_SHORT).show();
+                    strBuilder.append(readMessage); //Keep adding the incoming strings
+
+                    int len = readMessage.length();
+                    String endStr = readMessage.substring(len-2,len); //get the last two char from the string
+
+                    if (endStr.equals("]}")) {//If the messag is complete
+                        UserFeedFragment.setBluetoothUserFeedItem(strBuilder.toString());
+                        //hToast.makeText(MainActivity.this,strBuilder.toString(),Toast.LENGTH_SHORT).show();
+                        int strBuilderLen = strBuilder.length();
+                        strBuilder.delete(0, strBuilderLen);
+                    }
+
+                }
+            }
+        };
+
+
+        //To show an error Toast in case connection with remote device wasn't possible
+        bluetoothErr = new Handler() {
+            public void handleMessage(android.os.Message msg) {
+                if (msg.what == handlerState) {
+                    String readMessage = (String) msg.obj;
+
+                    Toast.makeText(MainActivity.this,readMessage,Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+
+
+
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
@@ -319,6 +368,7 @@ public class MainActivity extends AppCompatActivity {
             });
 
         }
+
 
         Log.i(TAG, item.toString());
 
@@ -570,17 +620,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // Create a BroadcastReceiver for ACTION_FOUND
+    // Create a BroadcastReceiver for Bluetooth connection
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             // When discovery finds a device
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                Log.i("Bluetooth","Found a device nearby");
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                // Add the name and address to an array adapter to show in a ListView
-                //mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
-                Globals.mapPairedDevices.put(device.getAddress(), device.getName());
+
+                if (device.getName() != null) {
+                    Log.i("Bluetooth","Device Discovered is: " + device.getName());
+                    //To avoid getting repeated devices in the list
+                    if (Bluetooth.isDeviceNew(Globals.bluetoothDevices,device.getName())){
+                        Globals.mPairedDevicesArrAdapter.add(device.getName() + "\n" + device.getAddress());
+                        Globals.bluetoothDevices.add(device);
+                    }
+
+                }
+            } else if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                switch (state) {
+                    case BluetoothAdapter.STATE_OFF:
+                        //When bluetooth is disabled the Connection Thread is disabled
+                        Log.i("Bluetooth", "Bluetooth OFF");
+                        Bluetooth.ConnectedThread.cancel();
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_OFF:
+                        break;
+                    case BluetoothAdapter.STATE_ON:
+                        Log.i("Bluetooth", "Bluetooth ON");
+                        //When Bluetooth is enabled the listening server is started
+                        new Bluetooth.AcceptThread().start();
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_ON:
+                        break;
+                }
+
             }
         }
     };
@@ -589,10 +667,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
-        Bluetooth.cancel(); //close the socket
-        Bluetooth.ConnectedThread.cancel();
+        Log.i("Bluetooth", "ondestroy");
+        unregisterReceiver(mReceiver); //unreqister the broadcastreceiver
+        Bluetooth.ConnectedThread.cancel();     //close the connection socket
+
     }
+
 
 
 }

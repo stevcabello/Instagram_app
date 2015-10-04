@@ -11,20 +11,23 @@ public class UserFeed {
 
     private String media_id;
     private String photo_url;
+    private String profilepic_url;
     private ImageView profilepic;
     private String username;
     private ImageView photo;
+    private String tag=""; //for the "In Range" tag
     private String type; //image or video
     private String created_time;
     private Integer numlikes;
     private String description;
     private Integer numcomments;
-    private Double latitud=0.0;
+    private Double latitude =0.0;
     private Double longitude=0.0;
     private String location="";
     private float distanceToAuthUser;
     private ArrayList<Comments> comments;
     private ArrayList<Likes> likes;
+
 
 
     public String getMedia_id() {
@@ -33,6 +36,15 @@ public class UserFeed {
 
     public void setMedia_id(String media_id) {
         this.media_id = media_id;
+    }
+
+
+    public String getProfilepic_url() {
+        return profilepic_url;
+    }
+
+    public void setProfilepic_url(String profilepic_url) {
+        this.profilepic_url = profilepic_url;
     }
 
     public String getPhoto_url() {
@@ -132,12 +144,12 @@ public class UserFeed {
         this.longitude = longitude;
     }
 
-    public Double getLatitud() {
-        return latitud;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public void setLatitud(Double latitud) {
-        this.latitud = latitud;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
     public String getLocation() {
@@ -154,6 +166,15 @@ public class UserFeed {
 
     public void setDistanceToAuthUser(float distanceToAuthUser) {
         this.distanceToAuthUser = distanceToAuthUser;
+    }
+
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
 

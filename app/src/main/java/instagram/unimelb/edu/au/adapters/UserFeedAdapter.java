@@ -26,6 +26,7 @@ import instagram.unimelb.edu.au.fragments.LikesFragment;
 import instagram.unimelb.edu.au.models.Comments;
 import instagram.unimelb.edu.au.models.Likes;
 import instagram.unimelb.edu.au.models.UserFeed;
+import instagram.unimelb.edu.au.networking.Bluetooth;
 import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Globals;
 import instagram.unimelb.edu.au.utils.Utils;
@@ -68,6 +69,18 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
     }
 
 
+    //Get all the items from the userfeed adapter
+    public ArrayList<UserFeed> getAllData() {
+
+        ArrayList<UserFeed> userFeeds = new ArrayList<>();
+
+        for(int i=0; i< getCount(); i++) {
+            userFeeds.add(getItem(i));
+        }
+
+        return userFeeds;
+
+    }
 
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
@@ -89,6 +102,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
             holder.ibtn_addcomment = (ImageButton) row.findViewById(R.id.ibtn_comment);
             holder.tbtn_likes = (ToggleButton) row.findViewById(R.id.ibtn_like);
             holder.viewPager=(ViewPager)row.findViewById(R.id.pager);
+            holder.tag = (TextView)row.findViewById(R.id.tv_tag); //For adding the "In Range" tag
 
             row.setTag(holder);
         } else {
@@ -98,22 +112,6 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
         final UserFeed item = (UserFeed) data.get(position);
 
         holder.comments.removeAllViews(); //to remove the previous TextViews added into the Linear Layout
-
-        //Now it is used in ListViewItemViewPagerAdapter
-
-//        Bitmap photo_bitmap = Utils.getBitmap(item.getPhoto());
-//        holder.uploadedphoto.setImageBitmap(photo_bitmap);
-//        holder.uploadedphoto.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //Toast.makeText(context,"post by " + username,Toast.LENGTH_SHORT).show();
-//                ImageView imageView = new ImageView(context);
-//                ImageRequest.makeImageRequest(item.getPhoto_url(), context, imageView, UserFeedAdapter.this);
-//                //ImageRequest.makeImageRequest(item.getPhoto_url(),context,imageView,);
-//                item.setPhoto(imageView);
-//            }
-//        });
-
 
         Integer numlikes = item.getNumLikes();
         String format_numlikes = "<font color='#0000A0'><b>"+ String.valueOf(numlikes) +" likes</b></font>";
@@ -200,7 +198,10 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
             public void onPageSelected(int position) {
                 if (position == 0 || position == 2) {
                     goBack();
-                   // Bluetooth.displayPromptForSendingPhoto(Globals.mainActivity); // Ask to user permission to share the post
+                    //TODO: Cannot be implmenented due to issue with bluetooth connectivity.
+                   Bluetooth.displayPromptForSendingPhoto(Globals.mainActivity, item); // Ask to user permission to share the post
+
+
                 }
             }
 
@@ -208,6 +209,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
 
 
 
+        holder.tag.setText(item.getTag());
 
         return row;
     }
@@ -278,6 +280,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
         ImageButton ibtn_addcomment;
         ToggleButton tbtn_likes;
         ViewPager viewPager;
+        TextView tag;
     }
 
 
@@ -288,7 +291,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
     public void openComments(UserFeed item) {
 
         //The first row of comments will be the comment or description posted by the user
-        Comments comments = new Comments(item.getUsername(),item.getDescription(),item.getCreated_time(),item.getProfilepic());
+        Comments comments = new Comments(item.getUsername(),item.getDescription(),item.getCreated_time(),item.getProfilepic(), item.getProfilepic_url());
 
         //Show the comments received for the user's post
         FragmentTransaction fragmentTransaction = Globals.mainActivity.getSupportFragmentManager().beginTransaction();
@@ -342,7 +345,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
             ImageView profile_pic =new ImageView(context);
             ImageRequest.makeImageRequest(Globals.PROFILE_PIC_URL, context, profile_pic, UserFeedAdapter.this);
 
-            Likes like = new Likes(Globals.USERNAME,Globals.FULL_NAME,profile_pic);
+            Likes like = new Likes(Globals.USERNAME,Globals.FULL_NAME,profile_pic,Globals.PROFILE_PIC_URL);
 
             like_position = arrLikes.size();
             arrLikes.add(like_position,like);
