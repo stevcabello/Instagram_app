@@ -133,6 +133,8 @@ public class ProfileFragment extends Fragment {
 
     }
 
+
+
     public void addProfileData(Profile userprofile) {
 
         profilepic = (ImageView)header_profile.findViewById(R.id.iv_profilepic);

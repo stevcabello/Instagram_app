@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -28,7 +29,6 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,10 +45,13 @@ import instagram.unimelb.edu.au.adapters.CustomViewPager;
 import instagram.unimelb.edu.au.adapters.MainFragmentPagerAdapter;
 import instagram.unimelb.edu.au.businessobject.boUserFeed;
 import instagram.unimelb.edu.au.fragments.ActivityFeedFragment;
+import instagram.unimelb.edu.au.fragments.CommentsFragment;
 import instagram.unimelb.edu.au.fragments.DiscoverFragment;
+import instagram.unimelb.edu.au.fragments.LikesFragment;
 import instagram.unimelb.edu.au.fragments.PhotoFragment;
 import instagram.unimelb.edu.au.fragments.ProfileFragment;
 import instagram.unimelb.edu.au.fragments.SearchFragment;
+import instagram.unimelb.edu.au.fragments.SuggestedFriendsFragment;
 import instagram.unimelb.edu.au.fragments.UserFeedFragment;
 import instagram.unimelb.edu.au.networking.Bluetooth;
 import instagram.unimelb.edu.au.networking.Connection;
@@ -112,9 +115,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Give the TabLayout the ViewPager
-
+        viewPager.setOffscreenPageLimit(1);
         viewPager.setPagingEnabled(false); //to avoid the swip gesture between tabs
-        viewPager.setOffscreenPageLimit(20);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -247,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem item_bar_search = menu.findItem(R.id.action_bar_search);
         MenuItem item_switch = menu.findItem(R.id.action_switch);
         MenuItem item_next = menu.findItem(R.id.action_next);
+        item_next.setIcon(R.drawable.next_arrow);
         HandleSwitchSortBy(item_switch); //To handle the Switch sort by
 
         Fragment whichFragment = getVisibleFragment();
@@ -264,28 +267,32 @@ public class MainActivity extends AppCompatActivity {
                 item_settings.setVisible(false);
                 item_bar_search.setVisible(false);
                 item_next.setVisible(false);
-
             }else if (shareVisible.equals(DiscoverFragment.class.toString())){
                 item_settings.setVisible(false);
                 item_switch.setVisible(false);
                 item_bar_search.setVisible(false);
                 item_next.setVisible(false);
-            }else if (shareVisible.equals(PhotoFragment.class.toString()) || shareVisible.equals(ActivityFeedFragment.class.toString())){
+            }else if (shareVisible.equals(PhotoFragment.class.toString())) {
                 item_search.setVisible(false);
                 item_settings.setVisible(false);
                 item_switch.setVisible(false);
                 item_bar_search.setVisible(false);
-                item_next.setVisible(true);
-            } else if (shareVisible.equals(ProfileFragment.class.toString())){
+            } else if (shareVisible.equals(ProfileFragment.class.toString())) {
                 item_search.setVisible(false);
                 item_switch.setVisible(false);
                 item_bar_search.setVisible(false);
                 item_next.setVisible(false);
-            } else { //SearchFragment
+            }else if (shareVisible.equals(SearchFragment.class.toString())){
                 item_search.setVisible(false);
                 item_switch.setVisible(false);
                 item_settings.setVisible(false);
                 item_next.setVisible(false);
+            } else { //SuggestedFriendsFragment or ActivityFeedFragment
+                item_search.setVisible(false);
+                item_switch.setVisible(false);
+                item_settings.setVisible(false);
+                item_next.setVisible(false);
+                item_bar_search.setVisible(false);
             }
 
             Log.i(TAG, "In fragment: " + shareVisible);
@@ -294,6 +301,7 @@ public class MainActivity extends AppCompatActivity {
             item_settings.setVisible(false);
             item_switch.setVisible(false);
             item_bar_search.setVisible(false);
+            item_next.setVisible(false);
         }
 
 
@@ -310,49 +318,24 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        Fragment whichFragment = getVisibleFragment();
-        String shareVisible = whichFragment.getClass().toString();
+
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             logOut();
-        }
-
-        else if (id == android.R.id.home) { //To handle the behaviour of the back button depending on the visibleFragment
-            String title = getSupportActionBar().getTitle().toString();
-            if (title.equals("COMMENTS") || title.equals("LIKES") ) {
-                onBackPressed();
-                tabLayout.setVisibility(View.VISIBLE);
-                getSupportActionBar().setTitle(null);
-                getSupportActionBar().setLogo(R.drawable.instagram_text_logo);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false); //hide the back button
-            }else if (shareVisible.equals(SearchFragment.class.toString())) {
-                onBackPressed();
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                setVisibleFragment(new DiscoverFragment());
-            }else if (title.equals("FILTER")){ //this will be useful in case we work with the SimpleFilterFragment
-                onBackPressed();
-            }
-
-            else
-                viewPager.setCurrentItem(0);
-
-        }
-
-        else if (id == R.id.action_switch) {
+        }else if (id == android.R.id.home) { //To handle the behaviour of the back button depending on the visibleFragment
+            onBackPressed(); //has the same behaviour as the back button has
+        } else if (id == R.id.action_switch) {
            // The behaviour of the Switch is handled in OnCreateOptionsMenu
-        }
-
-
-        else if (id == R.id.action_search) {
+        } else if (id == R.id.action_search) {
             //Opens searchFragment
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             SearchFragment sf= SearchFragment.newInstance(accessToken, clientId);
             fragmentTransaction.replace(R.id.fly_discover_fragment, sf);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
-        }
-        else if (id == R.id.action_next) {
+        } else if (id == R.id.action_next) {
+            Toast.makeText(this,"aqioeijworew",Toast.LENGTH_SHORT).show();
             //Call to filter activity
             if(!Globals.GALLERY_SELECTEDPATH.equals("")) {
                 Intent intent = new Intent(MainActivity.this, FilterActivity.class);
@@ -360,9 +343,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("photo", Globals.GALLERY_SELECTEDPATH);
                 MainActivity.this.startActivity(intent);
             }
-        }
-
-        else if (id == R.id.action_bar_search) {
+        } else if (id == R.id.action_bar_search) {
             SearchView sv = new SearchView(getSupportActionBar().getThemedContext());
             sv.setQueryHint("Search for users");
             MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
@@ -389,6 +370,56 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, item.toString());
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    /**
+     * Override of the onBackPressed() method to manage the behaviour of the back button depending on
+     * which fragment the user is.
+     */
+    @Override
+    public void onBackPressed(){
+
+        Fragment whichFragment = getVisibleFragment();
+        String shareVisible = whichFragment.getClass().toString();
+
+        //If user is in commentfragment o likefragment, then the previous page must be userfeedfragment
+        if (shareVisible.equals(CommentsFragment.class.toString()) || shareVisible.equals(LikesFragment.class.toString()))  {
+
+            FragmentManager fm = getSupportFragmentManager();
+            Fragment f = fm.findFragmentById(R.id.fly_userfeed_fragment);
+            fm.popBackStack();
+
+            tabLayout.setVisibility(View.VISIBLE);
+            getSupportActionBar().setTitle(null);
+            getSupportActionBar().setLogo(R.drawable.instagram_text_logo);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false); //hide the back button
+
+            setVisibleFragment(new UserFeedFragment());
+
+            //If user is in searchfragment o suggestedfriendsfragment, then the previous page must be discoverfragment
+        }else if (shareVisible.equals(SearchFragment.class.toString()) || shareVisible.equals(SuggestedFriendsFragment.class.toString())) {
+
+            FragmentManager fm = getSupportFragmentManager();
+            Fragment f = fm.findFragmentById(R.id.fly_discover_fragment);
+            fm.popBackStack();
+
+            getSupportActionBar().setTitle("Search");
+            getSupportActionBar().setLogo(null);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+            setVisibleFragment(new DiscoverFragment());
+
+            //If user is in the main fragments but photofragment, then the app just go back without logging out.
+        }else if (shareVisible.equals(UserFeedFragment.class.toString()) || shareVisible.equals(DiscoverFragment.class.toString()) ||
+                shareVisible.equals(ActivityFeedFragment.class.toString()) || shareVisible.equals(ProfileFragment.class.toString())) {
+
+            moveTaskToBack(true);
+        }
+
+        else //In the case of photofragment, when the user goes back, we send him to the userfeed page
+            viewPager.setCurrentItem(0);
+
     }
 
     public void logOut() {
@@ -434,7 +465,7 @@ public class MainActivity extends AppCompatActivity {
 
         item_switch.setActionView(R.layout.actionbar_switchsortby);
 
-        sortBy = (SwitchCompat)item_switch.getActionView().findViewById(R.id.switchSortBy);
+        sortBy = (SwitchCompat) item_switch.getActionView().findViewById(R.id.switchSortBy);
 
         sortBy.setChecked(Globals.switchState);
 
@@ -464,15 +495,6 @@ public class MainActivity extends AppCompatActivity {
         this.visibleFragment = fragment;
     }
 
-    //To avoid to the user's log out when exit from main activity
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            Log.d(this.getClass().getName(), "back button pressed");
-            moveTaskToBack(true);
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 
 
     /**

@@ -2,7 +2,6 @@ package instagram.unimelb.edu.au.fragments;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,11 +18,9 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
 import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.adapters.PhotoFromGalleryAdapter;
-import instagram.unimelb.edu.au.models.ImageItem;
 import instagram.unimelb.edu.au.utils.Globals;
 
 /**
@@ -93,7 +90,10 @@ public class PhotoFromGalleryFragment extends Fragment {
         }
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_photo_from_gallery,container,false);
+        setHasOptionsMenu(true); //To enable the next button
         galleryFragment = this;
+
+
         gridView = (GridView)rootView.findViewById(R.id.gv_gallery);
         gridAdapter = new PhotoFromGalleryAdapter(this.getActivity(),R.layout.item_photo_gallery,new ArrayList<ArrayList<String>>());
         gridView.setAdapter(gridAdapter);

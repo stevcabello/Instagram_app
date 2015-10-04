@@ -16,13 +16,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import instagram.unimelb.edu.au.adapters.DiscoverAdapter;
-import instagram.unimelb.edu.au.adapters.FollowingActivityFeedAdapter;
-import instagram.unimelb.edu.au.adapters.SubSuggestedFriendsAdapter;
 import instagram.unimelb.edu.au.adapters.SuggestedFriendsAdapter;
 import instagram.unimelb.edu.au.fragments.DiscoverFragment;
-import instagram.unimelb.edu.au.fragments.FollowingActivityFeedFragment;
 import instagram.unimelb.edu.au.fragments.SuggestedFriendsFragment;
-import instagram.unimelb.edu.au.models.FollowingActivityFeed;
 import instagram.unimelb.edu.au.models.ImageItem;
 import instagram.unimelb.edu.au.models.SuggestedFriends;
 import instagram.unimelb.edu.au.networking.Controller;
@@ -41,11 +37,11 @@ public class boDiscover {
 
     public void getDiscoverMedia(final DiscoverFragment discoverFragment, String accesstoken, String clientid, final DiscoverAdapter adapter) {
 
-        Globals.numberLoads++;
+        //Globals.numberLoads++;
 
         pDialog = new ProgressDialog(discoverFragment.getActivity());
         pDialog.setMessage("Loading...");
-        if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
+        //if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
         pDialog.show();
 
         final ArrayList<ImageItem> discoverMedia = new ArrayList<>();
@@ -108,11 +104,11 @@ public class boDiscover {
 
     public void getSuggestedFriendsMedia(final SuggestedFriendsFragment suggestedFriendsFragment, final String accesstoken, String clientid, final SuggestedFriendsAdapter adapter) {
 
-        Globals.numberLoads++;
+        //Globals.numberLoads++;
 
         pDialog = new ProgressDialog(suggestedFriendsFragment.getActivity());
         pDialog.setMessage("Loading...");
-        if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
+        //if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
         pDialog.show();
 
         final ArrayList<SuggestedFriends> friends = new ArrayList<>();
@@ -233,8 +229,9 @@ public class boDiscover {
                                 //  pDialog.dismiss();
 
                             } catch (Exception e) {
-                                Log.i(TAG, e.getMessage());
                                 e.printStackTrace();
+
+
                             }
                             //aqui
 

@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.GridView;
+import android.widget.ImageButton;
 
 import java.util.ArrayList;
 
@@ -48,6 +51,8 @@ public class DiscoverFragment extends Fragment {
     boDiscover objdiscover;
     Globals globals;
     private View rootView = null;
+    private ImageButton ibtn_peopletofollow;
+    private boolean initialLoad =false;
     //ImageView discoverPic;
 
     /**
@@ -86,6 +91,7 @@ public class DiscoverFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
         //To avoid reloading the view everytime user access to discover
         if (rootView != null) {
             return rootView;
@@ -100,18 +106,44 @@ public class DiscoverFragment extends Fragment {
 
         discoverFragment = this;
 
+        ibtn_peopletofollow = (ImageButton)rootView.findViewById(R.id.ibtn_peopletofollow);
+        ibtn_peopletofollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Open the suggested friends fragment
+                FragmentTransaction fragmentTransaction = Globals.mainActivity.getSupportFragmentManager().beginTransaction();
+                SuggestedFriendsFragment sff= SuggestedFriendsFragment.newInstance(mParam1,mParam2);
+                fragmentTransaction.replace(R.id.fly_discover_fragment, sff);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+
+                Globals.mainActivity.setVisibleFragment(sff);
+            }
+        });
+
         gridView = (GridView) rootView.findViewById(R.id.gv_discover);
         gridAdapter = new DiscoverAdapter(this.getActivity(), R.layout.item_discover, new ArrayList<ImageItem>());
         gridView.setAdapter(gridAdapter);
 
         objdiscover = new boDiscover();
-        //objdiscover.getDiscoverData(discoverFragment, mParam1, mParam2);
-        objdiscover.getDiscoverMedia(discoverFragment, mParam1, mParam2, gridAdapter);
+        //objdiscover.getDiscoverMedia(discoverFragment, mParam1, mParam2, gridAdapter);
 
 
         return rootView;
 
 
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && !initialLoad) {
+            objdiscover.getDiscoverMedia(discoverFragment, mParam1, mParam2, gridAdapter);
+            initialLoad = true;
+        }else{
+            Log.i("DiscoverFragment", "not visible");
+
+        }
     }
 
 

@@ -40,7 +40,7 @@ public class YouActivityFeedFragment extends Fragment {
     private YouActivityFeedAdapter listAdapter;
     private ListView listView;
     private Boolean userScrolled = false;
-    private View rootView;
+    private View rootView=null;
 
     /**
      * Use this factory method to create a new instance of
@@ -80,13 +80,14 @@ public class YouActivityFeedFragment extends Fragment {
         if (rootView != null) {
             return rootView;
         }
+
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_you_activity_feed,container,false);
         youActivityFeedFragment=this;
         // Construct the data source
-        // ArrayList<PostItem> arrayOfPostItems = new ArrayList<PostItem>();
+
         // Create the adapter to convert the array to views
-         listAdapter = new YouActivityFeedAdapter(getActivity(), R.layout.item_youactivityfeed , new ArrayList<YouActivityFeed>());
+        listAdapter = new YouActivityFeedAdapter(getActivity(), R.layout.item_youactivityfeed , new ArrayList<YouActivityFeed>());
         // Attach the adapter to a ListView
         listView = (ListView) rootView.findViewById(R.id.lv_youactivityfeed);
         listView.setAdapter(listAdapter);
@@ -97,9 +98,11 @@ public class YouActivityFeedFragment extends Fragment {
         */
         objActivityFeed.getProfileMedia(youActivityFeedFragment, mParam1, mParam2,listAdapter);
 
+
         return rootView;
 
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

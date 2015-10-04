@@ -87,7 +87,14 @@ public class SuggestedFriendsFragment extends Fragment {
             return rootView;
         }
 
+
+        Globals.mainActivity.setVisibleFragment(this);
         setHasOptionsMenu(true); //to enable the settings action button
+
+
+        Globals.mainActivity.getSupportActionBar().setTitle("PEOPLE SUGGESTIONS");
+        Globals.mainActivity.getSupportActionBar().setLogo(null);
+        Globals.mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         // Inflate the layout for this

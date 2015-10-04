@@ -10,7 +10,6 @@ import instagram.unimelb.edu.au.fragments.ActivityFeedFragment;
 import instagram.unimelb.edu.au.fragments.DiscoverFragment;
 import instagram.unimelb.edu.au.fragments.PhotoFragment;
 import instagram.unimelb.edu.au.fragments.ProfileFragment;
-import instagram.unimelb.edu.au.fragments.SuggestedFriendsFragment;
 import instagram.unimelb.edu.au.fragments.UserFeedFragment;
 
 
@@ -38,8 +37,7 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
         if (position==0)
              return UserFeedFragment.newInstance(accesstoken,clientid);
         else if (position==1)
-             //return DiscoverFragment.newInstance(accesstoken, clientid);
-                return SuggestedFriendsFragment.newInstance(accesstoken, clientid);
+             return DiscoverFragment.newInstance(accesstoken, clientid);
         else if (position==2)
             return PhotoFragment.newInstance(accesstoken, clientid);
         else if (position==3)
@@ -47,8 +45,6 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
         else
             return ProfileFragment.newInstance(accesstoken,clientid);
 
-
-       // return PageFragment.newInstance(position + 1);
     }
 
     @Override
