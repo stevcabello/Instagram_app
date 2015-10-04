@@ -74,8 +74,8 @@ public class FilterFragment extends Fragment {
         Globals.mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         imgView = (ImageView) rootView.findViewById(R.id.filterview);
-        btnOriginal = (Button)rootView.findViewById(R.id.btn_original);
-        btnFilter = (Button)rootView.findViewById(R.id.btn_filter);
+        btnOriginal = (Button)rootView.findViewById(R.id.filt_button_original);
+        btnFilter = (Button)rootView.findViewById(R.id.filt_button_invert);
 
         btnOriginal.setOnClickListener(new View.OnClickListener() {
             @Override
