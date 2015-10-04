@@ -1,55 +1,58 @@
 package instagram.unimelb.edu.au;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.BitmapFactory;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.effect.Effect;
-import android.media.effect.EffectContext;
-import android.media.effect.EffectFactory;
-import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
-import android.opengl.GLUtils;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
 
-import instagram.unimelb.edu.au.photo.GLToolbox;
-import instagram.unimelb.edu.au.photo.TextureRenderer;
+import instagram.unimelb.edu.au.R;
+import instagram.unimelb.edu.au.utils.Globals;
 
 /**
  * Created by etimire on 7/09/2015.
  */
-public class FilterActivity extends AppCompatActivity implements GLSurfaceView.Renderer {
-
+public class FilterActivity extends AppCompatActivity {
 
     // Placeholder for camera Bitmap/BitmapDrawable file.
 
+    Bitmap bitmap;
+    Bitmap origBitmap;
     Bitmap from_filter;
-    BitmapDrawable drawable_filter;
 
-    // From the effect site. Hello effect.
-
-    private GLSurfaceView mEffectView;
-    private int[] mTextures = new int[2];
-    private EffectContext mEffectContext;
-    private Effect mEffect;
-    private TextureRenderer mTexRenderer = new TextureRenderer();
     private int mImageWidth;
     private int mImageHeight;
-    private boolean mInitialized = false;
-    int mCurrentEffect;
-    Bitmap bitmap;
+
+    private Canvas canvas;
+
     private Toolbar toolbar;
+
+    private ImageView imgView;
+
+    private String filterName;
+
+    public FilterActivity() {
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
 
@@ -58,18 +61,29 @@ public class FilterActivity extends AppCompatActivity implements GLSurfaceView.R
         getSupportActionBar().setTitle("FILTER");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // back button
 
-        mEffectView = (GLSurfaceView) findViewById(R.id.effectsview);
-        mEffectView.setEGLContextClientVersion(2);
-        mEffectView.setRenderer(this);
-        mEffectView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-        mCurrentEffect = R.id.none;
-
-
-       String imagePath = getIntent().getExtras().getString("photo");
-
+        String imagePath = getIntent().getExtras().getString("photo");
 
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inSampleSize = 2; //reduce size of image
+        bmOptions.inSampleSize = 4; //reduce size of image
+
+        imgView = (ImageView) findViewById(R.id.filter_view);
+        Button btnOriginal = (Button) findViewById(R.id.filt_button_original);
+        Button btnInverseFilter = (Button) findViewById(R.id.filt_button_invert);
+
+        btnOriginal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                originalImage(v);
+            }
+        });
+
+        btnInverseFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterName = "invert";
+                selectFilterMatrix(v);
+            }
+        });
 
 
         //bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
@@ -77,7 +91,9 @@ public class FilterActivity extends AppCompatActivity implements GLSurfaceView.R
 
         bitmap = RotateBitmap(bitmap,90);
         //bitmap = Bitmap.createScaledBitmap(bitmap,parent.getWidth(),parent.getHeight(),true);
+        origBitmap = bitmap;
 
+        imgView.setImageBitmap(bitmap);
 
 
     }
@@ -90,120 +106,47 @@ public class FilterActivity extends AppCompatActivity implements GLSurfaceView.R
     }
 
 
+    public void originalImage(View view) {
 
-//        // This replaces the Image defined in the XML file.
-    //mainImageView = (ImageView) findViewById(R.id.imageView);
-    //mainImageView.setImageDrawable(drawable_camera);
-
-    // This sets up the GLSurfaceView for second filter implementation.
-   // mEffectView = (GLSurfaceView) findViewById(R.id.effectsview);
-
-
-
-
-
-
-    public void applyFilter0(View view) {
-//        mainImageView.setImageDrawable(drawable_camera);
-//
-        setCurrentEffect(R.id.none);
-        mEffectView.requestRender();
-    }
-//
-//    public void applyFilter1(View view) {
-//
-//        from_filter = BitmapFactory.decodeResource(getResources(), R.drawable.smile2);
-//        drawable_filter = new BitmapDrawable(from_filter);
-//        mainImageView.setImageDrawable(drawable_filter);
-//
-//    }
-
-
-    public void applyFilter(View view) {
-        setCurrentEffect(1);
-        mEffectView.requestRender();
+        imgView.setImageBitmap(origBitmap);
     }
 
-    // Other methods related to effect.
-
-    public void setCurrentEffect(int effect) {
-        mCurrentEffect = effect;
+    public void selectFilterMatrix(View view) {
+        selectFilterMatrix(filterName);
     }
 
-    private void loadTextures() {
-        // Generate textures
-        GLES20.glGenTextures(2, mTextures, 0);
+    public void selectFilterMatrix(String filterName) {
 
-        // Load input bitmap
-        //Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
-          //      R.drawable.smile2);
+        switch(filterName) {
+            case("invert"): {
+                float[] filterMatrixArray =
+                                { -1, 0, 0, 0, 255,
+                                0, -1, 0, 0, 255,
+                                0, 0, -1, 0, 255,
+                                0, 0, 0, 1, 0 };
 
+                ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
 
-        mImageWidth = bitmap.getWidth();
-        mImageHeight = bitmap.getHeight();
-        mTexRenderer.updateTextureSize(mImageWidth, mImageHeight);
-
-        // Upload to texture
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[0]);
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
-
-        // Set texture parameters
-        GLToolbox.initTexParams();
-    }
-
-    private void initEffect() {
-        EffectFactory effectFactory = mEffectContext.getFactory();
-        if (mEffect != null) {
-            mEffect.release();
+                applyFilter(filterMatrix);
+                break;
+            }
         }
 
-        mEffect = effectFactory.createEffect(EffectFactory.EFFECT_LOMOISH);
     }
 
-    private void applyEffect() {
-        mEffect.apply(mTextures[0], mImageWidth, mImageHeight, mTextures[1]);
-    }
+    public void applyFilter(ColorMatrix filterMatrix) {
 
-    private void renderResult() {
-        if (mCurrentEffect != R.id.none) {
-            // if no effect is chosen, just render the original bitmap
-            mTexRenderer.renderTexture(mTextures[1]);
-        }
-        else {
-            //saveFrame=true;
-            // render the result of applyEffect()
-            mTexRenderer.renderTexture(mTextures[0]);
-        }
-    }
+        bitmap = Bitmap.createBitmap(origBitmap.getWidth(),
+                origBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(bitmap);
 
-    @Override
-    public void onDrawFrame(GL10 gl) {
-        if (!mInitialized) {
-            //Only need to do this once
-            mEffectContext = EffectContext.createWithCurrentGlContext();
-            mTexRenderer.init();
-            loadTextures();
-            mInitialized = true;
-        }
-        if (mCurrentEffect != R.id.none) {
-            //if an effect is chosen initialize it and apply it to the texture
-            initEffect();
-            applyEffect();
-        }
-        renderResult();
-    }
+        Paint paint = new Paint();
+        paint.setColorFilter(new ColorMatrixColorFilter(
+                filterMatrix));
+        canvas.drawBitmap(origBitmap, 0, 0, paint);
 
-    @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        imgView.setImageBitmap(bitmap);
     }
-
-    @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-        if (mTexRenderer != null) {
-            mTexRenderer.updateViewSize(width, height);
-        }
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

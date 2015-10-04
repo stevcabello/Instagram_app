@@ -162,9 +162,6 @@ public class PhotoFromCameraFragment extends Fragment {
 //            }
 //        });
 
-
-
-
         // Add a listener to the Capture button
         Button captureButton = (Button) rootView.findViewById(R.id.capture_button);
         captureButton.setOnClickListener(
@@ -206,8 +203,8 @@ public class PhotoFromCameraFragment extends Fragment {
             preview.addView(cPreview);
             }
 
-            RelativeLayout switchcamera = (RelativeLayout) rootView.findViewById(R.id.switch_control);
-            switchcamera.bringToFront();
+        RelativeLayout switchcamera = (RelativeLayout) rootView.findViewById(R.id.switch_control);
+        switchcamera.bringToFront();
 
         RelativeLayout flashoptions = (RelativeLayout) rootView.findViewById(R.id.flash_op);
         flashoptions.bringToFront();

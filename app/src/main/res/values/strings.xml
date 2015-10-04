@@ -16,7 +16,7 @@
     <string name="filter_text_display">Apply a filter</string>
     <string name="opencamera">Camera</string>
     <string name="applyfilter0">Original</string>
-    <string name="applyfilter">Apply filter</string>
+    <string name="apply_filter_invert">Invert</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

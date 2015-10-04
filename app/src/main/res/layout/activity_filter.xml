@@ -11,26 +11,25 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/holo_blue_bright"/>
 
-
-    <android.opengl.GLSurfaceView
-        android:id="@+id/effectsview"
+    <ImageView
+        android:id="@+id/filter_view"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="0.93" />
 
     <Button
-        android:id="@+id/filtbutton0"
+        android:id="@+id/filt_button_original"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/applyfilter0"
-        android:onClick="applyFilter0"/>
+        android:onClick="originalImage"/>
 
 
     <Button
-        android:id="@+id/filtbutton3"
+        android:id="@+id/filt_button_invert"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/applyfilter"
-        android:onClick="applyFilter"/>
+        android:text="@string/apply_filter_invert"
+        android:onClick="selectFilterMatrix"/>
 
 </LinearLayout>

@@ -13,23 +13,23 @@
         android:layout_marginTop="20dp"
         android:text="@string/filter_text_display"/>
 
-    <android.opengl.GLSurfaceView
-        android:id="@+id/effectsview"
+    <ImageView
+        android:id="@+id/filterview"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="0.93" />
 
     <Button
-        android:id="@+id/btn_original"
+        android:id="@+id/btn_original_frag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/applyfilter0"/>
 
 
     <Button
-        android:id="@+id/btn_filter"
+        android:id="@+id/btn_filter_invert_frag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/applyfilter"/>
+        android:text="@string/apply_filter_invert"/>
 
 </LinearLayout>

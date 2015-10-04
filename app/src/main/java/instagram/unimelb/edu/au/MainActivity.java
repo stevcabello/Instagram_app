@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
                 onBackPressed();
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 setVisibleFragment(new DiscoverFragment());
-            }else if (title.equals("FILTER")){ //this will be useful in case we work with the FilterFragment
+            }else if (title.equals("FILTER")){ //this will be useful in case we work with the SimpleFilterFragment
                 onBackPressed();
             }
 
