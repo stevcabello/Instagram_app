@@ -70,9 +70,11 @@ public class FilterActivity extends AppCompatActivity {
 
         // Define seekbars.
         SeekBar brightness = (SeekBar) findViewById(R.id.brightness_slider);
-        brightness.setMax(25);
+        brightness.setMax(26);
+        brightness.setProgress(13);
         SeekBar contrast = (SeekBar) findViewById(R.id.contrast_slider);
-        contrast.setMax(25);
+        contrast.setMax(26);
+        contrast.setProgress(13);
 
         // Define buttons.
         Button btnOriginal = (Button) findViewById(R.id.filt_button_original);
@@ -86,16 +88,15 @@ public class FilterActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 brightnessProgress = progress*10;
+                selectFilterMatrix("brightness");
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
 
@@ -104,16 +105,15 @@ public class FilterActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 contrastProgress = progress*10;
+                selectFilterMatrix("contrast");
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
 
@@ -179,11 +179,11 @@ public class FilterActivity extends AppCompatActivity {
 
         switch(filterName) {
             case("invert"): {
-                float[] filterMatrixArray =
-                             { -1, 0, 0, 0, 255,
-                                0, -1, 0, 0, 255,
-                                0, 0, -1, 0, 255,
-                                0, 0, 0, 1, 0 };
+                float[] filterMatrixArray = {
+                        -1, 0, 0, 0, 255,
+                        0, -1, 0, 0, 255,
+                        0, 0, -1, 0, 255,
+                        0, 0, 0, 1, 0 };
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
 
@@ -192,11 +192,11 @@ public class FilterActivity extends AppCompatActivity {
             }
 
             case("test2"): {
-                float[] filterMatrixArray =
-                        { 1.438f, -0.062f, -0.062f, 0, 0,
-                                -0.122f, 1.378f, -0.122f, 0, 0,
-                                -0.016f, -0.016f, 1.483f, 0, 0,
-                                0, 0, 0, 1, 0 };
+                float[] filterMatrixArray = {
+                        1.438f, -0.062f, -0.062f, 0, 0,
+                        -0.122f, 1.378f, -0.122f, 0, 0,
+                        -0.016f, -0.016f, 1.483f, 0, 0,
+                        0, 0, 0, 1, 0 };
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
 
@@ -205,11 +205,37 @@ public class FilterActivity extends AppCompatActivity {
             }
 
             case("test3"): {
-                float[] filterMatrixArray =
-                        { 0.393f,0.349f,0.272f, 0, 0,
-                                0.769f, 0.686f, 0.534f, 0, 0,
-                                0.189f, 0.168f, 0.131f, 0, 0,
+                float[] filterMatrixArray = {
+                        0, 1, 0, 0, 0,
+                        0, 0, 1, 0, 0,
+                        1, 0, 0, 0, 0,
+                        0, 0, 0, 1, 0 };
+
+                ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
+
+                applyFilter(filterMatrix);
+                break;
+            }
+
+            case("brightness"): {
+                float[] filterMatrixArray = {
+                                1, 0, 0, 0, brightnessProgress-125,
+                                0, 1, 0, 0, brightnessProgress-125,
+                                0, 0, 1, 0, brightnessProgress-125,
                                 0, 0, 0, 1, 0 };
+
+                ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
+
+                applyFilter(filterMatrix);
+                break;
+            }
+
+            case("contrast"): {
+                float[] filterMatrixArray = {
+                        1, 0, 0, 0, contrastProgress-125,
+                        0, 1, 0, 0, contrastProgress-125,
+                        0, 0, 1, 0, contrastProgress-125,
+                        0, 0, 0, 1, 0 };
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
 
