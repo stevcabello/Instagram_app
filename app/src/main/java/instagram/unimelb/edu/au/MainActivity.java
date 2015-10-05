@@ -339,7 +339,10 @@ public class MainActivity extends AppCompatActivity {
             if(!Globals.GALLERY_SELECTEDPATH.equals("")) {
                 Intent intent = new Intent(MainActivity.this, FilterActivity.class);
                 Log.i(TAG, Globals.GALLERY_SELECTEDPATH);
-                intent.putExtra("gallery", Globals.GALLERY_SELECTEDPATH);
+                Bundle extras = new Bundle();
+                extras.putString("photo",Globals.GALLERY_SELECTEDPATH);
+                extras.putString("origin", "gallery");
+                intent.putExtras(extras);
                 MainActivity.this.startActivity(intent);
             }
         } else if (id == R.id.action_bar_search) {
