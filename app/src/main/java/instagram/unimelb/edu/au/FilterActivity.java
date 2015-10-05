@@ -34,12 +34,15 @@ public class FilterActivity extends AppCompatActivity {
 
     Bitmap bitmap;
     Bitmap origBitmap;
-    Bitmap from_filter;
+    Bitmap fromFilter;
+
     private static final String TAG = "FilterActivity";
+
     private int brightnessProgress;
     private int contrastProgress;
-    private float contrastProgressF;
+    private float contrastLevel;
     private float contrastTranslate;
+    private boolean brightcontrast;
 
     private Canvas canvas;
 
@@ -225,7 +228,12 @@ public class FilterActivity extends AppCompatActivity {
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
 
+                bitmap = origBitmap.copy(origBitmap.getConfig(),true);
+
+                brightcontrast = false;
+
                 applyFilter(filterMatrix);
+
                 break;
             }
 
@@ -238,7 +246,12 @@ public class FilterActivity extends AppCompatActivity {
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
 
+                bitmap = origBitmap.copy(origBitmap.getConfig(),true);
+
+                brightcontrast = false;
+
                 applyFilter(filterMatrix);
+
                 break;
             }
 
@@ -251,7 +264,12 @@ public class FilterActivity extends AppCompatActivity {
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
 
+                bitmap = origBitmap.copy(origBitmap.getConfig(),true);
+
+                brightcontrast = false;
+
                 applyFilter(filterMatrix);
+
                 break;
             }
 
@@ -264,22 +282,25 @@ public class FilterActivity extends AppCompatActivity {
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
 
+                brightcontrast = true;
+
                 applyFilter(filterMatrix);
                 break;
             }
 
             case("contrast"): {
-                //contrastProgressF = contrastProgress*contrastProgress/13.0f/13.0f;
-                contrastProgressF = contrastProgress/13.0f;
-                contrastTranslate = (-0.5f*contrastProgressF + 0.5f) * 255f;
+                contrastLevel = contrastProgress/26.0f+0.5f;
+                contrastTranslate = (-0.5f*contrastLevel + 0.5f) * 255f;
 
                 float[] filterMatrixArray = {
-                        contrastProgress, 0, 0, 0, contrastTranslate,
-                        0, contrastProgress, 0, 0, contrastTranslate,
-                        0, 0, contrastProgress, 0, contrastTranslate,
+                        contrastLevel, 0, 0, 0, contrastTranslate,
+                        0, contrastLevel, 0, 0, contrastTranslate,
+                        0, 0, contrastLevel, 0, contrastTranslate,
                         0, 0, 0, 1, 0 };
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
+
+                brightcontrast = true;
 
                 applyFilter(filterMatrix);
                 break;
@@ -290,17 +311,22 @@ public class FilterActivity extends AppCompatActivity {
 
     public void applyFilter(ColorMatrix filterMatrix) {
 
-        bitmap = Bitmap.createBitmap(origBitmap.getWidth(),
+        fromFilter = Bitmap.createBitmap(origBitmap.getWidth(),
                 origBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(bitmap);
+        canvas = new Canvas(fromFilter);
 
         Paint paint = new Paint();
         paint.setColorFilter(new ColorMatrixColorFilter(
                 filterMatrix));
-        canvas.drawBitmap(origBitmap, 0, 0, paint);
+        canvas.drawBitmap(bitmap, 0, 0, paint);
 
-        imgView.setImageBitmap(bitmap);
-
+        if (brightcontrast) {
+            imgView.setImageBitmap(fromFilter);
+        }
+        else {
+            bitmap = fromFilter.copy(fromFilter.getConfig(), true);
+            imgView.setImageBitmap(bitmap);
+        }
     }
 
     @Override

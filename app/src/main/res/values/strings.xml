@@ -11,16 +11,11 @@
 
     <string name="title_activity_filter_activity">Filter activity</string>
     <string name="title_activity_camera_activity">Camera activity</string>
-    <string name="main_text_display">Press button to enter camera</string>
-    <string name="camera_text_display">Take a picture</string>
-    <string name="filter_text_display">Apply a filter</string>
-    <string name="opencamera">Camera</string>
     <string name="applyfilter0">Original</string>
     <string name="apply_filter_invert">Invert</string>
-    <string name="apply_filter_2">Filter2</string>
-    <string name="apply_filter_3">Filter3</string>
+    <string name="apply_filter_2">Galapagos</string>
+    <string name="apply_filter_3">Lord Howe</string>
 
-<!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="activityfeed_title"><b>ACTIVITY</b></string>
     <string name="comments_title"><b>COMMENTS</b></string>

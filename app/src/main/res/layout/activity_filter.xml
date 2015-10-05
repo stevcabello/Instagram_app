@@ -30,15 +30,44 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <SeekBar
-        android:id="@+id/brightness_slider"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#000">
 
-    <SeekBar
-        android:id="@+id/contrast_slider"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        <ImageView
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:src="@drawable/bright"
+            android:layout_weight="1"
+            />
+
+        <SeekBar
+            android:id="@+id/brightness_slider"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="25"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#000">
+
+        <ImageView
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:src="@drawable/contrast" />
+
+        <SeekBar
+            android:id="@+id/contrast_slider"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
