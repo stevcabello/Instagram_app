@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, Globals.GALLERY_SELECTEDPATH);
                 Bundle extras = new Bundle();
                 extras.putString("photo",Globals.GALLERY_SELECTEDPATH);
-                extras.putString("origin", "gallery");
+                extras.putBoolean("gallery", true);
                 intent.putExtras(extras);
                 MainActivity.this.startActivity(intent);
             }
