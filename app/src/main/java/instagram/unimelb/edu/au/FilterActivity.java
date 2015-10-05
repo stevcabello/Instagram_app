@@ -34,13 +34,10 @@ public class FilterActivity extends AppCompatActivity {
 
     Bitmap bitmap;
     Bitmap origBitmap;
-<<<<<<< HEAD
     Bitmap fromFilter;
 
-=======
-    Bitmap from_filter;
     private static final String TAG = "FilterActivity";
->>>>>>> 8d62ef9f5d706e82c952b56788af89cd64d65c5a
+
     private int brightnessProgress;
     private int contrastProgress;
     private float contrastLevel;
@@ -323,7 +320,6 @@ public class FilterActivity extends AppCompatActivity {
                 filterMatrix));
         canvas.drawBitmap(bitmap, 0, 0, paint);
 
-<<<<<<< HEAD
         if (brightcontrast) {
             imgView.setImageBitmap(fromFilter);
         }
@@ -331,10 +327,6 @@ public class FilterActivity extends AppCompatActivity {
             bitmap = fromFilter.copy(fromFilter.getConfig(), true);
             imgView.setImageBitmap(bitmap);
         }
-=======
-        imgView.setImageBitmap(bitmap);
-
->>>>>>> 8d62ef9f5d706e82c952b56788af89cd64d65c5a
     }
 
     @Override
