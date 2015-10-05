@@ -79,7 +79,9 @@ public class UserFeedFragment extends Fragment {
     private static double userLatitude;
     private static  double userLongitude;
 
-    private ArrayList<UserFeed> byLocationUserFeed = new ArrayList<>();
+    private static ArrayList<UserFeed> byLocationUserFeed = new ArrayList<>();
+    private static ArrayList<UserFeed> currentUserfeeddata = new ArrayList<>();
+
 
     /**
      * Use this factory method to create a new instance of
@@ -155,6 +157,7 @@ public class UserFeedFragment extends Fragment {
                 adapter.clear();
                 Log.i("uriimages", "e3");
                 byLocationUserFeed.clear();
+                currentUserfeeddata.clear();
                 objuserfeed.getUserFeedData(userfeedFragment, mParam1, adapter, sortType);
 
             }
@@ -178,6 +181,9 @@ public class UserFeedFragment extends Fragment {
             Log.i("uriimages", "change in sorttype");
             changeSortType = true;
             adapter.clear();
+
+            byLocationUserFeed.clear();
+            currentUserfeeddata.clear();
 
             //just to avoid any bug with the onscrolllistener method
             userScrolled = false;
@@ -206,9 +212,17 @@ public class UserFeedFragment extends Fragment {
             Log.i("uriimages", "e5");
             byLocationUserFeed.addAll(userfeeddata); //we store all the by location userfeed data
             newUserfeeddata = sortByLocation(byLocationUserFeed,userLatitude,userLongitude);
+
+            //To notify to the user in case new closer post have been added on top of the listview while scrolling down on the list
+            if (currentUserfeeddata.size() > 0 ) {
+                if (closerLocationschanged(currentUserfeeddata, newUserfeeddata))
+                    Toast.makeText(getActivity(), "Closer posts have been added on top of the list", Toast.LENGTH_SHORT).show();
+            }
+            currentUserfeeddata.clear();
+            currentUserfeeddata.addAll(newUserfeeddata);
+
             adapter.clear();
             adapter.addAll(newUserfeeddata);
-            //listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             if (changeSortType) listView.setAdapter(adapter);
             Globals.switchState = true;
@@ -260,7 +274,45 @@ public class UserFeedFragment extends Fragment {
 
     }
 
+    /**
+     * Looks for changed on top ten post in the userfeed location-based
+     * @param currentArr
+     * @param newArr
+     * @return true in case of change on top ten post, false otherwise.
+     */
+    public boolean closerLocationschanged(ArrayList<UserFeed> currentArr, ArrayList<UserFeed> newArr){
 
+        int totalCurrent = currentArr.size();
+        int totalNew = newArr.size();
+        int total = 0;
+
+        //Just to avoid any problem with index out of range
+        if (totalCurrent>10 && totalNew>10)
+            total = 10;
+        else{
+            if (totalCurrent > totalNew) total = totalNew;
+            else total = totalCurrent;
+        }
+
+        for(int i=0; i<total; i++){
+            float distanceC = currentArr.get(i).getDistanceToAuthUser();
+            float distanceN = newArr.get(i).getDistanceToAuthUser();
+
+            if (distanceC != distanceN) return true;
+        }
+
+        return false;
+    }
+
+
+
+    /**
+     * Sorts the userfeed's list by closer locations to authenticated user.
+     * @param arrUserFeed
+     * @param userLat
+     * @param userLon
+     * @return the sort by location arraylist of userfeed
+     */
     public ArrayList<UserFeed> sortByLocation(ArrayList<UserFeed> arrUserFeed, final double userLat, final double userLon) {
 
         float distance;
