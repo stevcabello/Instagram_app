@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
                     strBuilder.append(readMessage); //Keep adding the incoming strings
 
 
-                    try {
+                    try { //try to know the end of the json message by creating a json object; if it fails then the message is still incomplete
                         JSONObject jsonObject = new JSONObject(strBuilder.toString());
                         UserFeedFragment.setBluetoothUserFeedItem(strBuilder.toString());
                         strBuilder.delete(0,strBuilder.length());
