@@ -12,7 +12,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -192,7 +191,6 @@ public class FilterActivity extends AppCompatActivity {
     private void SaveFilteredImage(Bitmap image){
         File pictureFile;
         String type = "image/*";
-       /* Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_MOUNTED);*/
         pictureFile = CapturePreview.getOutputMediaFile(CapturePreview.MEDIA_TYPE_IMAGE);
         if (pictureFile == null) {
             Log.d(TAG,"Error creating media file, check storage permissions: ");// e.getMessage());
