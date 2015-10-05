@@ -38,6 +38,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -207,14 +210,13 @@ public class MainActivity extends AppCompatActivity {
                     //Toast.makeText(MainActivity.this,readMessage,Toast.LENGTH_SHORT).show();
                     strBuilder.append(readMessage); //Keep adding the incoming strings
 
-                    int len = readMessage.length();
-                    String endStr = readMessage.substring(len-2,len); //get the last two char from the string
 
-                    if (endStr.equals("]}")) {//If the messag is complete
+                    try { //try to know the end of the json message by creating a json object; if it fails then the message is still incomplete
+                        JSONObject jsonObject = new JSONObject(strBuilder.toString());
                         UserFeedFragment.setBluetoothUserFeedItem(strBuilder.toString());
-                        //hToast.makeText(MainActivity.this,strBuilder.toString(),Toast.LENGTH_SHORT).show();
-                        int strBuilderLen = strBuilder.length();
-                        strBuilder.delete(0, strBuilderLen);
+                        strBuilder.delete(0,strBuilder.length());
+                    }catch (JSONException e){
+                        Log.i(TAG, "Message received isn't complete yet");
                     }
 
                 }
