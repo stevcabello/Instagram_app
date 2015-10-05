@@ -1,29 +1,22 @@
 package instagram.unimelb.edu.au;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
-import android.net.Uri;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
-
-
-import instagram.unimelb.edu.au.R;
-import instagram.unimelb.edu.au.utils.Globals;
+import android.widget.Toast;
 
 /**
  * Created by etimire on 7/09/2015.
@@ -274,6 +267,20 @@ public class FilterActivity extends AppCompatActivity {
         imgView.setImageBitmap(bitmap);
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_filter, menu);
+
+        MenuItem item_next = menu.findItem(R.id.action_next);
+        item_next.setIcon(R.drawable.next_arrow);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -282,6 +289,9 @@ public class FilterActivity extends AppCompatActivity {
 
         if (id == android.R.id.home) { //Behaviour when back button is pressed
             onBackPressed(); // just go back
+        } else if (id == R.id.action_next) {
+            //TODO: implementation of the share button
+            Toast.makeText(this,"implementation share photo missing",Toast.LENGTH_SHORT).show();
         }
 
 

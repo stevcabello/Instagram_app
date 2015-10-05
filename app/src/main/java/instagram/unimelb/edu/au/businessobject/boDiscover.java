@@ -14,10 +14,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import instagram.unimelb.edu.au.adapters.DiscoverAdapter;
-import instagram.unimelb.edu.au.adapters.SubSuggestedFriendsAdapter;
 import instagram.unimelb.edu.au.adapters.SuggestedFriendsAdapter;
 import instagram.unimelb.edu.au.fragments.DiscoverFragment;
 import instagram.unimelb.edu.au.fragments.SuggestedFriendsFragment;
@@ -26,7 +24,6 @@ import instagram.unimelb.edu.au.models.SuggestedFriends;
 import instagram.unimelb.edu.au.networking.Controller;
 import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Globals;
-import instagram.unimelb.edu.au.utils.Utils;
 
 /**
  * Created by Carina on 19/09/15.
