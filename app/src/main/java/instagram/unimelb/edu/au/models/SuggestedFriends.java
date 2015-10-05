@@ -22,6 +22,7 @@ public class SuggestedFriends {
         this.profilepic = profilepic;
     }
 
+
     public SuggestedFriends(String id) {
         this.id = id;
     }

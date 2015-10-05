@@ -151,10 +151,9 @@ public class SuggestedFriendsFragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
-    public void addSuggestedFriends(ArrayList<SuggestedFriends> suggestedFriends) {
+    public void addSuggestedFriends(SuggestedFriends suggestedFriends) {
 
         Log.i("addSuggestedFriends","Fragment");
-        Log.i("Size Suggested Friends",String.valueOf(suggestedFriends.size()));
         gridAdapter.addAll(suggestedFriends);
 
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -181,5 +180,35 @@ public class SuggestedFriendsFragment extends Fragment {
             }
         });
     }
+
+    public void addProfileMedia(SuggestedFriends follower) {
+
+        gridAdapter.addAll(follower);
+
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            int myLastVisiblePos = 0;
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
+                    userScrolled = true;
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                int currentFirstVisPos = view.getFirstVisiblePosition();
+
+                //To only send a new request when user has scrolled down until reach the bottom and while the totalitemcount is lesser than the number of posts
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos && Globals.FOLLOWERACTIVITY_MEDIA_MAX_ID != "-1") {
+                    //Toast.makeText(getActivity(), "reach bottom", Toast.LENGTH_SHORT).show();
+                    userScrolled = false;
+                    objDiscover.getSuggestedFriendsMedia(suggestedFriendsFragment, mParam1, mParam2, gridAdapter);
+                }
+                myLastVisiblePos = currentFirstVisPos;
+            }
+        });
+    }
+
 
 }

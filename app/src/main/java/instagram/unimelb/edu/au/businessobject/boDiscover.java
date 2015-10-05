@@ -14,8 +14,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import instagram.unimelb.edu.au.adapters.DiscoverAdapter;
+import instagram.unimelb.edu.au.adapters.SubSuggestedFriendsAdapter;
 import instagram.unimelb.edu.au.adapters.SuggestedFriendsAdapter;
 import instagram.unimelb.edu.au.fragments.DiscoverFragment;
 import instagram.unimelb.edu.au.fragments.SuggestedFriendsFragment;
@@ -24,6 +26,7 @@ import instagram.unimelb.edu.au.models.SuggestedFriends;
 import instagram.unimelb.edu.au.networking.Controller;
 import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Globals;
+import instagram.unimelb.edu.au.utils.Utils;
 
 /**
  * Created by Carina on 19/09/15.
@@ -34,6 +37,7 @@ public class boDiscover {
     private String tag_json_obj = "jobj_req";
     ProgressDialog pDialog;
     private ArrayList<SuggestedFriends> friendsFriends = new ArrayList<>();
+    private ArrayList<SuggestedFriends> friendsFriendsFinal = new ArrayList<>();
 
     public void getDiscoverMedia(final DiscoverFragment discoverFragment, String accesstoken, String clientid, final DiscoverAdapter adapter) {
 
@@ -102,7 +106,7 @@ public class boDiscover {
 
     }
 
-    public void getSuggestedFriendsMedia(final SuggestedFriendsFragment suggestedFriendsFragment, final String accesstoken, String clientid, final SuggestedFriendsAdapter adapter) {
+    public void getSuggestedFriendsMedia(final SuggestedFriendsFragment suggestedFriendsFragment, final String accesstoken, final String clientid, final SuggestedFriendsAdapter adapter) {
 
         //Globals.numberLoads++;
 
@@ -159,7 +163,7 @@ public class boDiscover {
                         }
                         //aqui
 
-                        friendsFromFriends(suggestedFriendsFragment,friends,accesstoken, adapter);
+                        friendsFromFriends(suggestedFriendsFragment,friends,accesstoken, adapter,clientid);
                         pDialog.dismiss();
 
                     }
@@ -177,12 +181,11 @@ public class boDiscover {
     }
 
 
-    public void friendsFromFriends(final SuggestedFriendsFragment suggestedFriendsFragment, final ArrayList<SuggestedFriends> array, String accesstoken, final SuggestedFriendsAdapter adapter){
+    public void friendsFromFriends(final SuggestedFriendsFragment suggestedFriendsFragment, final ArrayList<SuggestedFriends> array, final String accesstoken, final SuggestedFriendsAdapter adapter,  final String clientid){
 
         //TODO: Change the number of suggested friends.
         //for(int i=0; i<array.size(); i++)
-        for(int i=0; i<4; i++)
-        {
+        for(int i=0; i<4; i++) {
             JsonObjectRequest reqFF = new JsonObjectRequest(Request.Method.GET, Globals.API_URL + "/users/" + array.get(i).getId() + "/followed-by"
                     + "/?access_token=" + accesstoken, null,
 
@@ -225,7 +228,19 @@ public class boDiscover {
                                 }
                                 //getMedia(friends, accesstoken, suggestedFriendsFragment, adapter);
                                 //  followingActivityFragment.addProfileMedia(followingActivity);
-                                suggestedFriendsFragment.addSuggestedFriends(friendsFriends);
+
+                                for(int i=0; i<friendsFriends.size(); i++){
+                                    if(repeatFriends(friendsFriends.get(i).getId(),friendsFriendsFinal)){
+                                        if(!friendsFriends.get(i).getId().equals(clientid)){
+                                            SuggestedFriends friend = new SuggestedFriends(friendsFriends.get(i).getUsername(), friendsFriends.get(i).getFullname(), friendsFriends.get(i).getId(), friendsFriends.get(i).getProfilepic());
+                                            //friend.add(new SuggestedFriends(friendsFriends.get(i).getUsername(), friendsFriends.get(i).getFullname(), friendsFriends.get(i).getId(), friendsFriends.get(i).getProfilepic()));
+                                            getMedia(friend, accesstoken, suggestedFriendsFragment, adapter);
+                                            friendsFriendsFinal.add(friend);
+                                        }
+
+                                    }
+                                }
+
                                 //  pDialog.dismiss();
 
                             } catch (Exception e) {
@@ -262,7 +277,71 @@ public class boDiscover {
 
         }
 
+
     }
 
+    public Boolean repeatFriends(String value, ArrayList<SuggestedFriends> finalFriend){
+        for(SuggestedFriends suggestedFriends:finalFriend){
+            if(suggestedFriends.getId().equals(value)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void getMedia(final SuggestedFriends suggestedFriends, String accesstoken, final SuggestedFriendsFragment suggestedFriendsFragment, final SuggestedFriendsAdapter adapter){
+        // For each id of the people the user follows retrieve their last pictures when they belong to the current day
+
+            Log.i(TAG, "Getting media from : "+ suggestedFriends.getId());
+            JsonObjectRequest req2 = new JsonObjectRequest(Request.Method.GET, Globals.API_URL + "/users/" + suggestedFriends.getId() + "/media/recent"
+                    + "/?access_token=" + accesstoken , null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, response.toString());
+
+                            try {
+                                JSONArray array = response.getJSONArray("data");
+                                ArrayList<ImageItem> usermedia = new ArrayList<>();
+                                boolean hasRecentMedia = false;
+                                for(int i=0; i<3; i++)
+                                {
+                                        String uriImage = array.getJSONObject(i).getJSONObject("images").getJSONObject("thumbnail").getString("url");
+                                        Log.i(TAG, uriImage);
+                                        ImageView imageView = new ImageView(suggestedFriendsFragment.getActivity());
+                                        ImageRequest.makeImageRequest(uriImage, suggestedFriendsFragment.getActivity(), imageView, adapter);
+                                        usermedia.add(new ImageItem(imageView));
+                                        hasRecentMedia = true;
+
+                                }
+                                suggestedFriends.setImageItems(usermedia);
+                                suggestedFriendsFragment.addSuggestedFriends(suggestedFriends);
+
+                            } catch (Exception e) {
+                                //Log.i(TAG,e.getMessage());
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    try{
+                        error.printStackTrace();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+
+            });
+            // Adding request to request queue
+            Controller.getInstance(suggestedFriendsFragment.getActivity()).addToRequestQueue(req2,
+                    tag_json_obj);
+
+
+        pDialog.dismiss();
+
+    }
 
 }
