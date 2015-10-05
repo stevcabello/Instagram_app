@@ -335,12 +335,11 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         } else if (id == R.id.action_next) {
-            Toast.makeText(this,"aqioeijworew",Toast.LENGTH_SHORT).show();
             //Call to filter activity
             if(!Globals.GALLERY_SELECTEDPATH.equals("")) {
                 Intent intent = new Intent(MainActivity.this, FilterActivity.class);
                 Log.i(TAG, Globals.GALLERY_SELECTEDPATH);
-                intent.putExtra("photo", Globals.GALLERY_SELECTEDPATH);
+                intent.putExtra("gallery", Globals.GALLERY_SELECTEDPATH);
                 MainActivity.this.startActivity(intent);
             }
         } else if (id == R.id.action_bar_search) {
