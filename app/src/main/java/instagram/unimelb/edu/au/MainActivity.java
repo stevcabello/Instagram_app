@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     private StringBuilder strBuilder = new StringBuilder();
     public static Handler bluetoothIn;
     public static Handler bluetoothErr;
+    public static Handler bluetoothSuccessOrFail;
 
 
 
@@ -229,8 +230,17 @@ public class MainActivity extends AppCompatActivity {
             public void handleMessage(android.os.Message msg) {
                 if (msg.what == handlerState) {
                     String readMessage = (String) msg.obj;
+                    Toast.makeText(MainActivity.this,readMessage,Toast.LENGTH_SHORT).show();
+                    Globals.progressDialog.dismiss();
+                }
+            }
+        };
 
-                    Toast.makeText(MainActivity.this,readMessage,Toast.LENGTH_LONG).show();
+        //To dismiss the progressDialog when send of post has finished
+        bluetoothSuccessOrFail = new Handler() {
+            public void handleMessage(android.os.Message msg) {
+                if (msg.what == handlerState) {
+                    Globals.progressDialog.dismiss();
                 }
             }
         };

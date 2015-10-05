@@ -1,6 +1,7 @@
 package instagram.unimelb.edu.au.networking;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -82,7 +83,8 @@ public class Bluetooth  {
 
         mActivity = activity;
 
-        Globals.mPairedDevicesArrAdapter = new ArrayAdapter<String>(activity, R.layout.row_btdevice);
+        Globals.mPairedDevicesArrAdapter = new ArrayAdapter<String>(mActivity, R.layout.row_btdevice,
+                R.id.row_paireddevice, new ArrayList<String>());//new ArrayAdapter<String>(activity, R.layout.row_btdevice);
 
         LayoutInflater inflater = (LayoutInflater)activity.getSystemService
                 (activity.LAYOUT_INFLATER_SERVICE);
@@ -152,31 +154,46 @@ public class Bluetooth  {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
+        builder.setMessage("Select a device: ");
+
+        builder.setView(view);
+        final Dialog dialog = builder.create();
+        dialog.show();
+
         //Get the list view from the view
         ListView pairedlistView = (ListView)view.findViewById(R.id.lv_btdevices);
 
         //Set the paired devices array into the listview
         pairedlistView.setAdapter(Globals.mPairedDevicesArrAdapter);
 
-
         pairedlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 // Get the device MAC address, which is the last 17 chars in the View
-                String info = ((TextView) view).getText().toString();
-                String address = info.substring(info.length() - 17);
+                //LinearLayout linearLayout = (LinearLayout)view;
+                TextView tv_paireddevice = (TextView) view.findViewById(R.id.row_paireddevice);
+                String device_data = tv_paireddevice.getText().toString();
+                String device_address = device_data.substring(device_data.length() - 17);
 
                 //With the MAC address we can get the bluetooth device object
-                BluetoothDevice bluetoothDevice = Globals.mBluetoothAdapter.getRemoteDevice(address);
+                BluetoothDevice bluetoothDevice = Globals.mBluetoothAdapter.getRemoteDevice(device_address);
+
+                //This progressDialog will be dismissed in when send of post has finished
+                Globals.progressDialog = new ProgressDialog(mActivity);
+                Globals.progressDialog.setMessage("Sending post...");
+                Globals.progressDialog.show();
 
                 //Send of the user's post will be executed on the ConnectThread
                 ConnectThread mconnectthread = new ConnectThread(bluetoothDevice, userFeed);
                 mconnectthread.start();
+
+                dialog.dismiss();
+
             }
         });
-        builder.setView(view);
-        builder.create().show();
+
+
     }
 
 
@@ -280,7 +297,6 @@ public class Bluetooth  {
             mConnectedThread = new ConnectedThread(mmSocket);
             String userFeedJsonStr = UserFeedToJson(mUserFeed);
             mConnectedThread.write(userFeedJsonStr);
-            //mConnectedThread.write("x");
 
         }
 
@@ -491,12 +507,14 @@ public class Bluetooth  {
             try {
                 mmOutStream.write(msgBuffer);
                 Log.i(TAG, "SUCCESS");
+                Globals.mainActivity.bluetoothSuccessOrFail.obtainMessage(handlerState,"").sendToTarget(); //just to know writing process is over
                 cancel(); //close the socket once it has been used
 
             } catch (IOException e) {
                 //if you cannot write, close the application
                 Log.i(TAG,"Connection failure due to: " + e.getMessage());
                 Toast.makeText(mActivity, "Connection Failure", Toast.LENGTH_LONG).show();
+                Globals.mainActivity.bluetoothSuccessOrFail.obtainMessage(handlerState, "").sendToTarget();
             }
         }
 
