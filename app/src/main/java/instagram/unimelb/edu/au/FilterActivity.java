@@ -1,22 +1,38 @@
 package instagram.unimelb.edu.au;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.BitmapFactory;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.net.Uri;
+import android.graphics.Matrix;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
+
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import instagram.unimelb.edu.au.R;
+import instagram.unimelb.edu.au.photo.CapturePreview;
+import instagram.unimelb.edu.au.utils.Globals;
 
 /**
  * Created by etimire on 7/09/2015.
@@ -28,7 +44,7 @@ public class FilterActivity extends AppCompatActivity {
     Bitmap bitmap;
     Bitmap origBitmap;
     Bitmap from_filter;
-
+    private static final String TAG = "FilterActivity";
     private int brightnessProgress;
     private int contrastProgress;
     private float contrastProgressF;
@@ -80,7 +96,7 @@ public class FilterActivity extends AppCompatActivity {
         Button btnFilterInvert = (Button) findViewById(R.id.filt_button_invert);
         Button btnFilter2 = (Button) findViewById(R.id.filt_button_2);
         Button btnFilter3 = (Button) findViewById(R.id.filt_button_3);
-
+        ImageButton btnNext = (ImageButton) findViewById(R.id.ib_next);
 
         brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -146,7 +162,15 @@ public class FilterActivity extends AppCompatActivity {
                 selectFilterMatrix(v);
             }
         });
-
+        /*
+         Onclick, save and shares photo filtered
+         */
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SaveFilteredImage(bitmap);
+            }
+        });
         bitmap = BitmapFactory.decodeFile(imagePath,bmOptions);
         /*
         If the photo comes from the gallery it does not rotate it
@@ -160,7 +184,27 @@ public class FilterActivity extends AppCompatActivity {
 
 
     }
+    /*
+    Save images filtered to share on Instagram
+     */
+    private void SaveFilteredImage(Bitmap image){
+        File pictureFile;
+        pictureFile = CapturePreview.getOutputMediaFile(CapturePreview.MEDIA_TYPE_IMAGE);
+        if (pictureFile == null) {
+            Log.d(TAG,"Error creating media file, check storage permissions: ");// e.getMessage());
+            return;
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            fos.close();
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "File not found: " + e.getMessage());
+        } catch (IOException e) {
+            Log.d(TAG, "Error accessing file: " + e.getMessage());
+        }
 
+    }
     public static Bitmap RotateBitmap(Bitmap source, float angle)
     {
         Matrix matrix = new Matrix();
@@ -265,21 +309,8 @@ public class FilterActivity extends AppCompatActivity {
         canvas.drawBitmap(origBitmap, 0, 0, paint);
 
         imgView.setImageBitmap(bitmap);
+
     }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_filter, menu);
-
-        MenuItem item_next = menu.findItem(R.id.action_next);
-        item_next.setIcon(R.drawable.next_arrow);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -289,11 +320,7 @@ public class FilterActivity extends AppCompatActivity {
 
         if (id == android.R.id.home) { //Behaviour when back button is pressed
             onBackPressed(); // just go back
-        } else if (id == R.id.action_next) {
-            //TODO: implementation of the share button
-            Toast.makeText(this,"implementation share photo missing",Toast.LENGTH_SHORT).show();
         }
-
 
         return super.onOptionsItemSelected(item);
     }
