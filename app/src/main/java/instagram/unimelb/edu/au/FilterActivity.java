@@ -38,6 +38,8 @@ public class FilterActivity extends AppCompatActivity {
 
     private int brightnessProgress;
     private int contrastProgress;
+    private float contrastProgressF;
+    private float contrastTranslate;
 
     private Canvas canvas;
 
@@ -104,7 +106,7 @@ public class FilterActivity extends AppCompatActivity {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                contrastProgress = progress*10;
+                contrastProgress = progress;
                 selectFilterMatrix("contrast");
             }
 
@@ -231,10 +233,14 @@ public class FilterActivity extends AppCompatActivity {
             }
 
             case("contrast"): {
+                //contrastProgressF = contrastProgress*contrastProgress/13.0f/13.0f;
+                contrastProgressF = contrastProgress/13.0f;
+                contrastTranslate = (-0.5f*contrastProgressF + 0.5f) * 255f;
+
                 float[] filterMatrixArray = {
-                        1, 0, 0, 0, contrastProgress-125,
-                        0, 1, 0, 0, contrastProgress-125,
-                        0, 0, 1, 0, contrastProgress-125,
+                        contrastProgress, 0, 0, 0, contrastTranslate,
+                        0, contrastProgress, 0, 0, contrastTranslate,
+                        0, 0, contrastProgress, 0, contrastTranslate,
                         0, 0, 0, 1, 0 };
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
