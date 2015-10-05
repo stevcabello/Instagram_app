@@ -10,9 +10,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
-            <include
-                android:id="@+id/switch_control"
-                layout="@layout/switchcamera" />
+            <!--<include-->
+                <!--android:id="@+id/switch_control"-->
+                <!--layout="@layout/switchcamera" />-->
 
             <include
                 android:id="@+id/take_pic_button"
