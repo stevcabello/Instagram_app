@@ -40,6 +40,7 @@ public class ListViewItemViewPagerAdapter extends PagerAdapter {
         if (position==1) {
             Bitmap photo_bitmap = Utils.getBitmap(item.getPhoto());
             uploadedPhoto.setImageBitmap(photo_bitmap);
+            uploadedPhoto.setScaleType(ImageView.ScaleType.CENTER_CROP);
             uploadedPhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) { //In case the image doesn't load properly
