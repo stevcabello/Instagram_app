@@ -45,11 +45,11 @@ public class boActivityFeed {
 
     public void getProfileMedia(final YouActivityFeedFragment youActivityFeedFragment, String accesstoken, String clientid,final YouActivityFeedAdapter adapter) {
 
-        Globals.numberLoads++;
+        //Globals.numberLoads++;
 
         pDialog = new ProgressDialog(youActivityFeedFragment.getActivity());
         pDialog.setMessage("Loading...");
-        if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
+        //if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
         pDialog.show();
 
         final ArrayList<YouActivityFeed> userActivity = new ArrayList<>();

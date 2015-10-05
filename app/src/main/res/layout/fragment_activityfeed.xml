@@ -9,7 +9,7 @@
 
 
     <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
+        android:id="@+id/activitytabs"
         android:layout_margin="0dp"
         style="@style/MyCustomTabLayout"
         android:layout_width="match_parent"

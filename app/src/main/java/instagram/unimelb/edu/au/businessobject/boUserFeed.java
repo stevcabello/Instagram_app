@@ -44,11 +44,11 @@ public class boUserFeed {
      */
     public void getUserFeedData(final UserFeedFragment userFeedFragment, String accesstoken, final ArrayAdapter adapter, final int sortBy) {
 
-        Globals.numberLoads++;
+        //Globals.numberLoads++;
 
         pDialog = new ProgressDialog(userFeedFragment.getActivity());
         pDialog.setMessage("Loading...");
-        if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
+        //if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
         pDialog.show();
 
 

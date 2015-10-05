@@ -97,17 +97,16 @@ public class CommentsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //To avoid reloading the view everytime user access to profile
+
         if (rootView != null) {
             return rootView;
         }
-
         commentsFragment = this;
 
-        //Hide the Tabs
-        TabLayout tabLayout = (TabLayout) Globals.mainActivity.findViewById(R.id.tabs);
+        TabLayout tabLayout = (TabLayout)Globals.mainActivity.findViewById(R.id.tabs);
         tabLayout.setVisibility(View.GONE);
 
+        Globals.mainActivity.setVisibleFragment(this);
         setHasOptionsMenu(true); //to enable the settings action button
 
         //Reset the previous toolbar settings
@@ -117,6 +116,7 @@ public class CommentsFragment extends Fragment {
         //To show the back button
         Globals.mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Globals.mainActivity.getSupportActionBar().setTitle("COMMENTS");
+
 
 
         // Inflate the layout for this fragment

@@ -101,6 +101,7 @@ public class SearchFragment extends Fragment {
 
         Globals.mainActivity.setVisibleFragment(this);  //To let the main activity know that we are in SearchFragment
 
+
         // Inflate the layout for this
         rootView = inflater.inflate(R.layout.fragment_search, container, false);
         searchFragment = this;

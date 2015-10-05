@@ -36,6 +36,9 @@ public class ActivityFeedFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private View rootView=null;
+
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -71,17 +74,21 @@ public class ActivityFeedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
+        if (rootView != null) {
+            return rootView;
+        }
 
         setHasOptionsMenu(true);
 
-        View rootView = inflater.inflate(R.layout.fragment_activityfeed,container,false);
+        rootView = inflater.inflate(R.layout.fragment_activityfeed, container, false);
 
         final ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
-        ActivityFeedViewPagerAdapter adapter = new ActivityFeedViewPagerAdapter(getChildFragmentManager(),getActivity(),mParam1, mParam2);
+        ActivityFeedViewPagerAdapter adapter = new ActivityFeedViewPagerAdapter(getChildFragmentManager(), getActivity(), mParam1, mParam2);
         viewPager.setAdapter(adapter);
 
-        final TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
+        final TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.activitytabs);
         //tabLayout.setupWithViewPager(viewPager);
 
         //need to add this because of a bug in Design Library 22.2.1 that makes Tabs invisible when they are inside a Fragment
@@ -102,6 +109,7 @@ public class ActivityFeedFragment extends Fragment {
         return rootView;
         //return inflater.inflate(R.layout.fragment_activityfeed, container, false);
     }
+
 
 
 

@@ -82,6 +82,7 @@ public class PhotoFragment extends Fragment {
         final ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
         PhotoViewPagerAdapter adapter = new PhotoViewPagerAdapter(getChildFragmentManager(),getActivity(),mParam1, mParam2);
         viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(0);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -94,9 +95,10 @@ public class PhotoFragment extends Fragment {
 
                 if (position == 0) {
                     Globals.mainActivity.getSupportActionBar().setTitle("GALLERY");
-                    Globals.mainActivity.setVisibleFragment(PhotoFragment.this);
+                    //Globals.mainActivity.setVisibleFragment(new PhotoFromGalleryFragment());
                 } else {
                     Globals.mainActivity.getSupportActionBar().setTitle("PHOTO");
+                    //Globals.mainActivity.setVisibleFragment(new PhotoFromCameraFragment());
                 }
             }
 
@@ -107,7 +109,7 @@ public class PhotoFragment extends Fragment {
         });
 
 
-        final TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
+        final TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.phototabs);
         //tabLayout.setupWithViewPager(viewPager);
 
         //need to add this because of a bug in Design Library 22.2.1 that makes Tabs invisible when they are inside a Fragment

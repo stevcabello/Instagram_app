@@ -37,7 +37,7 @@ public class FollowingActivityFeedFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private View rootView;
+    private View rootView=null;
 
     private ListView listView;
     private FollowingActivityFeedAdapter gridAdapter;
@@ -45,6 +45,7 @@ public class FollowingActivityFeedFragment extends Fragment {
     boFollowing objFollowers;
     public FollowingActivityFeedFragment followingActivityFragment;
     Boolean userScrolled = false;
+
     //Integer nposts = 38;
     /**
      * Use this factory method to create a new instance of
@@ -85,24 +86,24 @@ public class FollowingActivityFeedFragment extends Fragment {
             return rootView;
         }
 
-
-
         setHasOptionsMenu(true); //to enable the settings action button
 
         // Inflate the layout for this
-        rootView = inflater.inflate(R.layout.fragment_following_activity_feed,container,false);
+        rootView = inflater.inflate(R.layout.fragment_following_activity_feed, container, false);
 
         followingActivityFragment = this;
 
-        listView = (ListView)rootView.findViewById(R.id.lv_followeractivityfeed);
-        gridAdapter = new FollowingActivityFeedAdapter(this.getActivity(),R.layout.item_followingactivityfeed,new ArrayList<FollowingActivityFeed>());
+        listView = (ListView) rootView.findViewById(R.id.lv_followeractivityfeed);
+        gridAdapter = new FollowingActivityFeedAdapter(this.getActivity(), R.layout.item_followingactivityfeed, new ArrayList<FollowingActivityFeed>());
         listView.setAdapter(gridAdapter);
 
         objFollowers = new boFollowing();
         objFollowers.getProfileMedia(followingActivityFragment, mParam1, mParam2, gridAdapter);
 
+
         return rootView;
     }
+
 
 
     public void addProfileMedia(FollowingActivityFeed follower) {

@@ -36,11 +36,11 @@ public class boProfile {
 
     public void getProfileData(final ProfileFragment profileFragment, String accesstoken, String clientid){
 
-        Globals.numberLoads++;
+        //Globals.numberLoads++;
 
         pDialog = new ProgressDialog(profileFragment.getActivity());
         pDialog.setMessage("Loading...");
-        if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
+        //if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
         pDialog.show();
 
 

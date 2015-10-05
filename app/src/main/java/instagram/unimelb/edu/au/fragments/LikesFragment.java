@@ -64,10 +64,12 @@ public class LikesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //To avoid reloading the view everytime user access to profile
+
         if (rootView != null) {
             return rootView;
         }
+
+        Globals.mainActivity.setVisibleFragment(this);
 
         //Hide the Tabs
         TabLayout tabLayout = (TabLayout) Globals.mainActivity.findViewById(R.id.tabs);

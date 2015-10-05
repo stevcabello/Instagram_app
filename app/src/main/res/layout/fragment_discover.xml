@@ -35,10 +35,10 @@
                     android:layout_alignStart="@+id/tv_peopletofollow_title" />
 
                 <ImageButton
-                    android:layout_width="100dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/btn_people_to_follow_example"
-                    android:id="@+id/iv_peopletofollow"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_people_to_follow_example"
+                    android:id="@+id/ibtn_peopletofollow"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true" />

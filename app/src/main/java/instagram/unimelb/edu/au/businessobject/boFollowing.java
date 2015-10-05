@@ -36,11 +36,11 @@ public class boFollowing {
 
     public void getProfileMedia(final FollowingActivityFeedFragment followingActivityFragment, final String accesstoken, String clientid, final FollowingActivityFeedAdapter adapter) {
 
-        Globals.numberLoads++;
+        //Globals.numberLoads++;
 
         pDialog = new ProgressDialog(followingActivityFragment.getActivity());
         pDialog.setMessage("Loading...");
-        if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
+        //if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
         pDialog.show();
 
         final ArrayList<FollowingActivityFeed> followingActivity = new ArrayList<>();
