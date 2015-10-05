@@ -64,6 +64,10 @@ public class FilterActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // back button
 
         String imagePath = getIntent().getExtras().getString("photo");
+        /*
+        Validates if the photo comes from the gallery
+         */
+        boolean galleryOrigin = getIntent().getBooleanExtra("gallery", false);
 
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inSampleSize = 4; //reduce size of image
@@ -151,8 +155,12 @@ public class FilterActivity extends AppCompatActivity {
         });
 
         bitmap = BitmapFactory.decodeFile(imagePath,bmOptions);
-
+        /*
+        If the photo comes from the gallery it does not rotate it
+         */
+        if (galleryOrigin==false){
         bitmap = RotateBitmap(bitmap,90);
+        }
         origBitmap = bitmap;
 
         imgView.setImageBitmap(bitmap);
