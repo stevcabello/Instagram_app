@@ -86,8 +86,8 @@ public class SuggestedFriendsAdapter extends ArrayAdapter<SuggestedFriends>{
             Bitmap profilepic_bitmap = Utils.getBitmap(item.getProfilepic());
             holder.profilepic.setImageBitmap(profilepic_bitmap);
             holder.description.setText(Html.fromHtml("<b>" + item.getUsername() + "</b>" + " " + item.getFullname()));
-            //subgridAdapter = new SubSuggestedFriendsAdapter(context,R.layout.subitem_suggested_friends, item.getImageItems());
-            //holder.imageItems.setAdapter(subgridAdapter);
+            subgridAdapter = new SubSuggestedFriendsAdapter(context,R.layout.subitem_suggested_friends, item.getImageItems());
+            holder.imageItems.setAdapter(subgridAdapter);
         }
 
 

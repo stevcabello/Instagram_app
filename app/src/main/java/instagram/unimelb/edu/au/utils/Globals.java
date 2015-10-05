@@ -1,5 +1,6 @@
 package instagram.unimelb.edu.au.utils;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.widget.ArrayAdapter;
@@ -42,6 +43,7 @@ public class Globals {
     public static ArrayList<BluetoothDevice> bluetoothDevices = new ArrayList<BluetoothDevice>();
     public static BluetoothAdapter mBluetoothAdapter = null;
     public static ArrayAdapter<String> mPairedDevicesArrAdapter=null;
+    public static ProgressDialog progressDialog =null;
 
 
 

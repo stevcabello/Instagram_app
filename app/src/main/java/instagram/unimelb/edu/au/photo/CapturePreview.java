@@ -203,7 +203,7 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
 
 
     // Creates file on external storage.
-    private static File getOutputMediaFile(int type){
+    public static File getOutputMediaFile(int type){
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), myApp);
 

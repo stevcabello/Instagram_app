@@ -251,8 +251,16 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
 
         holder.location.setText(item.getLocation());
 
-        holder.created_time.setText(Utils.getElapsedtime(item.getCreated_time(), "short"));
-
+        if (!Globals.switchState) //if userfeed based on date/time
+            holder.created_time.setText(Utils.getElapsedtime(item.getCreated_time(), "short"));
+        else //if userfeed based on location
+        {
+            int distanceInKm = (int)item.getDistanceToAuthUser()/1000; //Distance in kilometers
+            if (distanceInKm > 0)
+                holder.created_time.setText(String.valueOf(distanceInKm) + "Km");
+            else
+                holder.created_time.setText("No location provided");
+        }
 
         return convertView;
     }
