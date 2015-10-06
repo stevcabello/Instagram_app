@@ -32,6 +32,7 @@ public class Utils {
         imageView.layout(0, 0, imageView.getMeasuredWidth(), imageView.getMeasuredHeight());
 
         imageView.buildDrawingCache(true);
+        //TODO: in the line below I get a nullpointerexception
         Bitmap bitmap = Bitmap.createBitmap(imageView.getDrawingCache());
         imageView.setDrawingCacheEnabled(false); // clear drawing cache
 
