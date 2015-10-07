@@ -39,10 +39,11 @@ public class boActivityFeed {
     private String TAG = boActivityFeed.class
             .getSimpleName();
     private String tag_json_obj = "jobj_req";
-    //private String tag_json_arry = "jarray_req";
 
     ProgressDialog pDialog;
-
+    /*
+        Method that retrieve the information of likes and comments from the active user
+     */
     public void getProfileMedia(final YouActivityFeedFragment youActivityFeedFragment, final String accesstoken, final String clientid,final YouActivityFeedAdapter adapter) {
         pDialog = new ProgressDialog(youActivityFeedFragment.getActivity());
         pDialog.setMessage("Loading...");

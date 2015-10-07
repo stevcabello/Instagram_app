@@ -5,9 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -16,7 +14,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import instagram.unimelb.edu.au.R;
-import instagram.unimelb.edu.au.models.ImageItem;
 
 public class PhotoFromGalleryAdapter extends ArrayAdapter<ArrayList<String>> {
     private Context context;
@@ -59,7 +56,6 @@ public class PhotoFromGalleryAdapter extends ArrayAdapter<ArrayList<String>> {
         final ViewHolder holder;
 
         if (row == null) {
-            //LayoutInflater inflater = ((FragmentActivity) context).getLayoutInflater();
             LayoutInflater inflater = LayoutInflater.from(context);
             row = inflater.inflate(layoutResourceId, parent, false);
 
@@ -87,19 +83,15 @@ public class PhotoFromGalleryAdapter extends ArrayAdapter<ArrayList<String>> {
        // Bitmap bitmap = Utils.getBitmap(item.getImageview());
        // holder.image.setImageBitmap(bitmap);
         Picasso.with(getContext())
-                .load("file://" + item.get(1))
-                .resize(150, 150)
-                .into(holder.image);
+                    .load("file://" + item.get(1))
+                    .resize(150, 150)
+                    .into(holder.image);
         Log.i("PhotofromGallery", "Adapter" + item.get(1));
-
-
         return row;
     }
 
     static class ViewHolder {
         ImageView image;
-        /*GridView gridView;
-        ImageView imagePreview;*/
     }
 
 }

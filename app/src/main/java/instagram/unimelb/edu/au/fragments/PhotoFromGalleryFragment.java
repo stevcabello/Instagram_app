@@ -49,6 +49,7 @@ public class PhotoFromGalleryFragment extends Fragment {
     public PhotoFromGalleryFragment galleryFragment;
     Boolean userScrolled = false;
     ArrayList<ArrayList<String>> gallery;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -104,7 +105,7 @@ public class PhotoFromGalleryFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                Log.d("PhotoGalleryFragment", "Position "+Integer.toString(position));
+                Log.d("PhotoGalleryFragment", "Position " + Integer.toString(position));
                 loadImage(gallery.get(position).get(0), imagePreview);
             }
         });
@@ -112,11 +113,11 @@ public class PhotoFromGalleryFragment extends Fragment {
         return rootView;
     }
     //load regular image for preview instead of thumbnail
-    public void loadImage(String imageId, ImageView image){
-        String regularImage = getImagePath(imageId);
-        Globals.GALLERY_SELECTEDPATH = regularImage;
+    public void loadImage(String imagePath, ImageView image){
+  //      String regularImage = getImagePath(imageId);
+        Globals.GALLERY_SELECTEDPATH = imagePath;
         Picasso.with(getContext())
-                .load("file://" + regularImage)
+                .load("file://" + imagePath)
                         .into(image);
     }
     public void callShowGallery(){
@@ -135,7 +136,8 @@ public class PhotoFromGalleryFragment extends Fragment {
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
                     userScrolled = true;
-            }
+
+             }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
@@ -143,43 +145,75 @@ public class PhotoFromGalleryFragment extends Fragment {
                 int currentFirstVisPos = view.getFirstVisiblePosition();
                 Log.i("Photogallery", Integer.toString(Globals.GALLERY_MEDIA_MAX_ID));
                 //To only send a new request when user has scrolled down until reach the bottom and while the totalitemcount is lesser than the number of posts
-                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos &&  Globals.GALLERY_MEDIA_MAX_ID != -1 ) {
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos && Globals.GALLERY_MEDIA_MAX_ID != -1) {
                     callShowGallery();
                     userScrolled = false;
-                    Log.i("Photogallery", "In");
-
                 }
                 myLastVisiblePos = currentFirstVisPos;
             }
         });
     }
-
+    /*
+     Method that getList  of the paths of all the images in the gallery
+     */
     public ArrayList<ArrayList<String>> getImagesPath() {
         Uri uri;
         ArrayList<ArrayList<String>> listOfAllImages = new ArrayList<ArrayList<String>>();
         Cursor cursor;
         int column_index_data, column_index_id;
         String pathOfImage = null;
-        String imageId = null;
-        uri = android.provider.MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI;
-        String[] projection = { MediaStore.MediaColumns.DATA,
-                MediaStore.Images.Thumbnails.IMAGE_ID };
+        long imageId ;
+        //uri = android.provider.MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI;
+        uri =MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        /*String[] projection = { MediaStore.MediaColumns.DATA,
+                MediaStore.Images.Thumbnails.IMAGE_ID,
+                MediaStore.Images.ImageColumns.DATE_TAKEN};*/
 
+        /*Columns used on the cursor*/
+        String[] projection = new String[]{
+                MediaStore.MediaColumns.DATA,
+                MediaStore.Images.Media._ID,
+                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.Media.DATE_TAKEN
+        };
+        /*To show order by date*/
+        String orderBy = MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC";
         cursor = this.getActivity().getContentResolver().query(uri, projection, null,
-                null, null);
+                null, orderBy);
+
         column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        column_index_id = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.IMAGE_ID);
+       // column_index_id = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.IMAGE_ID);
+        column_index_id = cursor.getColumnIndexOrThrow( MediaStore.Images.Media._ID);
+
+        //Cursor that fills the list with the thumbnail path and regular path
         while (cursor.moveToNext()) {
             pathOfImage = cursor.getString(column_index_data);
-            imageId = cursor.getString(column_index_id);
+            //imageId = cursor.getString(column_index_id);
+            imageId = cursor.getLong(column_index_id);
             ArrayList<String> iteration =new ArrayList<String>();
-            iteration.add(imageId);
+            Cursor thumbcursor = MediaStore.Images.Thumbnails.queryMiniThumbnail(
+                    this.getActivity().getContentResolver(),imageId,
+                    MediaStore.Images.Thumbnails.MINI_KIND,
+                    null );
+            String thumbnail ="";
+            if( thumbcursor != null && thumbcursor.getCount() > 0 ) {
+                thumbcursor.moveToFirst();
+                thumbnail = thumbcursor.getString( thumbcursor.getColumnIndex( MediaStore.Images.Thumbnails.DATA ) );
+            }
             iteration.add(pathOfImage);
+            if (!thumbnail.equals("")) {
+                iteration.add(thumbnail);
+            }
+            else {
+                iteration.add(pathOfImage);
+            }
             listOfAllImages.add(iteration);
-        }
+            }
         return listOfAllImages;
     }
-
+    /*
+        Pagination of the gallery to bring records from 15 to 15
+     */
     public ArrayList<ArrayList<String>> paginationGallery(ArrayList<ArrayList<String>> imageItems){
         ArrayList<ArrayList<String>> usermedia = new ArrayList<>();
         int sizeGallery = imageItems.size()                ;
@@ -196,7 +230,7 @@ public class PhotoFromGalleryFragment extends Fragment {
         }
         return usermedia;
     }
-    public String getImagePath( String reterievedImageId) {
+  /*  public String getImagePath( String reterievedImageId) {
         String[] columnsReturn = {MediaStore.Images.Media.DATA};
         String whereimageId = MediaStore.Images.Media._ID + " LIKE ?";
         String valuesIs[] = {"%" + reterievedImageId};
@@ -207,7 +241,7 @@ public class PhotoFromGalleryFragment extends Fragment {
             imagePath = mCursor.getString(rawDataPath);
         }
         return imagePath;
-    }
+    }*/
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
