@@ -37,23 +37,17 @@ import instagram.unimelb.edu.au.photo.CapturePreview;
  */
 public class FilterActivity extends AppCompatActivity {
 
-    // Placeholder for camera Bitmap/BitmapDrawable file.
-
+    // Bitmap attributes for holding the original image and filtered images.
     Bitmap bitmap;
     Bitmap origBitmap;
     Bitmap fromFilter;
 
     private static final String TAG = "FilterActivity";
 
+    // Attributes for assisting with brightness /contrast sliders.
     private int brightnessProgress;
     private int contrastProgress;
-    private float contrastLevel;
-    private float contrastTranslate;
     private boolean brightcontrast;
-
-    private Canvas canvas;
-
-    private Toolbar toolbar;
 
     private ImageView imgView;
 
@@ -68,21 +62,27 @@ public class FilterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
 
-        toolbar=(Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("FILTER");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // back button
 
         String imagePath = getIntent().getExtras().getString("photo");
-        /*
-        Validates if the photo comes from the gallery
-         */
+
+        //Validates if the photo comes from the gallery
         boolean galleryOrigin = getIntent().getBooleanExtra("gallery", false);
 
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inSampleSize = 4; //reduce size of image
 
         imgView = (ImageView) findViewById(R.id.filter_view);
+
+        // Define buttons.
+        Button btnOriginal = (Button) findViewById(R.id.filt_button_original);
+        Button btnFilterInvert = (Button) findViewById(R.id.filt_button_invert);
+        Button btnFilter2 = (Button) findViewById(R.id.filt_button_2);
+        Button btnFilter3 = (Button) findViewById(R.id.filt_button_3);
+        ImageButton btnNext = (ImageButton) findViewById(R.id.ib_next);
 
         // Define seekbars.
         SeekBar brightness = (SeekBar) findViewById(R.id.brightness_slider);
@@ -92,14 +92,11 @@ public class FilterActivity extends AppCompatActivity {
         contrast.setMax(26);
         contrast.setProgress(13);
 
-        // Define buttons.
-        Button btnOriginal = (Button) findViewById(R.id.filt_button_original);
-        Button btnFilterInvert = (Button) findViewById(R.id.filt_button_invert);
-        Button btnFilter2 = (Button) findViewById(R.id.filt_button_2);
-        Button btnFilter3 = (Button) findViewById(R.id.filt_button_3);
-        ImageButton btnNext = (ImageButton) findViewById(R.id.ib_next);
+        // Defining seek bar listener for brightness and contrast control.
+        // Only interested in changing the image when the seek bar progress is changed.
 
         brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -140,6 +137,7 @@ public class FilterActivity extends AppCompatActivity {
             }
         });
 
+        // On click listener for all filter buttons call the appropriate methods for each filter.
         btnFilterInvert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,6 +161,7 @@ public class FilterActivity extends AppCompatActivity {
                 selectFilterMatrix(v);
             }
         });
+
         /*
          Onclick, save and shares photo filtered
          */
@@ -254,16 +253,21 @@ public class FilterActivity extends AppCompatActivity {
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
-
+    // Method for reverting displayed image back to original image from camera.
     public void originalImage(View view) {
 
         imgView.setImageBitmap(origBitmap);
     }
 
+    // Method for calling filter from the filter_activity view buttons.
     public void selectFilterMatrix(View view) {
         selectFilterMatrix(filterName);
     }
 
+    // This method accepts a string filter name which is determined by the button pressed.
+    // Switch statement selects the associated matrix to construct a ColorMatrix which is
+    // to be used to filter the Bitmap object. ColorMatrix object is passed to applyFilter
+    // method to implement filtering.
     public void selectFilterMatrix(String filterName) {
 
         switch(filterName) {
@@ -276,6 +280,7 @@ public class FilterActivity extends AppCompatActivity {
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
 
+                // bitmap is assigned a new copy of the original image.
                 bitmap = origBitmap.copy(origBitmap.getConfig(),true);
 
                 brightcontrast = false;
@@ -294,8 +299,10 @@ public class FilterActivity extends AppCompatActivity {
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
 
+                // bitmap is assigned a new copy of the original image.
                 bitmap = origBitmap.copy(origBitmap.getConfig(),true);
 
+                // Indicates the filter applied was not realted to the brightness/contrast seekbar.
                 brightcontrast = false;
 
                 applyFilter(filterMatrix);
@@ -312,8 +319,10 @@ public class FilterActivity extends AppCompatActivity {
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
 
+                // bitmap is assigned a new copy of the original image.
                 bitmap = origBitmap.copy(origBitmap.getConfig(),true);
 
+                // Indicates the filter applied was not realted to the brightness/contrast seekbar.
                 brightcontrast = false;
 
                 applyFilter(filterMatrix);
@@ -330,6 +339,7 @@ public class FilterActivity extends AppCompatActivity {
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
 
+                // Indicates the filter applied was either brightness/contrast seekbar.
                 brightcontrast = true;
 
                 applyFilter(filterMatrix);
@@ -337,8 +347,8 @@ public class FilterActivity extends AppCompatActivity {
             }
 
             case("contrast"): {
-                contrastLevel = contrastProgress/26.0f+0.5f;
-                contrastTranslate = (-0.5f*contrastLevel + 0.5f) * 255f;
+                float contrastLevel = contrastProgress/26.0f+0.5f;
+                float contrastTranslate = (-0.5f*contrastLevel + 0.5f) * 255f;
 
                 float[] filterMatrixArray = {
                         contrastLevel, 0, 0, 0, contrastTranslate,
@@ -348,6 +358,7 @@ public class FilterActivity extends AppCompatActivity {
 
                 ColorMatrix filterMatrix = new ColorMatrix(filterMatrixArray);
 
+                // Indicates the filter applied was either brightness/contrast seekbar.
                 brightcontrast = true;
 
                 applyFilter(filterMatrix);
@@ -357,20 +368,32 @@ public class FilterActivity extends AppCompatActivity {
 
     }
 
+    // This method accepts ColorMatrix selected in selectFilterMatrix and draws the filtered
+    // pixels to a new Canvas.
     public void applyFilter(ColorMatrix filterMatrix) {
 
+        // fromFilter is used to hold a new Bitmap which is generated every time this method
+        // is called.
         fromFilter = Bitmap.createBitmap(origBitmap.getWidth(),
                 origBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(fromFilter);
+        Canvas canvas = new Canvas(fromFilter);
 
+        // Paint is generated and applied to each pixel in the object 'bitmap'.
+        // For static filters, (not brightness/contrast) bitmap contains a copy of the original
+        // image from the camera.
+        // For the brightness/contrast filters bitmap contains the last static filter applied.
         Paint paint = new Paint();
         paint.setColorFilter(new ColorMatrixColorFilter(
                 filterMatrix));
         canvas.drawBitmap(bitmap, 0, 0, paint);
 
+        // If brightness/contrast filter is applied then the output of the filter is displayed
+        // in the View.
         if (brightcontrast) {
             imgView.setImageBitmap(fromFilter);
         }
+        // If static filter is applied then 'bitmap' is assigned a copy of the filter output
+        // allowing brightness / contrast filters to be applied to the filtered image.
         else {
             bitmap = fromFilter.copy(fromFilter.getConfig(), true);
             imgView.setImageBitmap(bitmap);
