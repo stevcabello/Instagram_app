@@ -9,7 +9,12 @@ import java.util.Date;
  */
 public class YouActivityFeed {
 
-    public enum typeActivity { LIKE
+    public enum typeActivity {
+        FOLLOW
+    { public String toString() {
+        return "started to follow you";
+    }},
+        LIKE
     { public String toString() {
         return "liked your photo.";
     }},
@@ -36,7 +41,12 @@ public class YouActivityFeed {
         this.comment = comment;
         this.timePublication = timePublication;
     }
-
+    public YouActivityFeed(String username, ImageView urlProfilePic, typeActivity type) {
+        this.username = username;
+        this.urlProfilePic = urlProfilePic;
+        this.type = type;
+        this.comment="";
+    }
     public String getComment() {
         return comment;
     }

@@ -76,16 +76,19 @@ public class YouActivityFeedAdapter extends ArrayAdapter<YouActivityFeed> {
 
         YouActivityFeed item = (YouActivityFeed) data.get(position);
 
-
+        String timePublish="";
         Bitmap profilepic_bitmap = Utils.getBitmap(item.getUrlProfilePic());
         holder.profilepic.setImageBitmap(profilepic_bitmap);
-
-        Bitmap uploadpic_bitmap = Utils.getBitmap(item.getUrlPhoto());
-        holder.uploadedphoto.setImageBitmap(uploadpic_bitmap);
-        String timePublish = Utils.getElapsedtime(item.getTimePublication(), "short");
+        if (item.getUrlPhoto()!=null) {
+            Bitmap uploadpic_bitmap = Utils.getBitmap(item.getUrlPhoto());
+            holder.uploadedphoto.setImageBitmap(uploadpic_bitmap);
+            timePublish = Utils.getElapsedtime(item.getTimePublication(), "short");
+        }
+        else
+        {
+            holder.uploadedphoto.setImageResource(R.drawable.btn_add_follower);
+        }
         holder.description.setText(Html.fromHtml("<font color='#2B547E'><b>" + item.getUsername() + "</b></font>" + " " +"<font color='#2C3539'>"+ item.getType() + item.getComment() +"</font>"+ " "  + timePublish ));
-
-
 
         return row;
     }

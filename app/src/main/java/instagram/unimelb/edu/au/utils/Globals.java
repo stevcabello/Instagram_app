@@ -23,6 +23,7 @@ public class Globals {
 
     public static String PROFILE_MEDIA_MAX_ID = "";
     public static String YOUACTIVITY_MEDIA_MAX_ID = "";
+    public static int FOLLOWEDBY_MEDIA_MAX_ID = 0;
     public static String FOLLOWERACTIVITY_MEDIA_MAX_ID = "";
     public static String FRIENDS_MEDIA_MAX_ID = "";
     public static String SUGGESTEDFRIENDS_MEDIA_MAX_ID = "";

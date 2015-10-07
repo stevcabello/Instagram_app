@@ -30,22 +30,17 @@ public class boFollowing {
     private static String TAG = boFollowing.class
             .getSimpleName();
     private String tag_json_obj = "jobj_req";
-    //private String tag_json_arry = "jarray_req";
 
     ProgressDialog pDialog;
 
     public void getProfileMedia(final FollowingActivityFeedFragment followingActivityFragment, final String accesstoken, String clientid, final FollowingActivityFeedAdapter adapter) {
 
-        //Globals.numberLoads++;
-
         pDialog = new ProgressDialog(followingActivityFragment.getActivity());
         pDialog.setMessage("Loading...");
-        //if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
         pDialog.show();
 
         final ArrayList<FollowingActivityFeed> followingActivity = new ArrayList<>();
 
-        // https://api.instagram.com/v1/users/{user-id}/media/recent/?access_token=ACCESS-TOKEN
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, Globals.API_URL + "/users/" + clientid + "/follows"
                 + "/?access_token=" + accesstoken +"&max_id=" + Globals.FOLLOWERACTIVITY_MEDIA_MAX_ID, null,
                 new Response.Listener<JSONObject>() {
@@ -74,23 +69,12 @@ public class boFollowing {
                                 Log.i(TAG,e.getMessage());
                                 Globals.FOLLOWERACTIVITY_MEDIA_MAX_ID ="-1";
                             }
-
-                            Log.i(TAG, "Getting media inside" + followingActivity.isEmpty());
-                            for(final FollowingActivityFeed f : followingActivity ) {
-                                Log.i(TAG, "Getting media from : "+ f.getUsername());
-                            }
-                            getMedia(followingActivity,accesstoken,followingActivityFragment,adapter);
-                          //  followingActivityFragment.addProfileMedia(followingActivity);
-
-                          //  pDialog.dismiss();
+                         getMedia(followingActivity,accesstoken,followingActivityFragment,adapter);
 
                         } catch (Exception e) {
                             Log.i(TAG,e.getMessage());
                             e.printStackTrace();
                         }
-                        //aqui
-
-
 
                     }
                 }, new Response.ErrorListener() {
@@ -99,16 +83,10 @@ public class boFollowing {
                 Log.i(TAG,error.getMessage().toString());
             }
       });
-        Log.i(TAG, "Getting media outside" + followingActivity.isEmpty());
 
         // Adding request to request queue
         Controller.getInstance(followingActivityFragment.getActivity()).addToRequestQueue(req,
                 tag_json_obj);
-
-
-
-
-
 
     }
 
@@ -119,7 +97,7 @@ public class boFollowing {
         for(final FollowingActivityFeed f : followingActivity ){
             Log.i(TAG, "Getting media from : "+ f.getUsername());
             JsonObjectRequest req2 = new JsonObjectRequest(Request.Method.GET, Globals.API_URL + "/users/" + f.getId() + "/media/recent"
-                    + "/?access_token=" + accesstoken , null,
+                    + "/?access_token=" + accesstoken +"&count=5", null,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
@@ -149,11 +127,9 @@ public class boFollowing {
                                     ImageRequest.makeImageRequest(f.getUrlprofilepic(), followingActivityFragment.getActivity(), imageView, adapter);
                                     f.setProfilepic(imageView);
                                     followingActivityFragment.addProfileMedia(f);
-
                                 }
 
                             } catch (Exception e) {
-                                //Log.i(TAG,e.getMessage());
                                 e.printStackTrace();
                             }
 
