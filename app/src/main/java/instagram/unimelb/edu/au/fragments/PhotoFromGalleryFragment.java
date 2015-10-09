@@ -48,7 +48,7 @@ public class PhotoFromGalleryFragment extends Fragment {
     private ImageView imagePreview;
     public PhotoFromGalleryFragment galleryFragment;
     Boolean userScrolled = false;
-    ArrayList<ArrayList<String>> gallery;
+    public static ArrayList<ArrayList<String>> gallery;
 
     /**
      * Use this factory method to create a new instance of
@@ -99,7 +99,8 @@ public class PhotoFromGalleryFragment extends Fragment {
         gridAdapter = new PhotoFromGalleryAdapter(this.getActivity(),R.layout.item_photo_gallery,new ArrayList<ArrayList<String>>());
         gridView.setAdapter(gridAdapter);
         imagePreview = (ImageView)rootView.findViewById(R.id.iv_preview);
-        gallery=getImagesPath();
+        gallery = new ArrayList<ArrayList<String>>();
+        callShowGallery();
         loadImage(gallery.get(0).get(0), imagePreview);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -109,7 +110,7 @@ public class PhotoFromGalleryFragment extends Fragment {
                 loadImage(gallery.get(position).get(0), imagePreview);
             }
         });
-        callShowGallery();
+
         return rootView;
     }
     //load regular image for preview instead of thumbnail
@@ -121,7 +122,7 @@ public class PhotoFromGalleryFragment extends Fragment {
                         .into(image);
     }
     public void callShowGallery(){
-        ArrayList<ArrayList<String>> usermedia= paginationGallery(gallery);
+        ArrayList<ArrayList<String>> usermedia = getImagesPath();
         ShowGallery(usermedia);
     }
 
@@ -137,15 +138,15 @@ public class PhotoFromGalleryFragment extends Fragment {
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
                     userScrolled = true;
 
-             }
+            }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
                 int currentFirstVisPos = view.getFirstVisiblePosition();
-                Log.i("Photogallery", Integer.toString(Globals.GALLERY_MEDIA_MAX_ID));
+                Log.i("Photogallery", Long.toString(Globals.GALLERY_MEDIA_MAX_ID));
                 //To only send a new request when user has scrolled down until reach the bottom and while the totalitemcount is lesser than the number of posts
-                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos && Globals.GALLERY_MEDIA_MAX_ID != -1) {
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos && Globals.GALLERY_MEDIA_MAX_ID != 0) {
                     callShowGallery();
                     userScrolled = false;
                 }
@@ -162,7 +163,7 @@ public class PhotoFromGalleryFragment extends Fragment {
         Cursor cursor;
         int column_index_data, column_index_id;
         String pathOfImage = null;
-        long imageId ;
+        long imageId = 0L ;
         //uri = android.provider.MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI;
         uri =MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         /*String[] projection = { MediaStore.MediaColumns.DATA,
@@ -176,45 +177,63 @@ public class PhotoFromGalleryFragment extends Fragment {
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
                 MediaStore.Images.Media.DATE_TAKEN
         };
-        /*To show order by date*/
-        String orderBy = MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC";
-        cursor = this.getActivity().getContentResolver().query(uri, projection, null,
-                null, orderBy);
+        /*To show order by date and paginates by 15*/
+        String orderBy = MediaStore.Images.ImageColumns._ID + " DESC LIMIT 15";
+        /*To filter images*/
+        String whereimageId = MediaStore.Images.Media._ID + " < ?";
+        String valuesIs[] = {Long.toString(Globals.GALLERY_MEDIA_MAX_ID)};
+        try {
+            cursor = this.getActivity().getContentResolver().query(uri, projection, whereimageId,
+                    valuesIs, orderBy);
 
-        column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-       // column_index_id = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.IMAGE_ID);
-        column_index_id = cursor.getColumnIndexOrThrow( MediaStore.Images.Media._ID);
+            column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+            // column_index_id = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.IMAGE_ID);
+            column_index_id = cursor.getColumnIndexOrThrow( MediaStore.Images.Media._ID);
 
-        //Cursor that fills the list with the thumbnail path and regular path
-        while (cursor.moveToNext()) {
-            pathOfImage = cursor.getString(column_index_data);
-            //imageId = cursor.getString(column_index_id);
-            imageId = cursor.getLong(column_index_id);
-            ArrayList<String> iteration =new ArrayList<String>();
-            Cursor thumbcursor = MediaStore.Images.Thumbnails.queryMiniThumbnail(
-                    this.getActivity().getContentResolver(),imageId,
-                    MediaStore.Images.Thumbnails.MINI_KIND,
-                    null );
-            String thumbnail ="";
-            if( thumbcursor != null && thumbcursor.getCount() > 0 ) {
-                thumbcursor.moveToFirst();
-                thumbnail = thumbcursor.getString( thumbcursor.getColumnIndex( MediaStore.Images.Thumbnails.DATA ) );
+            //Cursor that fills the list with the thumbnail path and regular path
+            if (cursor != null){
+                while (cursor.moveToNext()) {
+                    pathOfImage = cursor.getString(column_index_data);
+                    //imageId = cursor.getString(column_index_id);
+                    imageId = cursor.getLong(column_index_id);
+                    Log.d("PhotoFromGallery", Long.toString(imageId));
+                    ArrayList<String> iteration =new ArrayList<String>();
+                    Cursor thumbcursor = MediaStore.Images.Thumbnails.queryMiniThumbnail(
+                            this.getActivity().getContentResolver(),imageId,
+                            MediaStore.Images.Thumbnails.MINI_KIND,
+                            null );
+                    String thumbnail ="";
+                    if( thumbcursor != null && thumbcursor.getCount() > 0 ) {
+                        thumbcursor.moveToFirst();
+                        thumbnail = thumbcursor.getString( thumbcursor.getColumnIndex( MediaStore.Images.Thumbnails.DATA ) );
+                        thumbcursor.close();
+                    }
+
+                    iteration.add(pathOfImage);
+                    if (!thumbnail.equals("")) {
+                        iteration.add(thumbnail);
+                    }
+                    else {
+                        iteration.add(pathOfImage);
+                    }
+                    listOfAllImages.add(iteration);
+                    gallery.add(iteration);
+                }
+                Globals.GALLERY_MEDIA_MAX_ID=imageId;
+                cursor.close();
             }
-            iteration.add(pathOfImage);
-            if (!thumbnail.equals("")) {
-                iteration.add(thumbnail);
-            }
-            else {
-                iteration.add(pathOfImage);
-            }
-            listOfAllImages.add(iteration);
-            }
+        } catch (Exception e){
+            Log.e("PhotoFromGallery", e.toString());
+        }
+
         return listOfAllImages;
+
     }
+
     /*
         Pagination of the gallery to bring records from 15 to 15
      */
-    public ArrayList<ArrayList<String>> paginationGallery(ArrayList<ArrayList<String>> imageItems){
+  /*  public ArrayList<ArrayList<String>> paginationGallery(ArrayList<ArrayList<String>> imageItems){
         ArrayList<ArrayList<String>> usermedia = new ArrayList<>();
         int sizeGallery = imageItems.size()                ;
         int toShow = Globals.GALLERY_MEDIA_MAX_ID+15;
@@ -229,7 +248,7 @@ public class PhotoFromGalleryFragment extends Fragment {
             Globals.GALLERY_MEDIA_MAX_ID=-1;
         }
         return usermedia;
-    }
+    }*/
   /*  public String getImagePath( String reterievedImageId) {
         String[] columnsReturn = {MediaStore.Images.Media.DATA};
         String whereimageId = MediaStore.Images.Media._ID + " LIKE ?";
