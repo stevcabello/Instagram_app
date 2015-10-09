@@ -16,9 +16,9 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -53,6 +53,12 @@ public class FilterActivity extends AppCompatActivity {
 
     private String filterName;
 
+    //Preview buttons
+    ImageButton btnOriginal;
+    ImageButton btnFilterInvert;
+    ImageButton btnFilter2;
+    ImageButton btnFilter3;
+
     public FilterActivity() {
     }
 
@@ -77,12 +83,6 @@ public class FilterActivity extends AppCompatActivity {
 
         imgView = (ImageView) findViewById(R.id.filter_view);
 
-        // Define buttons.
-        Button btnOriginal = (Button) findViewById(R.id.filt_button_original);
-        Button btnFilterInvert = (Button) findViewById(R.id.filt_button_invert);
-        Button btnFilter2 = (Button) findViewById(R.id.filt_button_2);
-        Button btnFilter3 = (Button) findViewById(R.id.filt_button_3);
-        ImageButton btnNext = (ImageButton) findViewById(R.id.ib_next);
 
         // Define seekbars.
         SeekBar brightness = (SeekBar) findViewById(R.id.brightness_slider);
@@ -100,8 +100,8 @@ public class FilterActivity extends AppCompatActivity {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                brightnessProgress = progress*10;
-                selectFilterMatrix("brightness");
+                brightnessProgress = progress * 10;
+                selectFilterMatrix("brightness",1);
             }
 
             @Override
@@ -118,7 +118,7 @@ public class FilterActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 contrastProgress = progress;
-                selectFilterMatrix("contrast");
+                selectFilterMatrix("contrast",1);
             }
 
             @Override
@@ -129,6 +129,24 @@ public class FilterActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+
+
+        bitmap = BitmapFactory.decodeFile(imagePath,bmOptions);
+        /*
+        If the photo comes from the gallery it does not rotate it
+         */
+        if (galleryOrigin==false){
+        bitmap = RotateBitmap(bitmap,90);
+        }
+        origBitmap = bitmap;
+
+        imgView.setImageBitmap(bitmap);
+
+        // Define buttons.
+        btnOriginal = (ImageButton) findViewById(R.id.filt_button_original);
+        btnFilterInvert = (ImageButton) findViewById(R.id.filt_button_invert);
+        btnFilter2 = (ImageButton) findViewById(R.id.filt_button_2);
+        btnFilter3 = (ImageButton) findViewById(R.id.filt_button_3);
 
         btnOriginal.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,32 +180,28 @@ public class FilterActivity extends AppCompatActivity {
             }
         });
 
-        /*
-         Onclick, save and shares photo filtered
-         */
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SaveFilteredImage(bitmap);
-            }
-        });
-        bitmap = BitmapFactory.decodeFile(imagePath,bmOptions);
-        /*
-        If the photo comes from the gallery it does not rotate it
-         */
-        if (galleryOrigin==false){
-        bitmap = RotateBitmap(bitmap,90);
-        }
-        origBitmap = bitmap;
 
-        imgView.setImageBitmap(bitmap);
+        //To set filtered images on the preview's thumbnails
+        InitializeFilterPreviews();
 
 
     }
+
+    /**
+     * Set filtered images respectively to each button
+     */
+    private void InitializeFilterPreviews() {
+        btnOriginal.setImageBitmap(bitmap);
+        selectFilterMatrix("invert", 0);
+        selectFilterMatrix("test2", 0);
+        selectFilterMatrix("test3", 0);
+    }
+
+
     /*
     Save images filtered to share on Instagram
      */
-    private void SaveFilteredImage(Bitmap image){
+    private void SaveFilteredImage(Bitmap image, String sendTo){
         File pictureFile;
         String type = "image/*";
         pictureFile = CapturePreview.getOutputMediaFile(CapturePreview.MEDIA_TYPE_IMAGE);
@@ -199,7 +213,7 @@ public class FilterActivity extends AppCompatActivity {
             FileOutputStream fos = new FileOutputStream(pictureFile);
             image.compress(Bitmap.CompressFormat.PNG, 90, fos);
             fos.close();
-            Toast.makeText(FilterActivity.this, "Photo Saved", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(FilterActivity.this, "Photo Saved", Toast.LENGTH_SHORT).show();
 
             /*
             Adding information to the gallery
@@ -217,7 +231,11 @@ public class FilterActivity extends AppCompatActivity {
             /*
              Calling the share intent to Instagram app
             */
-            createInstagramIntent(type,pictureFile.getPath());
+            if (sendTo.equals("instagram"))
+                createInstagramIntent(type,pictureFile.getPath());
+            else
+                cropImage(Uri.fromFile(pictureFile));
+
         } catch (FileNotFoundException e) {
             Log.d(TAG, "File not found: " + e.getMessage());
         } catch (IOException e) {
@@ -225,6 +243,7 @@ public class FilterActivity extends AppCompatActivity {
         }
 
     }
+
     /*
     Instagram intent
      */
@@ -255,20 +274,25 @@ public class FilterActivity extends AppCompatActivity {
 
     // Method for reverting displayed image back to original image from camera.
     public void originalImage(View view) {
-
         imgView.setImageBitmap(origBitmap);
     }
 
     // Method for calling filter from the filter_activity view buttons.
     public void selectFilterMatrix(View view) {
-        selectFilterMatrix(filterName);
+        selectFilterMatrix(filterName, 1);
     }
 
-    // This method accepts a string filter name which is determined by the button pressed.
-    // Switch statement selects the associated matrix to construct a ColorMatrix which is
-    // to be used to filter the Bitmap object. ColorMatrix object is passed to applyFilter
-    // method to implement filtering.
-    public void selectFilterMatrix(String filterName) {
+
+
+    /**
+     *  This method accepts a string filter name which is determined by the button pressed.
+     *  Switch statement selects the associated matrix to construct a ColorMatrix which is
+     *  to be used to filter the Bitmap object. ColorMatrix object is passed to applyFilter
+     *  method to implement filtering.
+     * @param filterName the name of the filter we want to apply
+     * @param state set 0 for the initial load of thumbnail preview and 1 if not
+     */
+    public void selectFilterMatrix(String filterName, int state) {
 
         switch(filterName) {
             case("invert"): {
@@ -284,8 +308,10 @@ public class FilterActivity extends AppCompatActivity {
                 bitmap = origBitmap.copy(origBitmap.getConfig(),true);
 
                 brightcontrast = false;
-
-                applyFilter(filterMatrix);
+                if(state==1)
+                    applyFilter(filterMatrix,"");
+                else
+                    applyFilter(filterMatrix,filterName);
 
                 break;
             }
@@ -304,8 +330,10 @@ public class FilterActivity extends AppCompatActivity {
 
                 // Indicates the filter applied was not realted to the brightness/contrast seekbar.
                 brightcontrast = false;
-
-                applyFilter(filterMatrix);
+                if(state==1)
+                    applyFilter(filterMatrix,"");
+                else
+                    applyFilter(filterMatrix,filterName);
 
                 break;
             }
@@ -324,8 +352,10 @@ public class FilterActivity extends AppCompatActivity {
 
                 // Indicates the filter applied was not realted to the brightness/contrast seekbar.
                 brightcontrast = false;
-
-                applyFilter(filterMatrix);
+                if(state==1)
+                    applyFilter(filterMatrix,"");
+                else
+                    applyFilter(filterMatrix,filterName);
 
                 break;
             }
@@ -342,7 +372,7 @@ public class FilterActivity extends AppCompatActivity {
                 // Indicates the filter applied was either brightness/contrast seekbar.
                 brightcontrast = true;
 
-                applyFilter(filterMatrix);
+                applyFilter(filterMatrix,"");
                 break;
             }
 
@@ -361,7 +391,7 @@ public class FilterActivity extends AppCompatActivity {
                 // Indicates the filter applied was either brightness/contrast seekbar.
                 brightcontrast = true;
 
-                applyFilter(filterMatrix);
+                applyFilter(filterMatrix,"");
                 break;
             }
         }
@@ -370,7 +400,7 @@ public class FilterActivity extends AppCompatActivity {
 
     // This method accepts ColorMatrix selected in selectFilterMatrix and draws the filtered
     // pixels to a new Canvas.
-    public void applyFilter(ColorMatrix filterMatrix) {
+    public void applyFilter(ColorMatrix filterMatrix, String filterName) {
 
         // fromFilter is used to hold a new Bitmap which is generated every time this method
         // is called.
@@ -396,8 +426,38 @@ public class FilterActivity extends AppCompatActivity {
         // allowing brightness / contrast filters to be applied to the filtered image.
         else {
             bitmap = fromFilter.copy(fromFilter.getConfig(), true);
-            imgView.setImageBitmap(bitmap);
+
+            if (!filterName.equals(""))
+                setPreviewThumbnails(filterName,bitmap);
+            else
+                imgView.setImageBitmap(bitmap);
         }
+    }
+
+
+    private void setPreviewThumbnails(String filterName, Bitmap bitmap) {
+        switch(filterName) {
+            case ("invert"): {
+                btnFilterInvert.setImageBitmap(bitmap);
+                break;
+            } case ("test2"): {
+                btnFilter2.setImageBitmap(bitmap);
+                break;
+            } case ("test3"): {
+                btnFilter3.setImageBitmap(bitmap);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_filter, menu);
+
+        MenuItem item_next = menu.findItem(R.id.action_next);
+        item_next.setIcon(R.drawable.next_arrow);
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -408,10 +468,60 @@ public class FilterActivity extends AppCompatActivity {
 
         if (id == android.R.id.home) { //Behaviour when back button is pressed
             onBackPressed(); // just go back
+        }else if (id == R.id.action_next){
+            //Save the image and call to the crop intent
+            SaveFilteredImage(bitmap,"crop");
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Call of crop intent and return of cropped image onActivityResult
+     * @param imageUri
+     */
+    private void cropImage(Uri imageUri) {
+        //call to the crop intent
+        Intent cropIntent = new Intent("com.android.camera.action.CROP");
+
+        cropIntent.setDataAndType(imageUri, "image/*");
+        cropIntent.putExtra("crop", "true");
+
+        //desired crop aspect
+        cropIntent.putExtra("aspectX", 1);
+        cropIntent.putExtra("aspectY", 1);
+
+        //indicate output X and Y
+        cropIntent.putExtra("outputX", 256);
+        cropIntent.putExtra("outputY", 256);
+
+        //the data will be retrieved on return
+        cropIntent.putExtra("return-data", true);
+
+        //The return of the cropped image is handled onActivityResult
+        startActivityForResult(cropIntent, 2);
+    }
+
+
+    /**
+     * Handles the return from the crop intent and send image to Instagram
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Bundle extras = data.getExtras();
+        Bitmap croppedBitmap = extras.getParcelable("data");
+
+        //The image is sent to Instagram through the share button
+        SaveFilteredImage(croppedBitmap, "instagram");
+        Toast.makeText(FilterActivity.this, "Select Instagram App to upload your photo", Toast.LENGTH_LONG).show();
+        FilterActivity.this.finish();
+    }
+
+
+
 }
+
+
 

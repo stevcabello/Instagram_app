@@ -12,16 +12,6 @@
         android:background="@android:color/holo_blue_bright">
 
 
-        <ImageButton
-            android:id="@+id/ib_next"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="right"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/next_arrow">
-        </ImageButton>
-
     </android.support.v7.widget.Toolbar>
 
     <ImageView
@@ -72,37 +62,140 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#000">
+        android:layout_height="0dp"
+        android:layout_weight="0.20"
+        android:background="#000"
+        android:measureWithLargestChild="false">
 
-    <Button
-        android:id="@+id/filt_button_original"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/applyfilter0"
-        android:onClick="originalImage"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="0.50"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/filt_button_original"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="0.70"
+                android:text="@string/applyfilter0"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:padding="0dp"
+                android:layout_margin="0dp"
+                android:onClick="originalImage"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.30"
+                android:textColor="@color/abc_primary_text_disable_only_material_dark"
+                android:textStyle="bold|italic"
+                android:gravity="center_horizontal"
+                android:textSize="14sp"
+                android:text="Normal"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
 
 
-    <Button
-        android:id="@+id/filt_button_invert"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/apply_filter_invert"
-        android:onClick="selectFilterMatrix"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="0.50"
+            android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/filt_button_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/apply_filter_2"
-        android:onClick="selectFilterMatrix"/>
+            <ImageButton
+                android:id="@+id/filt_button_invert"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="0.70"
+                android:text="@string/apply_filter_invert"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:padding="0dp"
+                android:layout_margin="0dp"
+                android:onClick="selectFilterMatrix"
+                android:layout_gravity="center_horizontal" />
 
-    <Button
-        android:id="@+id/filt_button_3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/apply_filter_3"
-        android:onClick="selectFilterMatrix"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.30"
+                android:textColor="@color/abc_primary_text_disable_only_material_dark"
+                android:textStyle="bold|italic"
+                android:textSize="14sp"
+                android:text="Invert"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="0.50"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/filt_button_2"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="0.70"
+                android:text="@string/apply_filter_2"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:padding="0dp"
+                android:layout_margin="0dp"
+                android:onClick="selectFilterMatrix"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.30"
+                android:textColor="@color/abc_primary_text_disable_only_material_dark"
+                android:textStyle="bold|italic"
+                android:textSize="14sp"
+                android:text="Orange"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="0.50"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/filt_button_3"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="0.70"
+                android:text="@string/apply_filter_3"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:padding="0dp"
+                android:layout_margin="0dp"
+                android:onClick="selectFilterMatrix"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.30"
+                android:textColor="@color/abc_primary_text_disable_only_material_dark"
+                android:textStyle="bold|italic"
+                android:textSize="14sp"
+                android:text="Violet"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+
+
+
     </LinearLayout>
 
 </LinearLayout>

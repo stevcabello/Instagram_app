@@ -303,7 +303,7 @@ public class boDiscover {
                                 boolean hasRecentMedia = false;
                                 for(int i=0; i<3; i++)
                                 {
-                                        String uriImage = array.getJSONObject(i).getJSONObject("images").getJSONObject("thumbnail").getString("url");
+                                        String uriImage = array.getJSONObject(i).getJSONObject("images").getJSONObject("low_resolution").getString("url");
                                         Log.i(TAG, uriImage);
                                         ImageView imageView = new ImageView(suggestedFriendsFragment.getActivity());
                                         ImageRequest.makeImageRequest(uriImage, suggestedFriendsFragment.getActivity(), imageView, adapter);
