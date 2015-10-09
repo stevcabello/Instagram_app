@@ -31,7 +31,7 @@ public class Globals {
     public static String USERNAME = "";
     public static String FULL_NAME = "";
     public static String PROFILE_PIC_URL = "";
-    public static int GALLERY_MEDIA_MAX_ID = 0;
+    public static Long GALLERY_MEDIA_MAX_ID = 99999999L;
     public static String GALLERY_SELECTEDPATH = "";
     public static MainActivity mainActivity=null;
 
