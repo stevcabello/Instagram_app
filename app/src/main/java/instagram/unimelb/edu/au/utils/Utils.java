@@ -10,6 +10,9 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 //TODO: Remember to add any lonely method and useful to all other classes to this class
 /**
  * Manages images,dates
@@ -138,6 +141,33 @@ public class Utils {
     }
 
 
+    /**
+     * Given an array with the media-id to whom the authenticated user gave likes, return
+     * an array with some of those media-id in order to provide synthetic likes to the followers
+     * of my followers.
+     *
+     * @param arrSyntheticLikes
+     * @return array of synthetic likes (false likes)
+     */
+    public static ArrayList<String> getRandomIdList(ArrayList<String> arrSyntheticLikes){
 
+        ArrayList<String> arrIds = new ArrayList<>();
+
+        //Get the total size of media-id likes from the authenticated user
+        int total = arrSyntheticLikes.size();
+
+        //Get a random number between 0 and the length of the media-id arrays from the authenticated user
+        Random r = new Random();
+        int rndNumber = r.nextInt(total - 0) + 0;
+
+        //Set the random number as top for the loop in order to provide a random set of likes into
+        // the array to return
+        for(int i=0; i<rndNumber; i++){
+            arrIds.add(arrSyntheticLikes.get(i));
+        }
+
+        return arrSyntheticLikes;
+
+    }
 
 }
