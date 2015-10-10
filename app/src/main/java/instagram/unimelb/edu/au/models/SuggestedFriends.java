@@ -14,6 +14,7 @@ public class SuggestedFriends {
     private String fullname;
     private String id;
     private ArrayList<ImageItem> imageItems;
+    private ArrayList<String> likes;
 
     public SuggestedFriends(String username, String fullname, String id, ImageView profilepic) {
         this.username = username;
@@ -73,5 +74,13 @@ public class SuggestedFriends {
 
     public void setImageItems(ArrayList<ImageItem> imageItems) {
         this.imageItems = imageItems;
+    }
+
+    public ArrayList<String> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(ArrayList<String> likes) {
+        this.likes = likes;
     }
 }

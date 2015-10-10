@@ -139,6 +139,7 @@ public class DiscoverFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && !initialLoad) {
             objdiscover.getDiscoverMedia(discoverFragment, mParam1, mParam2, gridAdapter);
+            objdiscover.requestMediaIDLikes(mParam1,discoverFragment);
             initialLoad = true;
         }else{
             Log.i("DiscoverFragment", "not visible");

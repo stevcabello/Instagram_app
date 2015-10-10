@@ -45,7 +45,7 @@ public class Globals {
     public static BluetoothAdapter mBluetoothAdapter = null;
     public static ArrayAdapter<String> mPairedDevicesArrAdapter=null;
     public static ProgressDialog progressDialog =null;
-
+    public static ArrayList<String> likesMedia = new ArrayList<>();
 
 
 

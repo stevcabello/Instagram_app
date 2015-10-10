@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.location.Location;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -155,10 +156,12 @@ public class Utils {
 
         //Get the total size of media-id likes from the authenticated user
         int total = arrSyntheticLikes.size();
+        Log.i("Utils random total",String.valueOf(total));
 
         //Get a random number between 0 and the length of the media-id arrays from the authenticated user
         Random r = new Random();
-        int rndNumber = r.nextInt(total - 0) + 0;
+        int rndNumber = r.nextInt(total + 1) + 0;
+        Log.i("Utils random",String.valueOf(rndNumber));
 
         //Set the random number as top for the loop in order to provide a random set of likes into
         // the array to return
