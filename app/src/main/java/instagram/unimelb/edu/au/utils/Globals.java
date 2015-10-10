@@ -23,6 +23,7 @@ public class Globals {
 
     public static String PROFILE_MEDIA_MAX_ID = "";
     public static String YOUACTIVITY_MEDIA_MAX_ID = "";
+    public static int FOLLOWEDBY_MEDIA_MAX_ID = 0;
     public static String FOLLOWERACTIVITY_MEDIA_MAX_ID = "";
     public static String FRIENDS_MEDIA_MAX_ID = "";
     public static String SUGGESTEDFRIENDS_MEDIA_MAX_ID = "";
@@ -30,7 +31,7 @@ public class Globals {
     public static String USERNAME = "";
     public static String FULL_NAME = "";
     public static String PROFILE_PIC_URL = "";
-    public static int GALLERY_MEDIA_MAX_ID = 0;
+    public static Long GALLERY_MEDIA_MAX_ID = 99999999L;
     public static String GALLERY_SELECTEDPATH = "";
     public static MainActivity mainActivity=null;
 

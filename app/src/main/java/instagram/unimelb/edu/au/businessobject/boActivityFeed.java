@@ -39,22 +39,18 @@ public class boActivityFeed {
     private String TAG = boActivityFeed.class
             .getSimpleName();
     private String tag_json_obj = "jobj_req";
-    //private String tag_json_arry = "jarray_req";
 
     ProgressDialog pDialog;
-
-    public void getProfileMedia(final YouActivityFeedFragment youActivityFeedFragment, String accesstoken, String clientid,final YouActivityFeedAdapter adapter) {
-
-        //Globals.numberLoads++;
-
+    /*
+        Method that retrieve the information of likes and comments from the active user
+     */
+    public void getProfileMedia(final YouActivityFeedFragment youActivityFeedFragment, final String accesstoken, final String clientid,final YouActivityFeedAdapter adapter) {
         pDialog = new ProgressDialog(youActivityFeedFragment.getActivity());
         pDialog.setMessage("Loading...");
-        //if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
+
         pDialog.show();
 
         final ArrayList<YouActivityFeed> userActivity = new ArrayList<>();
-
-
         // https://api.instagram.com/v1/users/{user-id}/media/recent/?access_token=ACCESS-TOKEN
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,Globals.API_URL + "/users/" + clientid + "/media/recent"
                 + "/?access_token=" + accesstoken +"&max_id=" + Globals.YOUACTIVITY_MEDIA_MAX_ID, null,
@@ -77,7 +73,6 @@ public class boActivityFeed {
                             for(int i=0; i<array.length(); i++)
                             {
                                 comment= "";
-                                timePublication ="";
                                 timePublication = array.getJSONObject(i).getString("created_time");
                                 String uriImage = array.getJSONObject(i).getJSONObject("images").getJSONObject("thumbnail").getString("url");
                                 imageView = new ImageView(youActivityFeedFragment.getActivity());
@@ -87,13 +82,14 @@ public class boActivityFeed {
                                 if (count > 0) {
                                     JSONArray arrayLikes = array.getJSONObject(i).getJSONObject("likes").getJSONArray("data");
                                     for(int l=0; l<arrayLikes.length(); l++){
-                                        username= arrayLikes.getJSONObject(l).getString("username");
-                                        profilePicture = arrayLikes.getJSONObject(l).getString("profile_picture");
-                                        imageProfileView = new ImageView(youActivityFeedFragment.getActivity());
-                                        ImageRequest.makeImageRequest(profilePicture, youActivityFeedFragment.getActivity(), imageProfileView, adapter);
-                                        type =YouActivityFeed.typeActivity.LIKE;
-                                        userActivity.add(new YouActivityFeed(username, imageProfileView, imageView, type, datePublished, comment, timePublication));
-
+                                       if (arrayLikes.getJSONObject(l).getString("id")!=clientid) {
+                                           username = arrayLikes.getJSONObject(l).getString("username");
+                                           profilePicture = arrayLikes.getJSONObject(l).getString("profile_picture");
+                                           imageProfileView = new ImageView(youActivityFeedFragment.getActivity());
+                                           ImageRequest.makeImageRequest(profilePicture, youActivityFeedFragment.getActivity(), imageProfileView, adapter);
+                                           type = YouActivityFeed.typeActivity.LIKE;
+                                           userActivity.add(new YouActivityFeed(username, imageProfileView, imageView, type, datePublished, comment, timePublication));
+                                       }
                                     }
                                 }
 
@@ -112,29 +108,21 @@ public class boActivityFeed {
                                         userActivity.add(new YouActivityFeed(username, imageProfileView, imageView, type, datePublished, comment, timePublication));
                                     }
                                 }
-                               // ImageView imageView = new ImageView(youActivityFeedFragment.getActivity());
-                             //   makeImageRequest(uriImage, youActivityFeedFragment.getActivity(), imageView);
-
-                                //usermedia.add(new ImageItem(uriImage));
-                                //usermedia.add(new ImageItem(makeImageRequest(uriImage,profileFragment.getActivity())));
                             }
 
                             try {
 
                                 String next_max_id = pagination.getString("next_max_id");
-                                //Log.i(TAG, next_max_id);
                                 Globals.YOUACTIVITY_MEDIA_MAX_ID = next_max_id;
                             }catch (Exception e) {
                                 Log.i(TAG,e.getMessage());
                                 Globals.YOUACTIVITY_MEDIA_MAX_ID = "-1";
                             }
 
-                            youActivityFeedFragment.addYouActivity(userActivity);
-
+                            getFollowedby(userActivity,youActivityFeedFragment,accesstoken,clientid,adapter);
                             pDialog.dismiss();
 
                         } catch (Exception e) {
-                            //Log.i(TAG,e.getMessage());
                             e.printStackTrace();
                         }
 
@@ -145,35 +133,68 @@ public class boActivityFeed {
                 Log.i(TAG,error.getMessage());
             }
 
-
-
-
         });
+        // Adding request to request queue
+        Controller.getInstance(youActivityFeedFragment.getActivity()).addToRequestQueue(req,
+                tag_json_obj);
+    }
+    //
+    public void getFollowedby(final ArrayList<YouActivityFeed> userActivity, final YouActivityFeedFragment youActivityFeedFragment, String accesstoken, String clientid,final YouActivityFeedAdapter adapter) {
+
+        pDialog = new ProgressDialog(youActivityFeedFragment.getActivity());
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+       // final ArrayList<YouActivityFeed> followedActivity = new ArrayList<>();
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, Globals.API_URL + "/users/" + clientid + "/followed-by"
+                + "/?access_token=" + accesstoken, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, response.toString());
+                        try {
+                            JSONArray array = response.getJSONArray("data");
+                           // JSONObject pagination = response.getJSONObject("pagination");
+                            ImageView imageProfileView;
+                            for(int i= Globals.FOLLOWEDBY_MEDIA_MAX_ID; i< Globals.FOLLOWEDBY_MEDIA_MAX_ID+2; i++)
+                            {
+                                String username = array.getJSONObject(i).getString("username");
+                                String profilePicture = array.getJSONObject(i).getString("profile_picture");
+                                imageProfileView = new ImageView(youActivityFeedFragment.getActivity());
+                                ImageRequest.makeImageRequest(profilePicture, youActivityFeedFragment.getActivity(), imageProfileView, adapter);
+                                userActivity.add(new YouActivityFeed(username, imageProfileView, YouActivityFeed.typeActivity.FOLLOW));
+                            }
 
 
+                            Globals.FOLLOWEDBY_MEDIA_MAX_ID =  Globals.FOLLOWEDBY_MEDIA_MAX_ID+2;;
 
+                            youActivityFeedFragment.addYouActivity(userActivity);
+
+                        } catch (Exception e) {
+                            Log.i(TAG,e.getMessage());
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(TAG,error.getMessage().toString());
+            }
+        });
 
         // Adding request to request queue
         Controller.getInstance(youActivityFeedFragment.getActivity()).addToRequestQueue(req,
                 tag_json_obj);
 
-
-
     }
 
-
+    //
     public void makeImageRequest(String urlImage, Context context, final ImageView imageView) {
 
-//        pDialog = new ProgressDialog(context);
-//        pDialog.setMessage("Loading...");
-//        pDialog.show();
-
         ImageLoader imageLoader = Controller.getInstance(context).getImageLoader();
-
-
         imageLoader.get(urlImage, new ImageListener() {
-
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Image Load Error: " + error.getMessage());
@@ -206,67 +227,5 @@ public class boActivityFeed {
             // cached response doesn't exists. Make a network call here
         }
 
-        //pDialog.cancel();
-
-
     }
-
-
-
-    //Not in use : returns sometimes empty bitmaps
-    private Bitmap makeImageRequest(String urlImage, Context context) {
-
-
-        ImageLoader imageLoader = Controller.getInstance(context).getImageLoader();
-        final ImageView imageView = new ImageView(context);
-        Bitmap profilepic = null;
-
-        imageLoader.get(urlImage, new ImageListener() {
-
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Image Load Error: " + error.getMessage());
-            }
-
-            @Override
-            public void onResponse(ImageContainer response, boolean arg1) {
-                if (response.getBitmap() != null) {
-                    // load image into imageView
-                    //imageView.setImageBitmap(response.getBitmap();
-
-                }
-            }
-        });
-
-        // Loading image with placeholder and error image
-//        imageLoader.get(urlImage, ImageLoader.getImageListener(
-//                imageView, R.drawable.ico_loading, R.drawable.ico_error));
-
-        Cache cache = Controller.getInstance(context).getRequestQueue().getCache();
-        Cache.Entry entry = cache.get(urlImage);
-        if(entry != null){
-            try {
-                //String data = new String(entry.data, "UTF-8");
-                String data = Base64.encodeToString(entry.data, Base64.DEFAULT);
-
-                // handle data, like converting it to xml, json, bitmap etc.,
-
-                //convert the base64 enconde string into a bitmap
-                byte[] bytes = Base64.decode(data, Base64.DEFAULT);
-                profilepic = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }else{
-            // cached response doesn't exists. Make a network call here
-        }
-
-
-        return profilepic;
-
-    }
-
-
 }

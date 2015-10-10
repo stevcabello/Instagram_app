@@ -1,8 +1,6 @@
 package instagram.unimelb.edu.au.adapters;
 
 import android.content.Context;
-import java.util.ArrayList;
-
 import android.graphics.Bitmap;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
@@ -15,9 +13,10 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.models.SuggestedFriends;
-import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Utils;
 
 /**
@@ -85,7 +84,7 @@ public class SuggestedFriendsAdapter extends ArrayAdapter<SuggestedFriends>{
 
             Bitmap profilepic_bitmap = Utils.getBitmap(item.getProfilepic());
             holder.profilepic.setImageBitmap(profilepic_bitmap);
-            holder.description.setText(Html.fromHtml("<b>" + item.getUsername() + "</b>" + " " + item.getFullname()));
+            holder.description.setText(Html.fromHtml("<font color='#0000A0'><b>" + item.getUsername() + "</b></font>" + "<br/>" + "<font size=5>" +  item.getFullname() + "</font>"));
             subgridAdapter = new SubSuggestedFriendsAdapter(context,R.layout.subitem_suggested_friends, item.getImageItems());
             holder.imageItems.setAdapter(subgridAdapter);
         }

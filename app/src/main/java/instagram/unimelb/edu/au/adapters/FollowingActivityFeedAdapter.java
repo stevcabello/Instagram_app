@@ -77,7 +77,7 @@ public class FollowingActivityFeedAdapter extends ArrayAdapter<FollowingActivity
         if (item.getProfilepic()!=null){
         Bitmap profilepic_bitmap = Utils.getBitmap(item.getProfilepic());
         holder.profilepic.setImageBitmap(profilepic_bitmap);
-        holder.description.setText(Html.fromHtml("<b>" + item.getUsername() + "</b>" + " " + item.getFullname()));
+        holder.description.setText(Html.fromHtml("User <b>" + item.getUsername() + "</b>" + " uploaded photos  " ));
             subgridAdapter = new SubFollowingActivityFeedAdapter(context,R.layout.subitem_followingactivityfeed, item.getImageItems());
            holder.imageItems.setAdapter(subgridAdapter);
         }

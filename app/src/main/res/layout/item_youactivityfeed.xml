@@ -21,6 +21,7 @@
         android:id="@+id/tv_description"
         android:singleLine="false"
         android:layout_toRightOf="@id/iv_follower_photo"
+        android:layout_toLeftOf="@id/iv_unfollow"
         android:layout_marginTop="30dp"
         android:layout_marginLeft="10dp" />
 
