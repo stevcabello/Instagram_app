@@ -195,6 +195,7 @@ public class FilterActivity extends AppCompatActivity {
         selectFilterMatrix("invert", 0);
         selectFilterMatrix("test2", 0);
         selectFilterMatrix("test3", 0);
+        bitmap=origBitmap;
     }
 
 
@@ -275,6 +276,7 @@ public class FilterActivity extends AppCompatActivity {
     // Method for reverting displayed image back to original image from camera.
     public void originalImage(View view) {
         imgView.setImageBitmap(origBitmap);
+        bitmap=origBitmap;
     }
 
     // Method for calling filter from the filter_activity view buttons.
@@ -510,13 +512,19 @@ public class FilterActivity extends AppCompatActivity {
      * @param data
      */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Bundle extras = data.getExtras();
-        Bitmap croppedBitmap = extras.getParcelable("data");
+        try{
+            Bundle extras = data.getExtras();
+            Bitmap croppedBitmap = extras.getParcelable("data");
 
-        //The image is sent to Instagram through the share button
-        SaveFilteredImage(croppedBitmap, "instagram");
-        Toast.makeText(FilterActivity.this, "Select Instagram App to upload your photo", Toast.LENGTH_LONG).show();
-        FilterActivity.this.finish();
+            //The image is sent to Instagram through the share button
+            SaveFilteredImage(croppedBitmap, "instagram");
+            Toast.makeText(FilterActivity.this, "Select Instagram App to upload your photo", Toast.LENGTH_LONG).show();
+        }catch (Exception e) {
+
+        }
+
+
+
     }
 
 
