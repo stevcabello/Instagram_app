@@ -34,9 +34,6 @@ public class PhotoFromCameraFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private String mParam1;
-    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
     private View rootView;
 
@@ -69,11 +66,6 @@ public class PhotoFromCameraFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate called.");
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     // When fragment first created the CapturePreview object is assigned to the SurfaceView and
@@ -97,7 +89,6 @@ public class PhotoFromCameraFragment extends Fragment {
         // Associates setFlashOn method to the flash button in the layout.
         RelativeLayout flashoptions = (RelativeLayout) rootView.findViewById(R.id.flash_op);
         flashoptions.bringToFront();
-        Log.i(TAG, "Fragment creation flash value: "+flashOn);
         cPreview.setFlashOn(flashOn);
 
         // Associates button press to invoking takePicture method in CapturePreview class.
@@ -109,7 +100,6 @@ public class PhotoFromCameraFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d(TAG, "Photo capture button activated.");
                         cPreview.takePicture();
                     }
                 }
@@ -123,7 +113,6 @@ public class PhotoFromCameraFragment extends Fragment {
 
                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                 // get an image from the camera
-                                Log.d(TAG, "Flash toggle button activated.");
                                 flashOn = isChecked;
                                 cPreview.FlashToggle();
                             }
@@ -138,7 +127,6 @@ public class PhotoFromCameraFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume called.");
         if (!cPreview.active) {
             cPreview = new CapturePreview(getActivity());
             FrameLayout preview = (FrameLayout) rootView.findViewById(R.id.SurfaceView);
@@ -147,7 +135,6 @@ public class PhotoFromCameraFragment extends Fragment {
 
         RelativeLayout flashoptions = (RelativeLayout) rootView.findViewById(R.id.flash_op);
         flashoptions.bringToFront();
-        Log.i(TAG, "Fragment resume flash value: " + flashOn);
         cPreview.setFlashOn(flashOn);
 
         RelativeLayout takepic = (RelativeLayout) rootView.findViewById(R.id.take_pic_button);
@@ -159,7 +146,6 @@ public class PhotoFromCameraFragment extends Fragment {
     public void onPause() {
         super.onPause();
         cPreview.photoFragmentPause();          // release the camera immediately on pause event
-        Log.i(TAG, "onPause called.");
     }
 
     public void onButtonPressed(Uri uri) {
