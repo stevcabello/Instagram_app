@@ -212,7 +212,7 @@ public class FilterActivity extends AppCompatActivity {
         }
         try {
             FileOutputStream fos = new FileOutputStream(pictureFile);
-            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            image.compress(Bitmap.CompressFormat.PNG, 0, fos);
             fos.close();
             //Toast.makeText(FilterActivity.this, "Photo Saved", Toast.LENGTH_SHORT).show();
 
