@@ -24,16 +24,10 @@ import instagram.unimelb.edu.au.adapters.PhotoFromGalleryAdapter;
 import instagram.unimelb.edu.au.utils.Globals;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PhotoFromGalleryFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PhotoFromGalleryFragment#newInstance} factory method to
- * create an instance of this fragment.
+ *
  */
 public class PhotoFromGalleryFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -113,19 +107,32 @@ public class PhotoFromGalleryFragment extends Fragment {
 
         return rootView;
     }
-    //load regular image for preview instead of thumbnail
+
+
+    /**
+     * Method that loads regular image for preview instead of thumbnail
+     * @param imagePath
+     * @param image
+     */
     public void loadImage(String imagePath, ImageView image){
-  //      String regularImage = getImagePath(imageId);
         Globals.GALLERY_SELECTEDPATH = imagePath;
         Picasso.with(getContext())
                 .load("file://" + imagePath)
                         .into(image);
     }
+
+    /**
+     * Method that calls show Gallery
+     */
     public void callShowGallery(){
         ArrayList<ArrayList<String>> usermedia = getImagesPath();
         ShowGallery(usermedia);
     }
 
+    /**
+     * Recieve a list of images and send them to the adapter, handles the scrolling
+     * @param usermedia
+     */
     public void ShowGallery(ArrayList<ArrayList<String>> usermedia) {
 
         gridAdapter.addAll(usermedia);
@@ -154,8 +161,10 @@ public class PhotoFromGalleryFragment extends Fragment {
             }
         });
     }
-    /*
-     Method that getList  of the paths of all the images in the gallery
+
+    /**
+     * Method that get an arrayList  of the paths with  the images in the gallery
+     * @return
      */
     public ArrayList<ArrayList<String>> getImagesPath() {
         Uri uri;
@@ -230,37 +239,7 @@ public class PhotoFromGalleryFragment extends Fragment {
 
     }
 
-    /*
-        Pagination of the gallery to bring records from 15 to 15
-     */
-  /*  public ArrayList<ArrayList<String>> paginationGallery(ArrayList<ArrayList<String>> imageItems){
-        ArrayList<ArrayList<String>> usermedia = new ArrayList<>();
-        int sizeGallery = imageItems.size()                ;
-        int toShow = Globals.GALLERY_MEDIA_MAX_ID+15;
-        if (sizeGallery < toShow){
-            toShow = sizeGallery;
-        }
-        for(int j = Globals.GALLERY_MEDIA_MAX_ID; j < toShow; j++){
-            usermedia.add(imageItems.get(j));
-            Globals.GALLERY_MEDIA_MAX_ID = Globals.GALLERY_MEDIA_MAX_ID + 1;
-        }
-        if  (Globals.GALLERY_MEDIA_MAX_ID>= sizeGallery){
-            Globals.GALLERY_MEDIA_MAX_ID=-1;
-        }
-        return usermedia;
-    }*/
-  /*  public String getImagePath( String reterievedImageId) {
-        String[] columnsReturn = {MediaStore.Images.Media.DATA};
-        String whereimageId = MediaStore.Images.Media._ID + " LIKE ?";
-        String valuesIs[] = {"%" + reterievedImageId};
-        String imagePath ="";
-        Cursor mCursor = this.getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columnsReturn, whereimageId, valuesIs, null);
-        int rawDataPath = mCursor.getColumnIndex(MediaStore.Images.Media.DATA);
-        for (mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
-            imagePath = mCursor.getString(rawDataPath);
-        }
-        return imagePath;
-    }*/
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
