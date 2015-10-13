@@ -5,7 +5,7 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 /**
- * Created by Angela on 9/21/2015.
+ * Class for the Following Activity Feed
  */
 public class FollowingActivityFeed {
     private ImageView profilepic;

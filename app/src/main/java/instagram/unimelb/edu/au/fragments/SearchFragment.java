@@ -112,7 +112,7 @@ public class SearchFragment extends Fragment {
 
 
     /**
-     * Profile results from search 
+     * Profile results from search
      * @param searchResult
      */
     public void addProfileMedia(ArrayList<Search> searchResult) {

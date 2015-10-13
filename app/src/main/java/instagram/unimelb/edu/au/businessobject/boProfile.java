@@ -22,6 +22,9 @@ import instagram.unimelb.edu.au.networking.Controller;
 import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Globals;
 
+/**
+ * Class of the client profile
+ */
 public class boProfile {
 
     private static String TAG = boProfile.class.getSimpleName();

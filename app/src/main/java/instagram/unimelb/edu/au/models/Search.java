@@ -3,7 +3,7 @@ package instagram.unimelb.edu.au.models;
 import android.widget.ImageView;
 
 /**
- * Models the Likes
+ *Class for Searching Profles
  */
 public class Search {
     private String username;
