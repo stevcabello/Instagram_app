@@ -17,12 +17,22 @@ import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.models.ImageItem;
 import instagram.unimelb.edu.au.utils.Utils;
 
-
+/**
+ * Class that manage the presentation of the most popular
+ * users on the Discover Fragment.
+ */
 public class DiscoverAdapter extends ArrayAdapter<ImageItem> {
     private Context context;
     private int layoutResourceId;
     private ArrayList<ImageItem> data = new ArrayList();
 
+    /**
+     * Manage the loading of the most popular users of
+     * Instagram
+     * @param context
+     * @param resource
+     * @param data
+     */
     public DiscoverAdapter(Context context, int resource, ArrayList data) {
         super(context, resource, data);
         this.layoutResourceId = resource;

@@ -16,7 +16,6 @@ public class ActivityFeedViewPagerAdapter extends FragmentPagerAdapter {
     private Context context;
     private String accessToken;
     private String clientId;
-    //test comment
 
     public ActivityFeedViewPagerAdapter(FragmentManager fm, Context context, String accessToken, String clientId) {
         super(fm);
@@ -27,8 +26,7 @@ public class ActivityFeedViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-       // return fragments.get(position);
-        if (position==0)
+       if (position==0)
             return FollowingActivityFeedFragment.newInstance(accessToken, clientId);
         else
             return YouActivityFeedFragment.newInstance(accessToken, clientId);
