@@ -19,14 +19,10 @@ import instagram.unimelb.edu.au.businessobject.boDiscover;
 import instagram.unimelb.edu.au.models.SuggestedFriends;
 import instagram.unimelb.edu.au.utils.Globals;
 
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SuggestedFriendsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SuggestedFriendsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Class to charge all the information obtained
+ * after applying some rules on the business
+ * class.
  */
 public class SuggestedFriendsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -34,9 +30,8 @@ public class SuggestedFriendsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String accesstoken;
+    private String clientid;
 
     private OnFragmentInteractionListener mListener;
     private View rootView;
@@ -49,8 +44,8 @@ public class SuggestedFriendsFragment extends Fragment {
     Boolean userScrolled = false;
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Create new instance of a fragment according with the
+     * parameters
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
@@ -74,8 +69,8 @@ public class SuggestedFriendsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            accesstoken = getArguments().getString(ARG_PARAM1);
+            clientid = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -87,15 +82,12 @@ public class SuggestedFriendsFragment extends Fragment {
             return rootView;
         }
 
-
         Globals.mainActivity.setVisibleFragment(this);
         setHasOptionsMenu(true); //to enable the settings action button
-
 
         Globals.mainActivity.getSupportActionBar().setTitle("PEOPLE SUGGESTIONS");
         Globals.mainActivity.getSupportActionBar().setLogo(null);
         Globals.mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         // Inflate the layout for this
         rootView = inflater.inflate(R.layout.fragment_suggested_friends,container,false);
@@ -107,7 +99,7 @@ public class SuggestedFriendsFragment extends Fragment {
         listView.setAdapter(gridAdapter);
 
         objDiscover = new boDiscover();
-        objDiscover.getSuggestedFriendsMedia(suggestedFriendsFragment, mParam1, mParam2, gridAdapter);
+        objDiscover.getSuggestedFriendsMedia(suggestedFriendsFragment, accesstoken, clientid, gridAdapter);
         // Inflate the layout for this fragment
         return rootView;
     }
@@ -122,12 +114,6 @@ public class SuggestedFriendsFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        //try {
-        //    mListener = (OnFragmentInteractionListener) activity;
-        //} catch (ClassCastException e) {
-        //    throw new ClassCastException(activity.toString()
-        //            + " must implement OnFragmentInteractionListener");
-        //}
     }
 
     @Override
@@ -137,14 +123,8 @@ public class SuggestedFriendsFragment extends Fragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Charge the list of the suggested friends
+     * on the fragment that contains this list.
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
@@ -172,43 +152,11 @@ public class SuggestedFriendsFragment extends Fragment {
 
                 //To only send a new request when user has scrolled down until reach the bottom and while the totalitemcount is lesser than the number of posts
                 if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos && Globals.SUGGESTEDFRIENDS_MEDIA_MAX_ID != "-1") {
-                    //Toast.makeText(getActivity(), "reach bottom", Toast.LENGTH_SHORT).show();
                     userScrolled = false;
-                    objDiscover.getSuggestedFriendsMedia(suggestedFriendsFragment, mParam1, mParam2,gridAdapter);
+                    objDiscover.getSuggestedFriendsMedia(suggestedFriendsFragment, accesstoken, clientid,gridAdapter);
                 }
                 myLastVisiblePos = currentFirstVisPos;
             }
         });
     }
-
-    public void addProfileMedia(SuggestedFriends follower) {
-
-        gridAdapter.addAll(follower);
-
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            int myLastVisiblePos = 0;
-
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
-                    userScrolled = true;
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-                int currentFirstVisPos = view.getFirstVisiblePosition();
-
-                //To only send a new request when user has scrolled down until reach the bottom and while the totalitemcount is lesser than the number of posts
-                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos && Globals.FOLLOWERACTIVITY_MEDIA_MAX_ID != "-1") {
-                    //Toast.makeText(getActivity(), "reach bottom", Toast.LENGTH_SHORT).show();
-                    userScrolled = false;
-                    objDiscover.getSuggestedFriendsMedia(suggestedFriendsFragment, mParam1, mParam2, gridAdapter);
-                }
-                myLastVisiblePos = currentFirstVisPos;
-            }
-        });
-    }
-
-
 }

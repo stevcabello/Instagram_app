@@ -3,7 +3,8 @@ package instagram.unimelb.edu.au.models;
 import java.util.List;
 
 /**
- * Created by Carina on 19/09/15.
+ * Create an object Discover for the
+ * Class Discover.
  */
 public class Discover {
 
