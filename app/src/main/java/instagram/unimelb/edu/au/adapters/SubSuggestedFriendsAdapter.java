@@ -16,7 +16,8 @@ import instagram.unimelb.edu.au.models.ImageItem;
 import instagram.unimelb.edu.au.utils.Utils;
 
 /**
- * Created by Carina on 28/09/15.
+ * Class to manage the information of media of the
+ * suggested users.
  */
 public class SubSuggestedFriendsAdapter extends ArrayAdapter<ImageItem> {
 
@@ -69,7 +70,6 @@ public class SubSuggestedFriendsAdapter extends ArrayAdapter<ImageItem> {
             holder = (ViewHolder) row.getTag();
 
         }
-
 
         holder.image.setAdjustViewBounds(true);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);

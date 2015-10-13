@@ -31,8 +31,6 @@ public class SuggestedFriends {
         this.urlprofilepic = urlprofilepic;
     }
 
-
-
     public SuggestedFriends(String id) {
         this.id = id;
     }
