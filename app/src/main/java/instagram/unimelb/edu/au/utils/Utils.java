@@ -14,9 +14,9 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 import java.util.Random;
 
-//TODO: Remember to add any lonely method and useful to all other classes to this class
+
 /**
- * Manages images,dates
+ * Manages images,dates and some other useful shared methods
  */
 public class Utils {
 
@@ -27,29 +27,15 @@ public class Utils {
      * @return
      */
     public static Bitmap getBitmap (ImageView imageView) {
-
-//        imageView.setDrawingCacheEnabled(true);
-//
-//        // Without it the view will have a dimension of 0,0 and the bitmap will be null
-//        imageView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-//                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-//        imageView.layout(0, 0, imageView.getMeasuredWidth(), imageView.getMeasuredHeight());
-//
-//        imageView.buildDrawingCache(true);
-//        //TODO: in the line below I get a nullpointerexception
-//        Bitmap bitmap = Bitmap.createBitmap(imageView.getDrawingCache());
-//        imageView.setDrawingCacheEnabled(false); // clear drawing cache
-
-
         Bitmap bitmap=((BitmapDrawable)imageView.getDrawable()).getBitmap();
-
         return bitmap;
     }
 
+
     /**
      * Gets the elapsed time since the photo was post.
-     * @param unixtime
-     * @return
+     * @param unixtime the timestamp in unix format (i.e. long type number, milliseconds since 1970)
+     * @return the time elapsed
      */
     public static String getElapsedtime(String unixtime, String format_type){
 
@@ -93,10 +79,10 @@ public class Utils {
 
     /**
      * To compute the distance between the authenticated user and the following users that have post something recently
-     * @param lat1
-     * @param lon1
-     * @param lat2
-     * @param lon2
+     * @param lat1 latitude of the authenticated user
+     * @param lon1 longitude of the authenticted user
+     * @param lat2 latitude of the following user's post
+     * @param lon2 longitude of the following user's post
      * @return the distance in meters between two geo points
      */
     public static float DistanceBetween(double lat1, double lon1, double lat2, double lon2) {

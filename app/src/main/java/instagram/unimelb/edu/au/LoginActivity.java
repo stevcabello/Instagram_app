@@ -20,6 +20,9 @@ import android.widget.Toast;
 import instagram.unimelb.edu.au.networking.Connection;
 import instagram.unimelb.edu.au.utils.Globals;
 
+/**
+ * Activity to handle the login of a user to the Instagram API
+ */
 public class LoginActivity extends AppCompatActivity {
 
     public Button btn_login;
@@ -27,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     public AlertDialog.Builder logindialog = null;
     private ProgressDialog mSpinner;
     private Connection mConnection;
+    private String TAG = LoginActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,15 +102,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Class to the handles the authorization of the user
+     */
     private class OAuthWebViewClient extends WebViewClient {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Log.d("Instagram", "Redirecting URL " + url);
+            Log.d(TAG, "Redirecting URL " + url);
 
             if (url.startsWith(mConnection.mCallbackUrl)) {
                 String urls[] = url.split("=");
-                mConnection.getdialoglistener().onComplete(urls[1]);
+                mConnection.getdialoglistener().onComplete(urls[1]); //get the code from the redirect url
                 dialog.dismiss();
                 return true;
             }
@@ -116,17 +123,16 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
-            Log.d("Error", "Page error: " + description);
+            Log.d(TAG, "Page error: " + description);
 
             super.onReceivedError(view, errorCode, description, failingUrl);
             mConnection.getdialoglistener().onError(description);
-            //InstagramDialog.this.dismiss();
             dialog.dismiss();
         }
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            Log.d("Instagram", "Loading URL: " + url);
+            Log.d(TAG, "Loading URL: " + url);
             super.onPageStarted(view, url, favicon);
             mSpinner.show();
         }
@@ -141,7 +147,6 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_login, menu);
         return true;
     }
@@ -150,9 +155,6 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {

@@ -34,7 +34,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,7 +61,9 @@ import instagram.unimelb.edu.au.utils.Globals;
 import instagram.unimelb.edu.au.utils.Utils;
 
 
-
+/**
+ * Main Activity of the app, it contains a viewpager to handle all the fragments
+ */
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     double userLatitude;
     double userLongitude;
     SwitchCompat sortBy = null;
-    ImageButton next =null;
+
     public static final int SORT_BY_DATETIME = 0;
     public static final int SORT_BY_LOCATION = 1;
 
@@ -171,6 +172,8 @@ public class MainActivity extends AppCompatActivity {
         });
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        //Set the icons of the main tabs
 
         TextView tab_home = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab,null);
         tab_home.setBackgroundResource(R.drawable.btn_userfeed_state);
@@ -325,15 +328,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
-
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        //Depending on the item selected from the action bar, changes will be applied
+        if (id == R.id.action_settings) { //Logout from the settings button in userprofile's tab
             logOut();
         }else if (id == android.R.id.home) { //To handle the behaviour of the back button depending on the visibleFragment
             onBackPressed(); //has the same behaviour as the back button has
@@ -372,8 +371,6 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
-                /*TODO: This option takes a lot of time in the app*/
-                /*search(newText);*/
                     return  true;
                 }
             });
@@ -499,11 +496,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * Get the visible fragemnt
+     * @return the fragment where the user is
+     */
     public Fragment getVisibleFragment() {
         return visibleFragment;
     }
 
+    /**
+     * Set the visible fragment
+     * @param fragment where the user is
+     */
     public void setVisibleFragment(Fragment fragment) {
         this.visibleFragment = fragment;
     }
@@ -671,7 +675,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // Create a BroadcastReceiver for Bluetooth connection
+    /**
+     * Create a broadcast receiver for bluetooth connection
+     */
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
