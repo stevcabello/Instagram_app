@@ -15,7 +15,8 @@ import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Utils;
 
 /**
- * Handles the viewpager of userfeed post's photos
+ * Handles the viewpager of userfeed post's photos; this is used to simulate a swipe behaviour
+ * when user want to send a post via Bluetooth.
  */
 public class ListViewItemViewPagerAdapter extends PagerAdapter {
     Context mContext;
@@ -35,9 +36,11 @@ public class ListViewItemViewPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup collection, int position) {
 
         View itemView = mLayoutInflater.inflate(R.layout.pager_item, collection, false);
-
         ImageView uploadedPhoto = (ImageView) itemView.findViewById(R.id.iv_photo);
-        if (position==1) {
+
+        //The viewpager will have 3 "pages", but the middle page will be the posted photo.
+
+        if (position==1) {  //The posted photo
 
             Bitmap photo_bitmap = Utils.getBitmap(item.getPhoto());
             uploadedPhoto.setImageBitmap(photo_bitmap);
@@ -52,9 +55,9 @@ public class ListViewItemViewPagerAdapter extends PagerAdapter {
             });
 
         }
-        else uploadedPhoto.setImageResource(R.drawable.white_bg);
+        else uploadedPhoto.setImageResource(R.drawable.white_bg); // for pages 0 and 2 we place white background
 
-        collection.addView(itemView);
+        collection.addView(itemView); //add the view to the container
 
         return itemView;
     }

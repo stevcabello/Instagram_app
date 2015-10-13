@@ -12,7 +12,9 @@ import instagram.unimelb.edu.au.fragments.PhotoFragment;
 import instagram.unimelb.edu.au.fragments.ProfileFragment;
 import instagram.unimelb.edu.au.fragments.UserFeedFragment;
 
-
+/**
+ * Adapter to handle the actions when moving through "tabs" (i.e. Fragments).
+ */
 public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 5;
     private String tabTitles[] = new String[] { "UserFeed", "Discover", "Photo", "ActivityFeed","Profile" };
@@ -23,8 +25,8 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
     public MainFragmentPagerAdapter(FragmentManager fm, Context context, Intent intent) {
         super(fm);
         this.context = context;
-        this.accesstoken = intent.getExtras().getString("accesstoken");
-        this.clientid = intent.getExtras().getString("clientid");
+        this.accesstoken = intent.getExtras().getString("accesstoken"); //receive the access_token from MainActivity
+        this.clientid = intent.getExtras().getString("clientid"); //receive the client_id form MainActivity
     }
 
     @Override
@@ -33,7 +35,7 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public Fragment getItem(int position) {
+    public Fragment getItem(int position) { //Depending on the selected fragment we create an instance of it with the access_token and client_id
         if (position==0)
              return UserFeedFragment.newInstance(accesstoken,clientid);
         else if (position==1)

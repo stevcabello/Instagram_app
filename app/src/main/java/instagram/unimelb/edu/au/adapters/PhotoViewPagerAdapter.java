@@ -30,9 +30,9 @@ public class PhotoViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // return fragments.get(position);
         if (position==0)
-            return PhotoFromGalleryFragment.newInstance(accessToken, clientId); //Not sure if you will need token and id, but just in case =)
+            return PhotoFromGalleryFragment.newInstance(accessToken, clientId);
         else
-            return PhotoFromCameraFragment.newInstance(accessToken, clientId); //Not sure if you will need token and id, but just in case =)
+            return PhotoFromCameraFragment.newInstance(accessToken, clientId);
 
     }
 

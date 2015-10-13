@@ -29,8 +29,7 @@ import instagram.unimelb.edu.au.utils.Globals;
  */
 public class boUserFeed {
 
-    private static String TAG = boUserFeed.class
-            .getSimpleName();
+    private static String TAG = boUserFeed.class.getSimpleName();
     private String tag_json_obj = "jobj_req";
     ProgressDialog pDialog;
 
@@ -38,30 +37,24 @@ public class boUserFeed {
     /**
      * Get user feed data from Instagram API
      *
-     * @param userFeedFragment
-     * @param accesstoken
-     * @param adapter
+     * @param userFeedFragment Fragment of the userfeed
+     * @param accesstoken Access_token of the application
+     * @param adapter Adapter of the userfeed's listview
      */
     public void getUserFeedData(final UserFeedFragment userFeedFragment, String accesstoken, final ArrayAdapter adapter, final int sortBy) {
 
-        //Globals.numberLoads++;
-
         pDialog = new ProgressDialog(userFeedFragment.getActivity());
         pDialog.setMessage("Loading...");
-        //if (Globals.numberLoads <= 5) pDialog.setCancelable(false);
         pDialog.show();
-
-
 
         final ArrayList<UserFeed> arrayUserfeed = new ArrayList<UserFeed>();
 
-        // https://api.instagram.com/v1/users/self/feed?access_token=ACCESS-TOKEN
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, Globals.API_URL + "/users/self"
                 + "/feed?access_token=" + accesstoken +"&max_id=" + Globals.USERFEED_MAX_ID, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i("uriimages", response.toString());
+                        Log.i(TAG, response.toString());
 
                         try {
 
@@ -75,29 +68,34 @@ public class boUserFeed {
                                 UserFeed mUserfeed = new UserFeed();
 
                                 mUserfeed.setMedia_id(array.getJSONObject(i).getString("id"));
-                                Log.i(TAG,array.getJSONObject(i).getString("id"));
+                                Log.i(TAG, array.getJSONObject(i).getString("id"));
 
+                                //Set the profile picture of the user who posted
                                 String profilepic_url = array.getJSONObject(i).getJSONObject("user").getString("profile_picture");
                                 mUserfeed.setProfilepic_url(profilepic_url);
                                 ImageView profilepic = new ImageView(userFeedFragment.getActivity());
                                 ImageRequest.makeImageRequest(profilepic_url, userFeedFragment.getActivity(), profilepic, adapter);
                                 mUserfeed.setProfilepic(profilepic);
 
+                                //Set the username of the post
                                 mUserfeed.setUsername(array.getJSONObject(i).getJSONObject("user").getString("username"));
+
+                                //Set the timestamp for the post
                                 mUserfeed.setCreated_time(array.getJSONObject(i).getString("created_time"));
 
+                                //Set the photo from the post
                                 String photo_url = array.getJSONObject(i).getJSONObject("images").getJSONObject("standard_resolution").getString("url");
-                                Log.i("uriimages", "total =" + String.valueOf(array.length()));
-                                Log.i("uriimages", photo_url);
                                 mUserfeed.setPhoto_url(photo_url);
                                 ImageView photo = new ImageView(userFeedFragment.getActivity());
                                 ImageRequest.makeImageRequest(photo_url, userFeedFragment.getActivity(), photo, adapter);
                                 mUserfeed.setPhoto(photo);
 
-                                mUserfeed.setType(array.getJSONObject(i).getString("type"));
+                                mUserfeed.setType(array.getJSONObject(i).getString("type")); //Is not in use
+
+                                //Set the number of likes the post has received
                                 mUserfeed.setNumLikes(array.getJSONObject(i).getJSONObject("likes").getInt("count"));
 
-
+                                //Set the text or description of the post if any.
                                 try {
                                     mUserfeed.setDescription(array.getJSONObject(i).getJSONObject("caption").getString("text"));
                                 }catch (Exception e){
@@ -105,22 +103,18 @@ public class boUserFeed {
                                 }
 
 
-
+                                //Set number of comments the post has received
                                 mUserfeed.setNumcomments(array.getJSONObject(i).getJSONObject("comments").getInt("count"));
 
+                                //Set location data (location name, latitude, longitude) if any
                                 try {
                                     mUserfeed.setLatitude((double) array.getJSONObject(i).getJSONObject("location").getLong("latitude"));
                                     mUserfeed.setLongitude((double) array.getJSONObject(i).getJSONObject("location").getLong("longitude"));
                                     mUserfeed.setLocation(array.getJSONObject(i).getJSONObject("location").getString("name"));
                                 }catch (JSONException e){
                                     Log.i(TAG,e.getMessage());
-//                                    mUserfeed.setLatitude(0.00);
-//                                    mUserfeed.setLongitude(0.00);
-//                                    mUserfeed.setLocation("");
                                 }
 
-                                //Log.i("uriimages",mUserfeed.getUsername());
-                               // Log.i("uriimages",mUserfeed.getLocation());
                                 JSONArray arrayComments = array.getJSONObject(i).getJSONObject("comments").getJSONArray("data");
                                 ArrayList<Comments> comments = new ArrayList<Comments>();
 
@@ -138,6 +132,8 @@ public class boUserFeed {
                                     comments.add(comment);
                                 }
 
+
+                                //Set the comments the post has received.
                                 mUserfeed.setComments(comments);
 
 
@@ -157,6 +153,7 @@ public class boUserFeed {
                                     likes.add(like);
                                 }
 
+                                //Set the likes the post has received
                                 mUserfeed.setLikes(likes);
 
                                 //add the each data from the user feed into an user feed's array/
@@ -179,7 +176,6 @@ public class boUserFeed {
                             pDialog.dismiss();
 
                         } catch (Exception e) {
-                            //Log.i(TAG,e.getMessage());
                             e.printStackTrace();
                             pDialog.dismiss();
 
@@ -189,7 +185,7 @@ public class boUserFeed {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(TAG,error.getMessage());
+                error.printStackTrace();
                 pDialog.dismiss();
             }
 

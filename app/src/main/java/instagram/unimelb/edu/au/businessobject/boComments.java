@@ -24,24 +24,25 @@ import instagram.unimelb.edu.au.utils.Globals;
  */
 public class boComments {
 
-    private static String TAG = boComments.class
-            .getSimpleName();
+    private static String TAG = boComments.class.getSimpleName();
     private String tag_json_obj = "jobj_req";
     ProgressDialog pDialog;
 
 
-
+    /**
+     * Send a comment
+     *
+     * @param commentsFragment fragment of the comments
+     * @param accesstoken access token of the application
+     * @param media_id id of the image/photo
+     * @param text comment to add
+     * @param adapter adapter to handle the comments
+     */
     public void sendComment(final CommentsFragment commentsFragment, String accesstoken, String media_id, final String text ,final ArrayAdapter adapter) {
 
         pDialog = new ProgressDialog(commentsFragment.getActivity());
         pDialog.setMessage("Sending comment...");
         pDialog.show();
-
-
-        //Example post comment request
-        //curl -F 'access_token=ACCESS-TOKEN' \
-        //-F 'text=This+is+my+comment' \
-        //https://api.instagram.com/v1/media/{media-id}/comments
 
         JSONObject obj =null;
 

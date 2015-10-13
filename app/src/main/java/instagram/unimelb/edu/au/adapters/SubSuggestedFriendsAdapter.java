@@ -16,7 +16,8 @@ import instagram.unimelb.edu.au.models.ImageItem;
 import instagram.unimelb.edu.au.utils.Utils;
 
 /**
- * Created by Carina on 28/09/15.
+ *  Adapter of the gridview of images (only 3 images) in the suggested friends fragment. Each gridview belongs to
+ *  a suggesteduser.
  */
 public class SubSuggestedFriendsAdapter extends ArrayAdapter<ImageItem> {
 

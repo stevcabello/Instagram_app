@@ -5,6 +5,11 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+/**
+ * Manages the viewpager of the MainActivity; this viewpager is used instead of the
+ * default android's viewpager due to we don't want the swipe behaviour.
+ */
+
 public class CustomViewPager extends ViewPager {
 
     private boolean enabled;

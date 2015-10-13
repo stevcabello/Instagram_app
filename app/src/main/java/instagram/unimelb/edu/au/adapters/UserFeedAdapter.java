@@ -32,7 +32,9 @@ import instagram.unimelb.edu.au.utils.Globals;
 import instagram.unimelb.edu.au.utils.Utils;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
-
+/**
+ * Adapter for the listview of feeds in the UserFeed Fragment
+ */
 public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyListHeadersAdapter{
 
     private Context context;
@@ -85,9 +87,8 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
         View row = convertView;
-        //ViewHolder holder = null;
         holder = null;
-        final boolean[] myChecks = new boolean[data.size()];
+
 
         if (row == null) {
             LayoutInflater inflater = ((FragmentActivity) context).getLayoutInflater();
@@ -113,6 +114,7 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
 
         holder.comments.removeAllViews(); //to remove the previous TextViews added into the Linear Layout
 
+        //Set the number of likes
         Integer numlikes = item.getNumLikes();
         String format_numlikes = "<font color='#0000A0'><b>"+ String.valueOf(numlikes) +" likes</b></font>";
         if (numlikes==0)
@@ -127,8 +129,8 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
             });
         }
 
+        //Set the description of the post
         final String username = "<font color='#0000A0'><b>"+ item.getUsername() +"</b></font>";
-
         String description = item.getDescription();
         if (description.equals(""))
             holder.description.setText(description);
@@ -197,9 +199,8 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
             @Override
             public void onPageSelected(int position) {
                 if (position == 0 || position == 2) {
-                    goBack();
-                    //TODO: Cannot be implmenented due to issue with bluetooth connectivity.
-                   Bluetooth.displayPromptForSendingPhoto(Globals.mainActivity, item); // Ask to user permission to share the post
+                    goBack(); //To simulate the swipe effect
+                    Bluetooth.displayPromptForSendingPhoto(Globals.mainActivity, item); // Ask to user permission to share the post
 
 
                 }
@@ -224,6 +225,15 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
     }
 
 
+
+
+    /**
+     * //To handle the header of each element of the listview of feed
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @Override
     public View getHeaderView(int position, View convertView, ViewGroup parent) {
         HeaderViewHolder holder;

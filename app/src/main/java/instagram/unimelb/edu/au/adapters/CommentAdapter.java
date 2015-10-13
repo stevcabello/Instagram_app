@@ -53,13 +53,16 @@ public class CommentAdapter extends ArrayAdapter<Comments> {
 
         Comments item = data.get(position);
 
+        //Set the profile pic
         Bitmap profilepic_bitmap = Utils.getBitmap(item.getProfilepic());
         holder.profilepic.setImageBitmap(profilepic_bitmap);
 
+        //Set the username with its comment
         String username = "<font color='#0000A0'><b>"+ item.getUsername() +"</b></font>";
         String description = item.getText();
         holder.comment.setText(Html.fromHtml(username + " " + description));
 
+        //Set the timestamp in long mode(e.g. x minutes ago)
         holder.created_time.setText(Utils.getElapsedtime(item.getCreated_time(),"long"));
 
 

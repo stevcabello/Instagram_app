@@ -53,12 +53,15 @@ public class LikeAdapter extends ArrayAdapter<Likes> {
 
         Likes item = data.get(position);
 
+        //Set the profile picture
         Bitmap profilepic_bitmap = Utils.getBitmap(item.getProfilepic());
         holder.profilepic.setImageBitmap(profilepic_bitmap);
 
+        //Set the username
         String username = "<b>"+ item.getUsername() +"</b>";
         holder.username.setText(Html.fromHtml(username));
 
+        //Set the fullname
         holder.fullname.setText(item.getFull_name());
 
 

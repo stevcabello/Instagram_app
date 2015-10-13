@@ -31,6 +31,15 @@ public class boProfile {
     ProgressDialog pDialog;
 
 
+
+    /**
+     * Request of profile media for the authenticated user
+     *
+     * @param profileFragment Fragment of the user's profile
+     * @param accesstoken Access_token of the application
+     * @param clientid Id of the authenticated user
+     * @param adapter Adapter that handles the gridview of medias of authenticated user
+     */
     public void getProfileMedia(final ProfileFragment profileFragment, String accesstoken, String clientid, final ProfileAdapter adapter) {
 
         pDialog = new ProgressDialog(profileFragment.getActivity());
@@ -39,7 +48,6 @@ public class boProfile {
 
         final ArrayList<ImageItem> usermedia = new ArrayList<>();
 
-        // https://api.instagram.com/v1/users/{user-id}/media/recent/?access_token=ACCESS-TOKEN
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,Globals.API_URL + "/users/" + clientid + "/media/recent"
                 + "/?access_token=" + accesstoken +"&max_id=" + Globals.PROFILE_MEDIA_MAX_ID, null,
                 new Response.Listener<JSONObject>() {
@@ -62,9 +70,7 @@ public class boProfile {
                             }
 
                             try {
-
                                 String next_max_id = pagination.getString("next_max_id");
-                                //Log.i(TAG, next_max_id);
                                 Globals.PROFILE_MEDIA_MAX_ID = next_max_id;
                             }catch (Exception e) {
                                 Log.i(TAG,e.getMessage());
@@ -75,7 +81,6 @@ public class boProfile {
                             pDialog.dismiss();
 
                         } catch (Exception e) {
-                            //Log.i(TAG,e.getMessage());
                             e.printStackTrace();
                         }
 

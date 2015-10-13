@@ -22,23 +22,24 @@ import instagram.unimelb.edu.au.utils.Globals;
  */
 public class boLikes {
 
-    private static String TAG = boLikes.class
-            .getSimpleName();
+    private static String TAG = boLikes.class.getSimpleName();
     private String tag_json_obj = "jobj_req";
     ProgressDialog pDialog;
 
 
-
+    /**
+     * Send like to some other post
+     *
+     * @param context context for the fragment
+     * @param accesstoken access_token of the application
+     * @param media_id id of the posted image/photo
+     */
     public void sendLike(final Context context, String accesstoken, String media_id) {
 
         pDialog = new ProgressDialog(context);
         pDialog.setMessage("Giving like...");
         pDialog.show();
 
-
-        //Example post like request
-        //curl -F 'access_token=ACCESS-TOKEN' \
-        //https://api.instagram.com/v1/media/{media-id}/likes
 
         JSONObject obj =null;
 
@@ -84,16 +85,19 @@ public class boLikes {
     }
 
 
-
+    /**
+     * Deletes a given like
+     *
+     * @param context Context of the Likes Fragment
+     * @param accesstoken Access_token of the application
+     * @param media_id Id of the posted image/photo
+     */
     public void deleteLike(final Context context, String accesstoken, String media_id) {
 
         pDialog = new ProgressDialog(context);
         pDialog.setMessage("Deleting like...");
         pDialog.show();
 
-
-        //Example DEL like request
-        //curl -X DELETE https://api.instagram.com/v1/media/{media-id}/likes?access_token=ACCESS-
 
         JSONObject obj =null;
 

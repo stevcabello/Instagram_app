@@ -33,6 +33,8 @@ public class boLogin {
     private String tag_json_obj = "jobj_req";
     private String TAG = boLogin.class.getSimpleName();
 
+
+    //To request access_token
     public void getAccessToken(Context context, final String code, final String clientid, final String clientsecret,
                                final String callbackurl , final Session session,
                                final OAuthAuthenticationListener oAuthAuthenticationListener) {
@@ -41,20 +43,6 @@ public class boLogin {
         pdialog.setMessage("Connecting to Instagram ...");
         pdialog.show();
 
-        JSONObject obj =null;
-
-        //Define the post params
-        try {
-            obj = new JSONObject();
-            obj.put("client_id", clientid );
-            obj.put("client_secret",clientsecret);
-            obj.put("grant_type","authorization_code");
-            obj.put("redirect_uri",callbackurl);
-            obj.put("code",code);
-
-        }catch (JSONException e){
-            Log.i(TAG,"Error creating post params");
-        }
 
         StringRequest req = new StringRequest(Request.Method.POST,Globals.TOKEN_URL,
                 new Response.Listener<String>() {
@@ -90,13 +78,13 @@ public class boLogin {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                       error.printStackTrace();
-                       pdialog.dismiss();
+                        error.printStackTrace();
+                        pdialog.dismiss();
                     }
-                 })//;
+                })//;
         {
             @Override
-            protected Map<String,String> getParams(){
+            protected Map<String,String> getParams(){ //Set the post params
                 Map<String,String> params = new HashMap<String, String>();
                 params.put("client_id", clientid);
                 params.put("client_secret", clientsecret);
@@ -123,7 +111,12 @@ public class boLogin {
 
     }
 
-
+    /**
+     * To request userprofile data
+     * @param context Context of the class
+     * @param session class session where the access_toke for the request will be provided
+     * @param oAuthAuthenticationListener listener of the authentication
+     */
     public void getUserProfileData(Context context,final Session session, final OAuthAuthenticationListener oAuthAuthenticationListener) {
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,Globals.API_URL
@@ -141,6 +134,7 @@ public class boLogin {
                             int numberfollowers = data.getJSONObject("counts").getInt("followed_by");
                             int numberfollowing = data.getJSONObject("counts").getInt("follows");
 
+                            //Keep the user's profile data in global variables
                             Globals.profile.setProfilepic_url(profile_pic_url);
                             Globals.profile.setNumberposts(numberposts);
                             Globals.profile.setNumberfollowers(numberfollowers);

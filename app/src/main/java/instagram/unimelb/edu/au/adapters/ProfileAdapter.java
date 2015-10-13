@@ -15,18 +15,19 @@ import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.models.ImageItem;
 import instagram.unimelb.edu.au.utils.Utils;
 
+/**
+ * Adapter of the Profile's gridview (where the authenticated user's media are placed).
+ */
 public class ProfileAdapter extends ArrayAdapter<ImageItem> {
     private Context context;
     private int layoutResourceId;
     private ArrayList<ImageItem> data = new ArrayList<ImageItem>();
-    //private boProfile objProfile;
 
     public ProfileAdapter(Context context, int resource, ArrayList<ImageItem> data) {
         super(context, resource, data);
         this.layoutResourceId = resource;
         this.context = context;
         this.data = data;
-        //objProfile = new boProfile();
     }
 
     @Override
@@ -41,7 +42,6 @@ public class ProfileAdapter extends ArrayAdapter<ImageItem> {
 
     @Override
     public long getItemId(int position) {
-
         return position;
     }
 
@@ -56,7 +56,6 @@ public class ProfileAdapter extends ArrayAdapter<ImageItem> {
         ViewHolder holder;
 
         if (row == null) {
-            //LayoutInflater inflater = ((FragmentActivity) context).getLayoutInflater();
             LayoutInflater inflater = LayoutInflater.from(context);
             row = inflater.inflate(layoutResourceId, parent, false);
             holder = new ViewHolder();
@@ -76,6 +75,7 @@ public class ProfileAdapter extends ArrayAdapter<ImageItem> {
 
         ImageItem item = getItem(position);
 
+        //Set the media from the authenticated user
         Bitmap bitmap = Utils.getBitmap(item.getImageview());
         holder.image.setImageBitmap(bitmap);
 

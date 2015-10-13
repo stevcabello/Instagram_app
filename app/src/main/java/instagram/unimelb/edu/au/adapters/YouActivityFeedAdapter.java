@@ -19,7 +19,7 @@ import instagram.unimelb.edu.au.utils.Utils;
 
 
 /**
- * Created by Angela on 9/17/2015.
+ * Adapter to handle the listview of activity from the authenticated user
  */
 public class YouActivityFeedAdapter extends ArrayAdapter<YouActivityFeed> {
     private ArrayList<YouActivityFeed> data = new ArrayList<YouActivityFeed>();
@@ -67,7 +67,6 @@ public class YouActivityFeedAdapter extends ArrayAdapter<YouActivityFeed> {
             holder.profilepic = (ImageView) row.findViewById(R.id.iv_follower_photo);
             holder.uploadedphoto = (ImageView) row.findViewById(R.id.iv_unfollow);
             holder.description = (TextView) row.findViewById(R.id.tv_description);
-            //holder.created_time = (TextView) row.findViewById(R.id.tv_timestamp);
 
             row.setTag(holder);
         } else {
