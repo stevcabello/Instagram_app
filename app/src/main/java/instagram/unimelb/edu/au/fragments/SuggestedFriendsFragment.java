@@ -25,13 +25,11 @@ import instagram.unimelb.edu.au.utils.Globals;
  * class.
  */
 public class SuggestedFriendsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_ACCESSTOKEN = "param1";
+    private static final String ARG_CLIENTID = "param2";
 
-    private String accesstoken;
-    private String clientid;
+    private String mAccesstoken;
+    private String mClientID;
 
     private OnFragmentInteractionListener mListener;
     private View rootView;
@@ -46,17 +44,15 @@ public class SuggestedFriendsFragment extends Fragment {
     /**
      * Create new instance of a fragment according with the
      * parameters
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SuggestedFriendsFragment.
+     * @param accesstoken Access token for the API Instagram
+     * @param clientid ID of the user of the application
+     * @return
      */
-    // TODO: Rename and change types and number of parameters
-    public static SuggestedFriendsFragment newInstance(String param1, String param2) {
+    public static SuggestedFriendsFragment newInstance(String accesstoken, String clientid) {
         SuggestedFriendsFragment fragment = new SuggestedFriendsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_ACCESSTOKEN, accesstoken);
+        args.putString(ARG_CLIENTID, clientid);
         fragment.setArguments(args);
         return fragment;
     }
@@ -69,8 +65,8 @@ public class SuggestedFriendsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            accesstoken = getArguments().getString(ARG_PARAM1);
-            clientid = getArguments().getString(ARG_PARAM2);
+            mAccesstoken = getArguments().getString(ARG_ACCESSTOKEN);
+            mClientID = getArguments().getString(ARG_CLIENTID);
         }
     }
 
@@ -99,12 +95,11 @@ public class SuggestedFriendsFragment extends Fragment {
         listView.setAdapter(gridAdapter);
 
         objDiscover = new boDiscover();
-        objDiscover.getSuggestedFriendsMedia(suggestedFriendsFragment, accesstoken, clientid, gridAdapter);
+        objDiscover.getSuggestedFriendsMedia(suggestedFriendsFragment, mAccesstoken, mClientID, gridAdapter);
         // Inflate the layout for this fragment
         return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -127,7 +122,6 @@ public class SuggestedFriendsFragment extends Fragment {
      * on the fragment that contains this list.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
 
@@ -153,7 +147,7 @@ public class SuggestedFriendsFragment extends Fragment {
                 //To only send a new request when user has scrolled down until reach the bottom and while the totalitemcount is lesser than the number of posts
                 if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos && Globals.SUGGESTEDFRIENDS_MEDIA_MAX_ID != "-1") {
                     userScrolled = false;
-                    objDiscover.getSuggestedFriendsMedia(suggestedFriendsFragment, accesstoken, clientid,gridAdapter);
+                    objDiscover.getSuggestedFriendsMedia(suggestedFriendsFragment, mAccesstoken, mClientID,gridAdapter);
                 }
                 myLastVisiblePos = currentFirstVisPos;
             }
