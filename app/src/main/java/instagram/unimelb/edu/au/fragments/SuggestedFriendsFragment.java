@@ -19,24 +19,17 @@ import instagram.unimelb.edu.au.businessobject.boDiscover;
 import instagram.unimelb.edu.au.models.SuggestedFriends;
 import instagram.unimelb.edu.au.utils.Globals;
 
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SuggestedFriendsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SuggestedFriendsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Class to charge all the information obtained
+ * after applying some rules on the business
+ * class.
  */
 public class SuggestedFriendsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_ACCESSTOKEN = "param1";
+    private static final String ARG_CLIENTID = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String mAccesstoken;
+    private String mClientID;
 
     private OnFragmentInteractionListener mListener;
     private View rootView;
@@ -49,19 +42,17 @@ public class SuggestedFriendsFragment extends Fragment {
     Boolean userScrolled = false;
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SuggestedFriendsFragment.
+     * Create new instance of a fragment according with the
+     * parameters
+     * @param accesstoken Access token for the API Instagram
+     * @param clientid ID of the user of the application
+     * @return
      */
-    // TODO: Rename and change types and number of parameters
-    public static SuggestedFriendsFragment newInstance(String param1, String param2) {
+    public static SuggestedFriendsFragment newInstance(String accesstoken, String clientid) {
         SuggestedFriendsFragment fragment = new SuggestedFriendsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_ACCESSTOKEN, accesstoken);
+        args.putString(ARG_CLIENTID, clientid);
         fragment.setArguments(args);
         return fragment;
     }
@@ -74,8 +65,8 @@ public class SuggestedFriendsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mAccesstoken = getArguments().getString(ARG_ACCESSTOKEN);
+            mClientID = getArguments().getString(ARG_CLIENTID);
         }
     }
 
@@ -93,11 +84,9 @@ public class SuggestedFriendsFragment extends Fragment {
         Globals.mainActivity.setVisibleFragment(this);
         setHasOptionsMenu(true); //to enable the settings action button
 
-
         Globals.mainActivity.getSupportActionBar().setTitle("PEOPLE SUGGESTIONS");
         Globals.mainActivity.getSupportActionBar().setLogo(null);
         Globals.mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         // Inflate the layout for this
         rootView = inflater.inflate(R.layout.fragment_suggested_friends,container,false);
@@ -109,12 +98,11 @@ public class SuggestedFriendsFragment extends Fragment {
         listView.setAdapter(gridAdapter);
 
         objDiscover = new boDiscover();
-        objDiscover.getSuggestedFriendsMedia(suggestedFriendsFragment, mParam1, mParam2, gridAdapter,0);
+        objDiscover.getSuggestedFriendsMedia(suggestedFriendsFragment, mAccesstoken, mClientID, gridAdapter,0);
         // Inflate the layout for this fragment
         return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -124,12 +112,6 @@ public class SuggestedFriendsFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        //try {
-        //    mListener = (OnFragmentInteractionListener) activity;
-        //} catch (ClassCastException e) {
-        //    throw new ClassCastException(activity.toString()
-        //            + " must implement OnFragmentInteractionListener");
-        //}
     }
 
     @Override
@@ -139,27 +121,16 @@ public class SuggestedFriendsFragment extends Fragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Charge the list of the suggested friends
+     * on the fragment that contains this list.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        public void onFragmentInteraction(Uri uri);
     }
 
     public void addSuggestedFriends(SuggestedFriends suggestedFriends) {
 
-        Log.i("addSuggestedFriends","Fragment");
+        Log.i("addSuggestedFriends", "Fragment");
         gridAdapter.addAll(suggestedFriends);
-
     }
-
-
-
 }

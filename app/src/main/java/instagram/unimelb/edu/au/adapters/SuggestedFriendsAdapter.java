@@ -20,7 +20,8 @@ import instagram.unimelb.edu.au.models.SuggestedFriends;
 import instagram.unimelb.edu.au.utils.Utils;
 
 /**
- * Created by Carina on 28/09/15.
+ * Class that permit to charge all the information get on the boDiscover
+ * to the suggested friends fragment.
  */
 public class SuggestedFriendsAdapter extends ArrayAdapter<SuggestedFriends>{
     private Context context;
@@ -68,7 +69,6 @@ public class SuggestedFriendsAdapter extends ArrayAdapter<SuggestedFriends>{
             holder.profilepic = (ImageView) row.findViewById(R.id.iv_photo);
             holder.description = (TextView) row.findViewById(R.id.tv_description);
             holder.imageItems = (GridView) row.findViewById(R.id.gv_photos);
-            //holder.created_time = (TextView) row.findViewById(R.id.tv_timestamp);
 
             row.setTag(holder);
         } else {

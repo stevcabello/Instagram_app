@@ -23,16 +23,22 @@ import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Globals;
 
 /**
- * Created by Angela on 9/26/2015.
+ * Class that handle the search of user profiles
  */
 public class boSearch {
     private static String TAG = boSearch.class
             .getSimpleName();
     private String tag_json_obj = "jobj_req";
-    //private String tag_json_arry = "jarray_req";
 
     ProgressDialog pDialog;
 
+    /**
+     * Method that search a profile
+     * @param searchFragment
+     * @param accesstoken
+     * @param query
+     * @param adapter
+     */
     public void getSearch(final SearchFragment searchFragment, String accesstoken, String query, final SearchAdapter adapter) {
 
         pDialog = new ProgressDialog(searchFragment.getActivity());
@@ -63,15 +69,6 @@ public class boSearch {
                                 searches.add(new Search(username,fullName,imageView));
 
                             }
-/*
-                            try {
-                                String next_max_id = pagination.getString("next_max_id");
-                                //Log.i(TAG, next_max_id);
-                                Globals.SEARCH_MEDIA_MAX_ID = next_max_id;
-                            }catch (Exception e) {
-                                Globals.SEARCH_MEDIA_MAX_ID =  "-1" ;
-                                Log.i(TAG,e.getMessage());
-                            }*/
 
                             searchFragment.addProfileMedia(searches);
                             pDialog.dismiss();

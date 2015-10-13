@@ -24,7 +24,7 @@ import instagram.unimelb.edu.au.utils.Globals;
 import instagram.unimelb.edu.au.utils.Utils;
 
 /**
- * Created by Angela on 9/21/2015.
+ * Class that handles the activity of the people that a given user follows
  */
 public class boFollowing {
     private static String TAG = boFollowing.class
@@ -33,6 +33,13 @@ public class boFollowing {
 
     ProgressDialog pDialog;
 
+    /**
+     * Get the profiles id of people that a given user follows
+     * @param followingActivityFragment
+     * @param accesstoken
+     * @param clientid
+     * @param adapter
+     */
     public void getProfileMedia(final FollowingActivityFeedFragment followingActivityFragment, final String accesstoken, String clientid, final FollowingActivityFeedAdapter adapter) {
 
         pDialog = new ProgressDialog(followingActivityFragment.getActivity());
@@ -91,9 +98,15 @@ public class boFollowing {
     }
 
 
-    //
+    /**
+     * Retrieve latest media from the following persons
+     * @param followingActivity
+     * @param accesstoken
+     * @param followingActivityFragment
+     * @param adapter
+     */
     private void getMedia( final ArrayList<FollowingActivityFeed> followingActivity, String accesstoken, final FollowingActivityFeedFragment followingActivityFragment, final FollowingActivityFeedAdapter adapter){
-        // For each id of the people the user follows retrieve their last pictures when they belong to the current day
+        // For each id of the people the user follows, retrieve their last pictures when they belong to the current day
         for(final FollowingActivityFeed f : followingActivity ){
             Log.i(TAG, "Getting media from : "+ f.getUsername());
             JsonObjectRequest req2 = new JsonObjectRequest(Request.Method.GET, Globals.API_URL + "/users/" + f.getId() + "/media/recent"
@@ -149,6 +162,5 @@ public class boFollowing {
         pDialog.dismiss();
 
     }
-
 
 }

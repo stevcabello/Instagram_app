@@ -5,7 +5,8 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 /**
- * Created by Carina on 28/09/15.
+ * Create an object SuggestedFriends for the
+ * Class Discover.
  */
 public class SuggestedFriends {
     private ImageView profilepic;

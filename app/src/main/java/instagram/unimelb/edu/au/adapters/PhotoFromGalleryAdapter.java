@@ -19,14 +19,13 @@ public class PhotoFromGalleryAdapter extends ArrayAdapter<ArrayList<String>> {
     private Context context;
     private int layoutResourceId;
     private ArrayList<ArrayList<String>> data = new ArrayList<ArrayList<String>>();
-    //private boProfile objProfile;
+
 
     public PhotoFromGalleryAdapter(Context context, int resource, ArrayList<ArrayList<String>> data) {
         super(context, resource, data);
         this.layoutResourceId = resource;
         this.context = context;
         this.data = data;
-        //objProfile = new boProfile();
     }
 
     @Override
@@ -76,12 +75,7 @@ public class PhotoFromGalleryAdapter extends ArrayAdapter<ArrayList<String>> {
 
         ArrayList<String> item = getItem(position);
 
-        //objProfile.makeImageRequest(item.getImageurl(), context, holder.image); //not in use due to make the gridview repeat images
-
-        //holder.image.setImageBitmap(item.getImage()); //not in use due to sometimes the bitmap is empty
-
-       // Bitmap bitmap = Utils.getBitmap(item.getImageview());
-       // holder.image.setImageBitmap(bitmap);
+      //Load the image on the image view
         Picasso.with(getContext())
                     .load("file://" + item.get(1))
                     .resize(150, 150)

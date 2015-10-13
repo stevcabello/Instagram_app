@@ -1,24 +1,15 @@
 package instagram.unimelb.edu.au.businessobject;
-
 /**
- * Created by Angela on 9/17/2015.
+ * Class that handles the activity of the user.
  */
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.android.volley.Cache;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.ImageLoader.ImageContainer;
-import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
@@ -26,8 +17,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
-
-import instagram.unimelb.edu.au.R;
 import instagram.unimelb.edu.au.adapters.YouActivityFeedAdapter;
 import instagram.unimelb.edu.au.fragments.YouActivityFeedFragment;
 import instagram.unimelb.edu.au.models.YouActivityFeed;
@@ -41,8 +30,13 @@ public class boActivityFeed {
     private String tag_json_obj = "jobj_req";
 
     ProgressDialog pDialog;
-    /*
-        Method that retrieve the information of likes and comments from the active user
+
+    /**
+     * Method that retrieve the information of likes and comments from the active user
+     * @param youActivityFeedFragment
+     * @param accesstoken
+     * @param clientid
+     * @param adapter
      */
     public void getProfileMedia(final YouActivityFeedFragment youActivityFeedFragment, final String accesstoken, final String clientid,final YouActivityFeedAdapter adapter) {
         pDialog = new ProgressDialog(youActivityFeedFragment.getActivity());
@@ -138,7 +132,15 @@ public class boActivityFeed {
         Controller.getInstance(youActivityFeedFragment.getActivity()).addToRequestQueue(req,
                 tag_json_obj);
     }
-    //
+
+    /**
+     * Method that retrieves the list of followers of a given user
+     * @param userActivity
+     * @param youActivityFeedFragment
+     * @param accesstoken
+     * @param clientid
+     * @param adapter
+     */
     public void getFollowedby(final ArrayList<YouActivityFeed> userActivity, final YouActivityFeedFragment youActivityFeedFragment, String accesstoken, String clientid,final YouActivityFeedAdapter adapter) {
 
         pDialog = new ProgressDialog(youActivityFeedFragment.getActivity());
@@ -190,42 +192,5 @@ public class boActivityFeed {
 
     }
 
-    //
-    public void makeImageRequest(String urlImage, Context context, final ImageView imageView) {
 
-        ImageLoader imageLoader = Controller.getInstance(context).getImageLoader();
-        imageLoader.get(urlImage, new ImageListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Image Load Error: " + error.getMessage());
-            }
-
-            @Override
-            public void onResponse(ImageContainer response, boolean arg1) {
-                if (response.getBitmap() != null) {
-                    // load image into imageView
-                    imageView.setImageBitmap(response.getBitmap());
-
-                }
-            }
-        });
-
-        // Loading image with placeholder and error image
-        imageLoader.get(urlImage, ImageLoader.getImageListener(
-                imageView, R.drawable.watch_icon, R.drawable.ico_error));
-
-        Cache cache = Controller.getInstance(context).getRequestQueue().getCache();
-        Cache.Entry entry = cache.get(urlImage);
-        if(entry != null){
-            try {
-                String data = new String(entry.data, "UTF-8");
-                // handle data, like converting it to xml, json, bitmap etc.,
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }else{
-            // cached response doesn't exists. Make a network call here
-        }
-
-    }
 }
