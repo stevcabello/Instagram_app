@@ -212,8 +212,10 @@ public class FilterActivity extends AppCompatActivity {
     }
 
 
-    /*
-    Save images filtered to share on Instagram
+    /**
+     *  Save images filtered to share on Instagram
+     * @param image
+     * @param sendTo
      */
     private void SaveFilteredImage(Bitmap image, String sendTo){
         File pictureFile;
@@ -225,9 +227,9 @@ public class FilterActivity extends AppCompatActivity {
         }
         try {
             FileOutputStream fos = new FileOutputStream(pictureFile);
+            //Save image in a given format, not compressing just saving as a PNG
             image.compress(Bitmap.CompressFormat.PNG, 0, fos);
             fos.close();
-            //Toast.makeText(FilterActivity.this, "Photo Saved", Toast.LENGTH_SHORT).show();
 
             /*
             Adding information to the gallery
@@ -258,8 +260,10 @@ public class FilterActivity extends AppCompatActivity {
 
     }
 
-    /*
-    Instagram intent
+    /**
+     *  Instagram intent
+     * @param type
+     * @param mediaPath
      */
     private void createInstagramIntent(String type, String mediaPath){
 
