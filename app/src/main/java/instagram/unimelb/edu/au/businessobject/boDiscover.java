@@ -151,7 +151,7 @@ public class boDiscover {
                                 friendsFromFriends(suggestedFriendsFragment,friends,accesstoken, adapter,clientid);
 
                             e.printStackTrace();
-                            //pDialog.dismiss();
+
                         }
 
                     }
@@ -205,10 +205,6 @@ public class boDiscover {
                                     String username = arrayFriends.getJSONObject(i).getString("username");
                                     String fullname = arrayFriends.getJSONObject(i).getString("full_name");
                                     String profile_picture = arrayFriends.getJSONObject(i).getString("profile_picture");
-                                    //ImageView sugFriendPic = new ImageView(suggestedFriendsFragment.getActivity());
-                                    //ImageRequest.makeImageRequest(profile_picture, suggestedFriendsFragment.getActivity(), sugFriendPic, adapter);
-
-                                    //friendsFriends.add(new SuggestedFriends(username, fullname, id, sugFriendPic));
                                     friendsFriends.add(new SuggestedFriends(username, fullname, id, profile_picture));
 
                                 }

@@ -16,8 +16,8 @@ import instagram.unimelb.edu.au.models.ImageItem;
 import instagram.unimelb.edu.au.utils.Utils;
 
 /**
- *  Adapter of the gridview of images (only 3 images) in the suggested friends fragment. Each gridview belongs to
- *  a suggesteduser.
+ * Class to manage the information of media of the
+ * suggested users.
  */
 public class SubSuggestedFriendsAdapter extends ArrayAdapter<ImageItem> {
 
@@ -70,7 +70,6 @@ public class SubSuggestedFriendsAdapter extends ArrayAdapter<ImageItem> {
             holder = (ViewHolder) row.getTag();
 
         }
-
 
         holder.image.setAdjustViewBounds(true);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
