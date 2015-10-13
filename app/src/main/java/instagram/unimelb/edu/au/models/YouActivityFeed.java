@@ -5,7 +5,7 @@ import android.widget.ImageView;
 import java.util.Date;
 
 /**
- * Created by Angela on 9/17/2015.
+ * Class YouActivityFeed
  */
 public class YouActivityFeed {
 
