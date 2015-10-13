@@ -63,7 +63,7 @@ public class boLogin {
                             Globals.profile.setUsername(username);
                             Globals.profile.setFullname(fullname);
 
-                            session.storeAccessToken(accestoken, id, username, fullname);
+                            session.storeAccessData(accestoken, id, username, fullname);
 
                             oAuthAuthenticationListener.onSuccess();
                             pdialog.dismiss();

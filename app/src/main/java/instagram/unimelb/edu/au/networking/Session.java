@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
- * Created by pc on 9/12/2015.
+ * Session class to store important data of the authenticated user
  */
 public class Session {
 
@@ -23,14 +23,15 @@ public class Session {
         editor = sharedPref.edit();
     }
 
+
     /**
-     *
-     * @param accessToken
-     //* @param expireToken
-    // * @param expiresIn
-     * @param username
+     * Stores access data
+     * @param accessToken access_token for the application
+     * @param id id of the authenticated usre
+     * @param username username of the authenticated user
+     * @param name fullname of the authenticated user
      */
-    public void storeAccessToken(String accessToken, String id, String username, String name) {
+    public void storeAccessData(String accessToken, String id, String username, String name) {
         editor.putString(API_ID, id);
         editor.putString(API_NAME, name);
         editor.putString(API_ACCESS_TOKEN, accessToken);
@@ -38,10 +39,6 @@ public class Session {
         editor.commit();
     }
 
-    public void storeAccessToken(String accessToken) {
-        editor.putString(API_ACCESS_TOKEN, accessToken);
-        editor.commit();
-    }
 
     /**
      * Reset access token and user name
@@ -56,7 +53,6 @@ public class Session {
 
     /**
      * Get user name
-     *
      * @return User name
      */
     public String getUsername() {
@@ -64,16 +60,16 @@ public class Session {
     }
 
     /**
-     *
-     * @return
+     * Get user id
+     * @return user id
      */
     public String getId() {
         return sharedPref.getString(API_ID, null);
     }
 
     /**
-     *
-     * @return
+     * Get user full name
+     * @return user full name
      */
     public String getName() {
         return sharedPref.getString(API_NAME, null);
@@ -81,8 +77,7 @@ public class Session {
 
     /**
      * Get access token
-     *
-     * @return Access token
+     * @return access token
      */
     public String getAccessToken() {
         return sharedPref.getString(API_ACCESS_TOKEN, null);

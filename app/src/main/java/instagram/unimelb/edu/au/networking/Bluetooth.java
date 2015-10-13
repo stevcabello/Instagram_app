@@ -79,7 +79,7 @@ public class Bluetooth  {
             }
         }
 
-        //In case bluetooth is already enabled then
+        //In case bluetooth is already enabled then...
 
         mActivity = activity;
 

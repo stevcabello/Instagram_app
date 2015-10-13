@@ -3,6 +3,9 @@ package instagram.unimelb.edu.au.models;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
+/**
+ * Models ImageItem
+ */
 public class ImageItem {
     private Bitmap image;
     private String imageurl;
@@ -28,7 +31,6 @@ public class ImageItem {
     }
 
 
-
     public ImageItem(Bitmap image) {
         super();
         this.image = image;
@@ -51,14 +53,6 @@ public class ImageItem {
         this.imageurl = imageurl;
     }
 
-    //not in use
-    public Bitmap getImage() {
-        return image;
-    }
-
-    public void setImage(Bitmap image) {
-        this.image = image;
-    }
 
 
 }

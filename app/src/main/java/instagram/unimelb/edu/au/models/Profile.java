@@ -3,7 +3,7 @@ package instagram.unimelb.edu.au.models;
 import android.graphics.Bitmap;
 
 /**
- * Created by pc on 9/13/2015.
+ * Models the Profile
  */
 public class Profile {
 
@@ -76,15 +76,6 @@ public class Profile {
     }
 
 
-
-    //Not in use
-    public Bitmap getProfilepic() {
-        return profilepic;
-    }
-
-    public void setProfilepic(Bitmap profilepic) {
-        this.profilepic = profilepic;
-    }
 
 
 

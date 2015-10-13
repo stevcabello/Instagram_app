@@ -5,7 +5,7 @@ import android.util.LruCache;
 import com.android.volley.toolbox.ImageLoader.ImageCache;
 
 /**
- * Created by pc on 9/13/2015.
+ * Caches the images
  */
 public class LruBitmapCache extends LruCache<String,Bitmap> implements ImageCache{
 

@@ -58,16 +58,27 @@ public class Connection{
     }
 
 
+    /**
+     * Get the userprofile's data
+     */
     public void getUserProfileData() {
         //To request user profile data
         objLogin.getUserProfileData(mCtx,mSession,mListener);
     }
 
 
+    /**
+     * Checks for the state of the access_token for the application
+     * @return true if token is still available, false otherwise
+     */
     public boolean hasAccessToken() {
         return (mAccessToken == null) ? false : true;
     }
 
+    /**
+     * Lisnter for the authentication
+     * @param listener
+     */
     public void setListener(OAuthAuthenticationListener listener) {
         mListener = listener;
     }
@@ -76,15 +87,12 @@ public class Connection{
     public String getId() {
         return mSession.getId();
     }
-
     public String getName() {
         return mSession.getName();
     }
     public String getTOken() {
         return mSession.getAccessToken();
     }
-
-
     public String getmAuthUrl(){
         return  mAuthUrl;
     }
@@ -93,6 +101,9 @@ public class Connection{
         return dialoglistener;
     }
 
+    /**
+     * To reset access token
+     */
     public static void resetAccessToken() {
         if (mAccessToken != null) {
             mSession.resetAccessToken();

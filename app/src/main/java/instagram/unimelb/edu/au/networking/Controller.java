@@ -10,11 +10,10 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 /**
- * Created by pc on 9/13/2015.
+ * Controller for the requests to the Instagram API
  */
 public class Controller extends Application {
-    public static final String TAG = Controller.class
-            .getSimpleName();
+    public static final String TAG = Controller.class.getSimpleName();
 
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
