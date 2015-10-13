@@ -49,7 +49,7 @@ public class boFollowing {
         final ArrayList<FollowingActivityFeed> followingActivity = new ArrayList<>();
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, Globals.API_URL + "/users/" + clientid + "/follows"
-                + "/?access_token=" + accesstoken +"&max_id=" + Globals.FOLLOWERACTIVITY_MEDIA_MAX_ID, null,
+                + "/?access_token=" + accesstoken +"&cursor=" + Globals.FOLLOWERACTIVITY_MEDIA_MAX_ID, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -69,9 +69,9 @@ public class boFollowing {
                             }
                             try {
 
-                                String next_max_id = pagination.getString("next_max_id");
-                                Log.i(TAG, next_max_id );
-                                Globals.FOLLOWERACTIVITY_MEDIA_MAX_ID = next_max_id;
+                                String next_cursor = pagination.getString("next_cursor");
+                                Log.i(TAG, next_cursor );
+                                Globals.FOLLOWERACTIVITY_MEDIA_MAX_ID = next_cursor;
                             }catch (Exception e) {
                                 Log.i(TAG,e.getMessage());
                                 Globals.FOLLOWERACTIVITY_MEDIA_MAX_ID ="-1";

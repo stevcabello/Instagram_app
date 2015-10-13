@@ -117,8 +117,9 @@ public class FollowingActivityFeedFragment extends Fragment {
                 int currentFirstVisPos = view.getFirstVisiblePosition();
 
                 //To only send a new request when user has scrolled down until reach the bottom and while the totalitemcount is lesser than the number of posts
-                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos && Globals.FOLLOWERACTIVITY_MEDIA_MAX_ID != "-1") {
-                    //Toast.makeText(getActivity(), "reach bottom", Toast.LENGTH_SHORT).show();
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled
+                        && currentFirstVisPos > myLastVisiblePos && Globals.FOLLOWERACTIVITY_MEDIA_MAX_ID != "-1") {
+
                     userScrolled = false;
                     objFollowers.getProfileMedia(followingActivityFragment, mParam1, mParam2, gridAdapter);
                 }
