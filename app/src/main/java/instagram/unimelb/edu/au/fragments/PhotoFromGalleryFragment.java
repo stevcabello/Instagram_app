@@ -163,7 +163,7 @@ public class PhotoFromGalleryFragment extends Fragment {
     }
 
     /**
-     * Method that get an arrayList  of the paths with  the images in the gallery
+     * Method that get an arrayList  of the paths with all the images in the gallery
      * @return
      */
     public ArrayList<ArrayList<String>> getImagesPath() {
@@ -239,7 +239,37 @@ public class PhotoFromGalleryFragment extends Fragment {
 
     }
 
-
+    /*
+        Pagination of the gallery to bring records from 15 to 15
+     */
+  /*  public ArrayList<ArrayList<String>> paginationGallery(ArrayList<ArrayList<String>> imageItems){
+        ArrayList<ArrayList<String>> usermedia = new ArrayList<>();
+        int sizeGallery = imageItems.size()                ;
+        int toShow = Globals.GALLERY_MEDIA_MAX_ID+15;
+        if (sizeGallery < toShow){
+            toShow = sizeGallery;
+        }
+        for(int j = Globals.GALLERY_MEDIA_MAX_ID; j < toShow; j++){
+            usermedia.add(imageItems.get(j));
+            Globals.GALLERY_MEDIA_MAX_ID = Globals.GALLERY_MEDIA_MAX_ID + 1;
+        }
+        if  (Globals.GALLERY_MEDIA_MAX_ID>= sizeGallery){
+            Globals.GALLERY_MEDIA_MAX_ID=-1;
+        }
+        return usermedia;
+    }*/
+  /*  public String getImagePath( String reterievedImageId) {
+        String[] columnsReturn = {MediaStore.Images.Media.DATA};
+        String whereimageId = MediaStore.Images.Media._ID + " LIKE ?";
+        String valuesIs[] = {"%" + reterievedImageId};
+        String imagePath ="";
+        Cursor mCursor = this.getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columnsReturn, whereimageId, valuesIs, null);
+        int rawDataPath = mCursor.getColumnIndex(MediaStore.Images.Media.DATA);
+        for (mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
+            imagePath = mCursor.getString(rawDataPath);
+        }
+        return imagePath;
+    }*/
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
