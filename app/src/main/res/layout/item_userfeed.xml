@@ -125,14 +125,6 @@
             android:clickable="true"
             android:textColor="@color/text_tab_unselected"
             android:background="@android:color/transparent"/>
-        <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="27 likes"-->
-        <!--android:id="@+id/tv_likesnumber"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:layout_toRightOf="@+id/btn_likes"-->
-        <!--android:layout_toEndOf="@+id/btn_likes" />-->
 
     </RelativeLayout>
 
@@ -167,24 +159,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:id="@+id/lly_comments">
-
-        <!--<TextView-->
-        <!--android:id="@+id/tv_comments"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:text="biestrada what a great app!"-->
-        <!--android:visibility="visible"-->
-        <!--/>-->
     </LinearLayout>
 
-    <!--<LinearLayout-->
-    <!--android:id="@+id/lly_comments"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="vertical">-->
-    <!--</LinearLayout>-->
+
 
     <Button
         android:id="@+id/btn_addcomment"
@@ -198,9 +175,6 @@
         android:textAllCaps="false"
         android:textColor="@color/text_tab_unselected"
         android:background="@android:color/transparent"/>
-
-
-
 
 
 

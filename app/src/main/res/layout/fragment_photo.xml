@@ -27,15 +27,10 @@
             app:tabPaddingEnd="0dp"
             app:tabGravity="fill"
             app:tabMode="fixed"
-
             />
 
 
     </LinearLayout>
-
-
-
-
 
 
 

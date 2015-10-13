@@ -4,67 +4,67 @@
     android:orientation="vertical"
     android:id="@+id/fly_discover_fragment">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.10"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.10"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Discover people"
-                    android:id="@+id/tv_peopletofollow_title"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Find new people to follow"
-                    android:id="@+id/tv_peopletofollow_subtitle"
-                    android:layout_below="@+id/tv_peopletofollow_title"
-                    android:layout_alignLeft="@+id/tv_peopletofollow_title"
-                    android:layout_alignStart="@+id/tv_peopletofollow_title" />
-
-                <ImageButton
-                    android:layout_width="180dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/btn_people_to_follow_example"
-                    android:id="@+id/ibtn_peopletofollow"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
-
-
-
-            </RelativeLayout>
-
-            <GridView
-                android:id="@+id/gv_discover"
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="0.90"
-                android:columnWidth="100dp"
-                android:drawSelectorOnTop="true"
-                android:gravity="center"
-                android:numColumns="auto_fit"
-                android:stretchMode="columnWidth"
-                android:verticalSpacing="0dp"
-                android:horizontalSpacing="0dp"
-                android:focusable="true"
-                android:clickable="true"
-                />
+                android:layout_height="wrap_content"
+                android:text="Discover people"
+                android:id="@+id/tv_peopletofollow_title"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Find new people to follow"
+                android:id="@+id/tv_peopletofollow_subtitle"
+                android:layout_below="@+id/tv_peopletofollow_title"
+                android:layout_alignLeft="@+id/tv_peopletofollow_title"
+                android:layout_alignStart="@+id/tv_peopletofollow_title" />
+
+            <ImageButton
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_people_to_follow_example"
+                android:id="@+id/ibtn_peopletofollow"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
 
 
-        </LinearLayout>
+
+        </RelativeLayout>
+
+        <GridView
+            android:id="@+id/gv_discover"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.90"
+            android:columnWidth="100dp"
+            android:drawSelectorOnTop="true"
+            android:gravity="center"
+            android:numColumns="auto_fit"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="0dp"
+            android:horizontalSpacing="0dp"
+            android:focusable="true"
+            android:clickable="true"
+            />
+
+
+    </LinearLayout>
 
 
 </FrameLayout>

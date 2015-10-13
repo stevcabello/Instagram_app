@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.squareup.picasso.Picasso;
 
@@ -70,8 +69,6 @@ public class PhotoFromGalleryAdapter extends ArrayAdapter<ArrayList<String>> {
 
 
         holder.image.setAdjustViewBounds(true);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        holder.image.setLayoutParams(layoutParams);
 
         ArrayList<String> item = getItem(position);
 

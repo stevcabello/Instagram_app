@@ -21,37 +21,37 @@
         android:orientation="vertical">
 
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/username"
-                android:visibility="gone"
-                android:textColorHint="@android:color/darker_gray"
-                android:textColor="@android:color/white"
-                android:id="@+id/editText2" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/username"
+            android:visibility="gone"
+            android:textColorHint="@android:color/darker_gray"
+            android:textColor="@android:color/white"
+            android:id="@+id/editText2" />
 
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:inputType="textPassword"
-                android:hint="@string/password"
-                android:visibility="gone"
-                android:textColorHint="@android:color/darker_gray"
-                android:textColor="@android:color/white"
-                android:ems="10"
-                android:id="@+id/editText3" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:inputType="textPassword"
+            android:hint="@string/password"
+            android:visibility="gone"
+            android:textColorHint="@android:color/darker_gray"
+            android:textColor="@android:color/white"
+            android:ems="10"
+            android:id="@+id/editText3" />
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_style"
-                android:textColor="@color/switch_thumb_normal_material_light"
-                android:text="LOG IN"
-                android:id="@+id/btn_login" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_style"
+            android:textColor="@color/switch_thumb_normal_material_light"
+            android:text="LOG IN"
+            android:id="@+id/btn_login" />
 
     </LinearLayout>
 

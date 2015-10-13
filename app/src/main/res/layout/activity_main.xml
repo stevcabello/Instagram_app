@@ -19,22 +19,12 @@
             app:layout_scrollFlags="scroll|enterAlways"/>
 
 
-        <!--<android.support.v4.view.ViewPager-->
-            <!--android:id="@+id/viewpager"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:background="@color/primary_text_default_material_dark"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_weight="1"-->
-            <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-            <!--/>-->
-
-
         <instagram.unimelb.edu.au.adapters.CustomViewPager
-        android:id="@+id/viewpager"
-        android:layout_width="match_parent"
-        android:background="@color/primary_text_default_material_dark"
-        android:layout_height="0px"
-        android:layout_weight="1"/>
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:background="@color/primary_text_default_material_dark"
+            android:layout_height="0px"
+            android:layout_weight="1"/>
 
 
         <android.support.design.widget.TabLayout
@@ -54,48 +44,5 @@
 
 
 </android.support.design.widget.CoordinatorLayout>
-
-
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:id="@+id/lly_main_activity"-->
-    <!--android:orientation="vertical">-->
-
-    <!--<include-->
-        <!--android:id="@+id/toolbar"-->
-        <!--layout="@layout/app_bar" />-->
-
-    <!--<instagram.unimelb.edu.au.adapters.CustomViewPager-->
-        <!--android:id="@+id/viewpager"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:background="@color/primary_text_default_material_dark"-->
-        <!--android:layout_height="0px"-->
-        <!--android:layout_weight="1"/>-->
-
-
-    <!--&lt;!&ndash;<android.support.v4.view.ViewPager&ndash;&gt;-->
-        <!--&lt;!&ndash;android:id="@+id/viewpager"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:background="@color/primary_text_default_material_dark"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_height="0px"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_weight="1"/>&ndash;&gt;-->
-
-    <!--<android.support.design.widget.TabLayout-->
-        <!--android:id="@+id/tabs"-->
-        <!--android:layout_margin="0dp"-->
-        <!--style="@style/MyCustomTabLayout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--app:tabPaddingStart="0dp"-->
-        <!--app:tabPaddingEnd="0dp"-->
-        <!--app:tabGravity="fill"-->
-        <!--app:tabMode="fixed"-->
-
-        <!--/>-->
-
-<!--</LinearLayout>-->
 
 

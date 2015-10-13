@@ -20,14 +20,12 @@
         android:gravity="center_horizontal"
         android:numColumns="4"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="1dp"
+        android:verticalSpacing="0dp"
         android:focusable="true"
         android:clickable="true"
         android:horizontalSpacing="0dp"
-
         android:layout_alignParentBottom="true"
-
-   />
+        />
 
 
 
