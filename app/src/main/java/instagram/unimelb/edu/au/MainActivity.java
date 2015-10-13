@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportActionBar().setDisplayHomeAsUpEnabled(false); //hide the back button
                     visibleFragment = new ActivityFeedFragment();
                 } else {
-                    getSupportActionBar().setTitle(Html.fromHtml("<b>" + Globals.USERNAME.toUpperCase() + "</b>"));
+                    getSupportActionBar().setTitle(Html.fromHtml("<b>" + Globals.profile.getUsername().toUpperCase() + "</b>"));
                     getSupportActionBar().setLogo(null);
                     tabLayout.setVisibility(View.VISIBLE);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(false); //hide the back button
@@ -422,6 +422,8 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setLogo(null);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
+            tabLayout.setVisibility(View.VISIBLE);
+
             setVisibleFragment(new DiscoverFragment());
 
             //If user is in the main fragments but photofragment, then the app just go back without logging out.
@@ -448,10 +450,7 @@ public class MainActivity extends AppCompatActivity {
                                     Connection.resetAccessToken();
                                     MainActivity.this.finish();
 
-                                    //Reset the globals MAX_ID's
-                                    Globals.USERFEED_MAX_ID="";
-                                    Globals.PROFILE_MEDIA_MAX_ID="";
-                                    Globals.YOUACTIVITY_MEDIA_MAX_ID="";
+                                    Globals.resetGlobals(); // just to clean all the variables
 
                                     Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                                     startActivity(intent);

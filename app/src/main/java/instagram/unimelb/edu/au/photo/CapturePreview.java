@@ -2,7 +2,6 @@ package instagram.unimelb.edu.au.photo;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,6 +10,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,7 +18,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import instagram.unimelb.edu.au.FilterActivity;
 
@@ -44,6 +43,8 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     int hmid2;
     Paint paint;
 
+    Context context;
+
     // CaptrurePreview constructor.
     public CapturePreview(Context context) {
         super(context);
@@ -53,6 +54,7 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
         this.setWillNotDraw(false);   // Required to ensure camera preview is updated.
 
         active = true;
+        this.context = context;
     }
 
     // This method is from SurfaceHolder.Callback interface.
@@ -60,10 +62,14 @@ public class CapturePreview extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) {
 
-        Camera.Parameters parameters = mCamera.getParameters();
-        parameters.getSupportedPreviewSizes();
-        mCamera.setParameters(parameters);
-        mCamera.startPreview();
+        try {
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters.getSupportedPreviewSizes();
+            mCamera.setParameters(parameters);
+            mCamera.startPreview();
+        }catch (Exception err){
+            Toast.makeText(context,"Camera Failure",Toast.LENGTH_LONG).show();
+        }
     }
 
     // Setting up Camera object, flash status and grid line paint when new surface created.

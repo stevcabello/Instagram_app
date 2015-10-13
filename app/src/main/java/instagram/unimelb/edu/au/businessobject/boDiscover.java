@@ -14,12 +14,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import instagram.unimelb.edu.au.adapters.DiscoverAdapter;
 import instagram.unimelb.edu.au.adapters.SuggestedFriendsAdapter;
 import instagram.unimelb.edu.au.fragments.DiscoverFragment;
 import instagram.unimelb.edu.au.fragments.SuggestedFriendsFragment;
-import instagram.unimelb.edu.au.models.FollowingActivityFeed;
 import instagram.unimelb.edu.au.models.ImageItem;
 import instagram.unimelb.edu.au.models.SuggestedFriends;
 import instagram.unimelb.edu.au.networking.Controller;
@@ -32,14 +32,21 @@ import instagram.unimelb.edu.au.utils.Utils;
  * Discover option in th Instagram application.
  */
 public class boDiscover {
-    private String TAG = boDiscover.class
-            .getSimpleName();
+    private String TAG = boDiscover.class.getSimpleName();
     private String tag_json_obj = "jobj_req";
     ProgressDialog pDialog;
+
+    final ArrayList<SuggestedFriends> friends = new ArrayList<>();
     private ArrayList<SuggestedFriends> friendsFriends = new ArrayList<>();
     private ArrayList<SuggestedFriends> friendsFriendsFinal = new ArrayList<>();
+
     //Min number of likes of a suggested friend on the list
-    private static int COMMON_LIKES_THRESHOLD = 5;
+    private static int COMMON_LIKES_THRESHOLD = Globals.likesMedia.size()/2;
+
+    private String nextCursor = "";
+
+    private String nextMaxLikeId = "";
+
 
     /**
      * Method that charge information about the most popular Instagram users
@@ -106,18 +113,19 @@ public class boDiscover {
      * @param clientid User ID of the application
      * @param adapter Class name that manage the Fragment Class
      */
-    public void getSuggestedFriendsMedia(final SuggestedFriendsFragment suggestedFriendsFragment, final String accesstoken, final String clientid, final SuggestedFriendsAdapter adapter) {
+    public void getSuggestedFriendsMedia(final SuggestedFriendsFragment suggestedFriendsFragment, final String accesstoken, final String clientid ,final SuggestedFriendsAdapter adapter, int ntime) {
 
-        pDialog = new ProgressDialog(suggestedFriendsFragment.getActivity());
-        pDialog.setMessage("Loading...");
-        pDialog.show();
+        if (ntime==0) { //only in the first call we show the progressdialog
+            pDialog = new ProgressDialog(suggestedFriendsFragment.getActivity());
+            pDialog.setMessage("Loading...");
+            pDialog.show();
+        }
 
-        final ArrayList<SuggestedFriends> friends = new ArrayList<>();
 
         //Request to get the ID of the user's friends
         //https://api.instagram.com/v1/users/{user-id}/followed-by
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, Globals.API_URL + "/users/" + clientid + "/followed-by"
-                + "/?access_token=" + accesstoken, null,
+                + "/?access_token=" + accesstoken + "&cursor=" + nextCursor, null,
 
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -127,31 +135,30 @@ public class boDiscover {
                             JSONArray array = response.getJSONArray("data");
                             JSONObject pagination = response.getJSONObject("pagination");
 
+                            //Set the next cursor for the request of my followers
+                            nextCursor = pagination.getString("next_cursor");
+
                             for(int i=0; i<array.length(); i++)
                             {
                                 String id = array.getJSONObject(i).getString("id");
                                 friends.add(new SuggestedFriends(id));
                             }
 
-                            Log.i(TAG, "Getting media inside" + friends.isEmpty());
-                            for(final SuggestedFriends f : friends ) {
-                                Log.i(TAG, "Getting media from : "+ f.getUsername());
-                            }
+                            getSuggestedFriendsMedia(suggestedFriendsFragment, accesstoken, clientid, adapter, 1);
 
                         } catch (Exception e) {
-                            Log.i(TAG, e.getMessage());
-                            e.printStackTrace();
-                        }
-                        //aqui
+                            if (e.getMessage().equals("No value for next_cursor"))
+                                friendsFromFriends(suggestedFriendsFragment,friends,accesstoken, adapter,clientid);
 
-                        friendsFromFriends(suggestedFriendsFragment,friends,accesstoken, adapter,clientid);
-                        pDialog.dismiss();
+                            e.printStackTrace();
+                            //pDialog.dismiss();
+                        }
 
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(TAG, error.getMessage().toString());
+                error.printStackTrace();
             }
         });
         Log.i(TAG, "Getting media outside" + friends.isEmpty());
@@ -171,8 +178,11 @@ public class boDiscover {
      * @param adapter Class name that manage the Fragment Class
      */
     public void friendsFromFriends(final SuggestedFriendsFragment suggestedFriendsFragment, final ArrayList<SuggestedFriends> array, final String accesstoken, final SuggestedFriendsAdapter adapter,  final String clientid){
-        for(int i=0; i<4; i++) {
 
+        //Get five random followers from my followers array
+        ArrayList<SuggestedFriends> randomFollowers = getFiveRandomFollowers(array);
+
+        for(int i=0; i<randomFollowers.size(); i++) {
             //Request to get the friends that belongs to each user's friends
             //https://api.instagram.com/v1/users/{user-id}/followed-by
             JsonObjectRequest reqFF = new JsonObjectRequest(Request.Method.GET, Globals.API_URL + "/users/" + array.get(i).getId() + "/followed-by"
@@ -186,19 +196,27 @@ public class boDiscover {
                                 JSONArray arrayFriends = response.getJSONArray("data");
                                 JSONObject pagination = response.getJSONObject("pagination");
 
+                                //clean the arrays in each request
+                                friendsFriends.clear();
+                                friendsFriendsFinal.clear();
+
                                 for(int i=0; i<arrayFriends.length(); i++){
                                     String id = arrayFriends.getJSONObject(i).getString("id");
                                     String username = arrayFriends.getJSONObject(i).getString("username");
-                                        String fullname = arrayFriends.getJSONObject(i).getString("full_name");
-                                        String profile_picture = arrayFriends.getJSONObject(i).getString("profile_picture");
-                                        ImageView sugFriendPic = new ImageView(suggestedFriendsFragment.getActivity());
-                                        ImageRequest.makeImageRequest(profile_picture, suggestedFriendsFragment.getActivity(), sugFriendPic, adapter);
+                                    String fullname = arrayFriends.getJSONObject(i).getString("full_name");
+                                    String profile_picture = arrayFriends.getJSONObject(i).getString("profile_picture");
+                                    //ImageView sugFriendPic = new ImageView(suggestedFriendsFragment.getActivity());
+                                    //ImageRequest.makeImageRequest(profile_picture, suggestedFriendsFragment.getActivity(), sugFriendPic, adapter);
 
-                                        friendsFriends.add(new SuggestedFriends(username, fullname, id, sugFriendPic));
+                                    //friendsFriends.add(new SuggestedFriends(username, fullname, id, sugFriendPic));
+                                    friendsFriends.add(new SuggestedFriends(username, fullname, id, profile_picture));
 
                                 }
 
+                                //Provide synthetical(false) likes to the followers of my followers
                                 setSyntheticalLikes(Globals.likesMedia, friendsFriends);
+
+
                                 try {
 
                                     String next_max_id = pagination.getString("next_max_id");
@@ -214,15 +232,22 @@ public class boDiscover {
                                     Log.i(TAG, "Getting media from : "+ f.getUsername());
                                 }
 
-                                //Refine the friends to not sugges the same user
+                                //Refine the friends to not suggest the same user
                                 //repeated friends among user's friends and
                                 //repeated friends that are on the user's list of friends
                                 for(int i=0; i<friendsFriends.size(); i++){
-                                    if(repeatFriends(friendsFriends.get(i).getId(),friendsFriendsFinal) && !friendsFriends.get(i).getId().equals(clientid)
-                                            && repeatFriends(friendsFriends.get(i).getId(),array) && canBeFriends(friendsFriends.get(i))){
-                                            SuggestedFriends friend = new SuggestedFriends(friendsFriends.get(i).getUsername(), friendsFriends.get(i).getFullname(), friendsFriends.get(i).getId(), friendsFriends.get(i).getProfilepic());
-                                            getMedia(friend, accesstoken, suggestedFriendsFragment, adapter);
-                                            friendsFriendsFinal.add(friend);
+                                    if(!repeatFriends(friendsFriends.get(i).getId(),friendsFriendsFinal)
+                                            && !friendsFriends.get(i).getId().equals(clientid)
+                                            && !repeatFriends(friendsFriends.get(i).getId(),array)
+                                            && canBeFriends(friendsFriends.get(i))){
+
+                                        SuggestedFriends friend = new SuggestedFriends(friendsFriends.get(i).getUsername(),
+                                                friendsFriends.get(i).getFullname(), friendsFriends.get(i).getId(),
+                                                friendsFriends.get(i).getUrlprofilepic());
+
+                                        friendsFriendsFinal.add(friend);
+                                        getMedia(friend, accesstoken, suggestedFriendsFragment, adapter);
+
                                     }
                                 }
 
@@ -266,11 +291,42 @@ public class boDiscover {
     public Boolean repeatFriends(String value, ArrayList<SuggestedFriends> finalFriend){
         for(SuggestedFriends suggestedFriends:finalFriend){
             if(suggestedFriends.getId().equals(value)){
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
+
+
+    /**
+     * Return an array of 5 random followers from my followers' array
+     * @param followers
+     * @return an array of 5 random followers
+     */
+    public ArrayList<SuggestedFriends> getFiveRandomFollowers(ArrayList<SuggestedFriends> followers){
+        int total_followers = followers.size();
+        ArrayList<Integer> randomnumbers = new ArrayList<>();
+        ArrayList<SuggestedFriends> suggestedFriends = new ArrayList<>();
+
+        //Get an array of random number between 0 and the length of the followers from the authenticated user
+        for (int i=0; i<5; i++){
+            Random r = new Random();
+            int rndNumber = r.nextInt(total_followers + 1) + 0;
+            randomnumbers.add(rndNumber);
+        }
+
+
+        for (int i=0; i<randomnumbers.size(); i++){
+            for(int j=0; j<followers.size(); j++){
+                if (j == randomnumbers.get(i))
+                    suggestedFriends.add(followers.get(j));
+            }
+        }
+
+        return suggestedFriends;
+
+    }
+
 
     /**
      * Obtain the three most recent images updated by an expecific user
@@ -305,6 +361,9 @@ public class boDiscover {
                                     ImageRequest.makeImageRequest(uriImage, suggestedFriendsFragment.getActivity(), imageView, adapter);
                                     usermedia.add(new ImageItem(imageView));
                                 }
+                                ImageView sugFriendPic = new ImageView(suggestedFriendsFragment.getActivity());
+                                ImageRequest.makeImageRequest(suggestedFriends.getUrlprofilepic(), suggestedFriendsFragment.getActivity(), sugFriendPic, adapter);
+                                suggestedFriends.setProfilepic(sugFriendPic);
                                 suggestedFriends.setImageItems(usermedia);
                                 suggestedFriendsFragment.addSuggestedFriends(suggestedFriends);
                                 pDialog.dismiss();
@@ -339,12 +398,12 @@ public class boDiscover {
      * @param accesstoken Code to authorize the do a request with an API
      * @param discoverFragment Fragment where the informations is going to be display
      */
-    public void requestMediaIDLikes(String accesstoken, DiscoverFragment discoverFragment){
+    public void requestMediaIDLikes(final String accesstoken, final DiscoverFragment discoverFragment){
 
         //Request to get the data that the user likes.
         //https://api.instagram.com/v1/users/self/media/liked
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, Globals.API_URL + "/users/self/media/liked"
-                + "/?access_token=" + accesstoken, null,
+                + "/?access_token=" + accesstoken , null,
 
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -353,13 +412,15 @@ public class boDiscover {
                         try {
                             JSONArray array = response.getJSONArray("data");
 
+
                             for(int i=0; i<array.length(); i++)
                             {
                                 String id = array.getJSONObject(i).getString("id");
-                                Log.i("Request likes", id);
                                 Globals.likesMedia.add(id);
 
                             }
+
+
 
                         } catch (Exception e) {
                             Log.i(TAG,e.getMessage());
@@ -370,7 +431,7 @@ public class boDiscover {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(TAG,error.getMessage().toString());
+                error.printStackTrace();
             }
         });
 
@@ -411,8 +472,8 @@ public class boDiscover {
             }
         }
 
-        if(con > COMMON_LIKES_THRESHOLD){
-            return true;
+        if(con > COMMON_LIKES_THRESHOLD){ //if the common number of likes between some user and me
+            return true;                  //is greater than COMMON_LIKES_THRESHOLD then he is a suggested follower
         }
         return false;
     }

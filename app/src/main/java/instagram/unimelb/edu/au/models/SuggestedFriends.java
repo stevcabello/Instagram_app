@@ -23,6 +23,14 @@ public class SuggestedFriends {
         this.profilepic = profilepic;
     }
 
+    public SuggestedFriends(String username, String fullname, String id, String urlprofilepic) {
+        this.username = username;
+        this.fullname = fullname;
+        this.id = id;
+        this.urlprofilepic = urlprofilepic;
+    }
+
+
 
     public SuggestedFriends(String id) {
         this.id = id;

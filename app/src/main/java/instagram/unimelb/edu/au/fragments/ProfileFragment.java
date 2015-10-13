@@ -20,6 +20,7 @@ import instagram.unimelb.edu.au.businessobject.boProfile;
 import instagram.unimelb.edu.au.models.ImageItem;
 import instagram.unimelb.edu.au.models.Profile;
 import instagram.unimelb.edu.au.networking.ImageRequest;
+import instagram.unimelb.edu.au.utils.Globals;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -125,8 +126,8 @@ public class ProfileFragment extends Fragment {
         gridAdapter = new ProfileAdapter(this.getActivity(),R.layout.item_discover,new ArrayList<ImageItem>());
         gridView.setAdapter(gridAdapter);
 
+        setProfileData(Globals.profile);
         objprofile = new boProfile();
-        objprofile.getProfileData(profileFragment, mParam1, mParam2);
         objprofile.getProfileMedia(profileFragment, mParam1, mParam2, gridAdapter);
 
         return rootView;
@@ -135,7 +136,7 @@ public class ProfileFragment extends Fragment {
 
 
 
-    public void addProfileData(Profile userprofile) {
+    public void setProfileData(Profile userprofile) {
 
         profilepic = (ImageView)header_profile.findViewById(R.id.iv_profilepic);
         numberposts = (TextView)header_profile.findViewById(R.id.tv_numberposts);

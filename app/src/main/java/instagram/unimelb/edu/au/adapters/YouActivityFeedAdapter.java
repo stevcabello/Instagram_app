@@ -86,7 +86,7 @@ public class YouActivityFeedAdapter extends ArrayAdapter<YouActivityFeed> {
         }
         else
         {
-            holder.uploadedphoto.setImageResource(R.drawable.btn_add_follower);
+            holder.uploadedphoto.setImageResource(R.drawable.btn_user_followed);
         }
         holder.description.setText(Html.fromHtml("<font color='#2B547E'><b>" + item.getUsername() + "</b></font>" + " " +"<font color='#2C3539'>"+ item.getType() + item.getComment() +"</font>"+ " "  + timePublish ));
 

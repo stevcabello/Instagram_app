@@ -28,8 +28,9 @@
             android:id="@+id/tv_description"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/iv_photo"
-            android:layout_toEndOf="@+id/iv_photo"
+            android:layout_toLeftOf="@+id/iv_btnfollow"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginStart="10dp" />
 
         <ImageView

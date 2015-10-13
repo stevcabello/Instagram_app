@@ -3,6 +3,7 @@ package instagram.unimelb.edu.au.fragments;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,6 +91,8 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        TabLayout tabLayout = (TabLayout)Globals.mainActivity.findViewById(R.id.tabs);
+        tabLayout.setVisibility(View.GONE);
 
         setHasOptionsMenu(true); // to enable the action search bar
         Globals.mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);

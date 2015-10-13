@@ -168,13 +168,13 @@ public class CommentsFragment extends Fragment {
 
         //Get Imageview from url profile image
         ImageView profilepic = new ImageView(context);
-        ImageRequest.makeImageRequest(Globals.PROFILE_PIC_URL, context, profilepic, adapter);
+        ImageRequest.makeImageRequest(Globals.profile.getProfilepic_url(), context, profilepic, adapter);
 
         //Get current time
         Long current_time = System.currentTimeMillis() / 1000L;
 
         //Create a comment
-        Comments comment = new Comments(Globals.USERNAME,commentText,String.valueOf(current_time),profilepic, Globals.PROFILE_PIC_URL);
+        Comments comment = new Comments(Globals.profile.getUsername(),commentText,String.valueOf(current_time),profilepic, Globals.profile.getProfilepic_url());
 
         //Update the comments's listview
         adapter.addAll(comment);

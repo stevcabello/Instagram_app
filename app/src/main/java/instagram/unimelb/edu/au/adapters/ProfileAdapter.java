@@ -76,14 +76,8 @@ public class ProfileAdapter extends ArrayAdapter<ImageItem> {
 
         ImageItem item = getItem(position);
 
-        //objProfile.makeImageRequest(item.getImageurl(), context, holder.image); //not in use due to make the gridview repeat images
-
-        //holder.image.setImageBitmap(item.getImage()); //not in use due to sometimes the bitmap is empty
-
         Bitmap bitmap = Utils.getBitmap(item.getImageview());
         holder.image.setImageBitmap(bitmap);
-
-
 
         return row;
     }

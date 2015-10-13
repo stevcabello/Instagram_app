@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -28,17 +28,20 @@ public class Utils {
      */
     public static Bitmap getBitmap (ImageView imageView) {
 
-        imageView.setDrawingCacheEnabled(true);
+//        imageView.setDrawingCacheEnabled(true);
+//
+//        // Without it the view will have a dimension of 0,0 and the bitmap will be null
+//        imageView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+//                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+//        imageView.layout(0, 0, imageView.getMeasuredWidth(), imageView.getMeasuredHeight());
+//
+//        imageView.buildDrawingCache(true);
+//        //TODO: in the line below I get a nullpointerexception
+//        Bitmap bitmap = Bitmap.createBitmap(imageView.getDrawingCache());
+//        imageView.setDrawingCacheEnabled(false); // clear drawing cache
 
-        // Without it the view will have a dimension of 0,0 and the bitmap will be null
-        imageView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-        imageView.layout(0, 0, imageView.getMeasuredWidth(), imageView.getMeasuredHeight());
 
-        imageView.buildDrawingCache(true);
-        //TODO: in the line below I get a nullpointerexception
-        Bitmap bitmap = Bitmap.createBitmap(imageView.getDrawingCache());
-        imageView.setDrawingCacheEnabled(false); // clear drawing cache
+        Bitmap bitmap=((BitmapDrawable)imageView.getDrawable()).getBitmap();
 
         return bitmap;
     }

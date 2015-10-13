@@ -38,6 +38,7 @@ public class ListViewItemViewPagerAdapter extends PagerAdapter {
 
         ImageView uploadedPhoto = (ImageView) itemView.findViewById(R.id.iv_photo);
         if (position==1) {
+
             Bitmap photo_bitmap = Utils.getBitmap(item.getPhoto());
             uploadedPhoto.setImageBitmap(photo_bitmap);
             uploadedPhoto.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -49,6 +50,7 @@ public class ListViewItemViewPagerAdapter extends PagerAdapter {
                     item.setPhoto(imageView);
                 }
             });
+
         }
         else uploadedPhoto.setImageResource(R.drawable.white_bg);
 

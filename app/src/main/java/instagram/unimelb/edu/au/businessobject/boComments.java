@@ -92,6 +92,8 @@ public class boComments {
                 });
 
 
+
+
         // Adding request to request queue
         Controller.getInstance(commentsFragment.getActivity()).addToRequestQueue(req,
                 tag_json_obj);

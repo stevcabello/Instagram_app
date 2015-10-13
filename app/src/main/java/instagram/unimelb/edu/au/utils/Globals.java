@@ -8,19 +8,28 @@ import android.widget.ArrayAdapter;
 import java.util.ArrayList;
 
 import instagram.unimelb.edu.au.MainActivity;
+import instagram.unimelb.edu.au.models.Profile;
 
 /**
- * Created by pc on 9/12/2015.
+ * Global variables
  */
 public class Globals {
+
+    //This variables are used in the authorization request
     public static final String CLIENT_ID = "3bffcf826cf8466da6c0042de97281be";
     public static final String CLIENT_SECRET = "65e961dd08e34810872b14e63654da80";
     public static final String CALLBACK_URL = "instagram://connect";
 
+    //URL for the authorization request
     public static final String AUTH_URL = "https://api.instagram.com/oauth/authorize/";
+
+    //URL for the access_token request
     public static final String TOKEN_URL = "https://api.instagram.com/oauth/access_token";
+
+    //URL used in all the other request the app does to Instagram (e.g. userfeed data, discover data).
     public static final String API_URL = "https://api.instagram.com/v1";
 
+    //This variables are used in the pagination of some fragments
     public static String PROFILE_MEDIA_MAX_ID = "";
     public static String YOUACTIVITY_MEDIA_MAX_ID = "";
     public static int FOLLOWEDBY_MEDIA_MAX_ID = 0;
@@ -28,16 +37,13 @@ public class Globals {
     public static String FRIENDS_MEDIA_MAX_ID = "";
     public static String SUGGESTEDFRIENDS_MEDIA_MAX_ID = "";
     public static String USERFEED_MAX_ID = "";
-    public static String USERNAME = "";
-    public static String FULL_NAME = "";
-    public static String PROFILE_PIC_URL = "";
     public static Long GALLERY_MEDIA_MAX_ID = 99999999L;
     public static String GALLERY_SELECTEDPATH = "";
-    public static MainActivity mainActivity=null;
+
+
+    public static MainActivity mainActivity=null; //just easy access to MainActivity methods
 
     public static Boolean switchState = false; //to save the state of the userfeed sort by switch
-
-    //public static int numberLoads = 0; // to know when the 5 initial image loading fragment has completed their loads.
 
 
     //Used for Bluetooth communication
@@ -48,8 +54,29 @@ public class Globals {
     public static ArrayList<String> likesMedia = new ArrayList<>();
 
 
+    //The user profile will be load with data on the initial connection
+    public static Profile profile= new Profile();
 
 
-
+    //Clear all the variables
+    public static void resetGlobals() {
+        PROFILE_MEDIA_MAX_ID = "";
+        YOUACTIVITY_MEDIA_MAX_ID = "";
+        FOLLOWEDBY_MEDIA_MAX_ID = 0;
+        FOLLOWERACTIVITY_MEDIA_MAX_ID = "";
+        FRIENDS_MEDIA_MAX_ID = "";
+        SUGGESTEDFRIENDS_MEDIA_MAX_ID = "";
+        USERFEED_MAX_ID = "";
+        GALLERY_MEDIA_MAX_ID = 99999999L;
+        GALLERY_SELECTEDPATH = "";
+        mainActivity=null;
+        switchState = false;
+        bluetoothDevices = new ArrayList<BluetoothDevice>();
+        mBluetoothAdapter = null;
+        mPairedDevicesArrAdapter=null;
+        progressDialog =null;
+        likesMedia = new ArrayList<>();
+        profile= new Profile();
+    }
 
 }

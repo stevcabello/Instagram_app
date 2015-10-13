@@ -351,9 +351,9 @@ public class UserFeedAdapter extends ArrayAdapter<UserFeed> implements StickyLis
             ArrayList<Likes> arrLikes = item.getLikes();
 
             ImageView profile_pic =new ImageView(context);
-            ImageRequest.makeImageRequest(Globals.PROFILE_PIC_URL, context, profile_pic, UserFeedAdapter.this);
+            ImageRequest.makeImageRequest(Globals.profile.getProfilepic_url(), context, profile_pic, UserFeedAdapter.this);
 
-            Likes like = new Likes(Globals.USERNAME,Globals.FULL_NAME,profile_pic,Globals.PROFILE_PIC_URL);
+            Likes like = new Likes(Globals.profile.getUsername(),Globals.profile.getFullname(),profile_pic,Globals.profile.getProfilepic_url());
 
             like_position = arrLikes.size();
             arrLikes.add(like_position,like);

@@ -79,16 +79,16 @@ public class FilterActivity extends AppCompatActivity {
         boolean galleryOrigin = getIntent().getBooleanExtra("gallery", false);
 
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inSampleSize = 4; //reduce size of image
+        bmOptions.inSampleSize = 2; //reduce size of image
 
         imgView = (ImageView) findViewById(R.id.filter_view);
 
 
         // Define seekbars.
-        SeekBar brightness = (SeekBar) findViewById(R.id.brightness_slider);
+        final SeekBar brightness = (SeekBar) findViewById(R.id.brightness_slider);
         brightness.setMax(26);
         brightness.setProgress(13);
-        SeekBar contrast = (SeekBar) findViewById(R.id.contrast_slider);
+        final SeekBar contrast = (SeekBar) findViewById(R.id.contrast_slider);
         contrast.setMax(26);
         contrast.setProgress(13);
 
@@ -152,6 +152,10 @@ public class FilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 originalImage(v);
+
+                //Move the seekbar's indicator to its default position
+                brightness.setProgress(13);
+                contrast.setProgress(13);
             }
         });
 
@@ -161,6 +165,9 @@ public class FilterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 filterName = "invert";
                 selectFilterMatrix(v);
+
+                brightness.setProgress(13);
+                contrast.setProgress(13);
             }
         });
 
@@ -169,6 +176,9 @@ public class FilterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 filterName = "test2";
                 selectFilterMatrix(v);
+
+                brightness.setProgress(13);
+                contrast.setProgress(13);
             }
         });
 
@@ -177,6 +187,9 @@ public class FilterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 filterName = "test3";
                 selectFilterMatrix(v);
+
+                brightness.setProgress(13);
+                contrast.setProgress(13);
             }
         });
 
@@ -277,6 +290,7 @@ public class FilterActivity extends AppCompatActivity {
     public void originalImage(View view) {
         imgView.setImageBitmap(origBitmap);
         bitmap=origBitmap;
+        fromFilter=bitmap;
     }
 
     // Method for calling filter from the filter_activity view buttons.
@@ -472,7 +486,7 @@ public class FilterActivity extends AppCompatActivity {
             onBackPressed(); // just go back
         }else if (id == R.id.action_next){
             //Save the image and call to the crop intent
-            SaveFilteredImage(bitmap,"crop");
+            SaveFilteredImage(fromFilter,"crop");
         }
 
         return super.onOptionsItemSelected(item);

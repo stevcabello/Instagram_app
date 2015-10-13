@@ -1,12 +1,11 @@
 package instagram.unimelb.edu.au;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,41 +17,21 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.util.HashMap;
-
 import instagram.unimelb.edu.au.networking.Connection;
 import instagram.unimelb.edu.au.utils.Globals;
 
 public class LoginActivity extends AppCompatActivity {
 
     public Button btn_login;
-
+    private Dialog dialog;
     public AlertDialog.Builder logindialog = null;
     private ProgressDialog mSpinner;
-
-
     private Connection mConnection;
-    private HashMap<String, String> userInfoHashmap = new HashMap<String, String>();
-    private Handler handler = new Handler(new Handler.Callback() {
-
-        @Override
-        public boolean handleMessage(Message msg) {
-            if (msg.what == Connection.WHAT_FINALIZE) {
-                userInfoHashmap = mConnection.getUserInfo();
-            } else if (msg.what == Connection.WHAT_FINALIZE) {
-                Toast.makeText(LoginActivity.this, "Check your network.",
-                        Toast.LENGTH_SHORT).show();
-            }
-            return false;
-        }
-    });
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
 
         mConnection = new Connection(this, Globals.CLIENT_ID,
                 Globals.CLIENT_SECRET, Globals.CALLBACK_URL);
@@ -60,13 +39,12 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess() {
-
-                mConnection.fetchUserName(handler);
+                mConnection.getUserProfileData();
 
                 // Open the MainActivity and send the accesstoken and clientid
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.putExtra("accesstoken", mConnection.getTOken());
-                intent.putExtra("clientid",mConnection.getId());
+                intent.putExtra("clientid", mConnection.getId());
 
                 LoginActivity.this.finish();
                 startActivity(intent);
@@ -81,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         if (mConnection.hasAccessToken()) {
-            mConnection.fetchUserName(handler);
+            mConnection.getUserProfileData();
         }
 
 
@@ -95,6 +73,8 @@ public class LoginActivity extends AppCompatActivity {
 
         mSpinner = new ProgressDialog(LoginActivity.this);
         mSpinner.setMessage("Loading...");
+
+
 
     }
 
@@ -112,8 +92,9 @@ public class LoginActivity extends AppCompatActivity {
 
             //Opens the webView for the client implicit authentication
             logindialog.setView(loginView);
-            logindialog.create().show();
-            logindialog.setCancelable(true);
+            dialog = logindialog.create();
+            dialog.show();
+
     }
 
 
@@ -126,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
             if (url.startsWith(mConnection.mCallbackUrl)) {
                 String urls[] = url.split("=");
                 mConnection.getdialoglistener().onComplete(urls[1]);
-                //InstagramDialog.this.dismiss();
+                dialog.dismiss();
                 return true;
             }
             return false;
@@ -140,6 +121,7 @@ public class LoginActivity extends AppCompatActivity {
             super.onReceivedError(view, errorCode, description, failingUrl);
             mConnection.getdialoglistener().onError(description);
             //InstagramDialog.this.dismiss();
+            dialog.dismiss();
         }
 
         @Override
@@ -152,7 +134,6 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-
             mSpinner.dismiss();
         }
 
