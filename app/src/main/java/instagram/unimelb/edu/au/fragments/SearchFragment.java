@@ -20,12 +20,7 @@ import instagram.unimelb.edu.au.models.Search;
 import instagram.unimelb.edu.au.utils.Globals;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SearchFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SearchFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Search fragment.
  */
 public class SearchFragment extends Fragment {
 
@@ -116,7 +111,10 @@ public class SearchFragment extends Fragment {
     }
 
 
-
+    /**
+     * Profile results from search 
+     * @param searchResult
+     */
     public void addProfileMedia(ArrayList<Search> searchResult) {
         adapter.addAll(searchResult);
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -131,14 +129,9 @@ public class SearchFragment extends Fragment {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int currentFirstVisPos = view.getFirstVisiblePosition();
-                //To only send a new request when user has scrolled down until reach the bottom and while the totalitemcount is lesser than the number of posts
-                /*TODO: Pagination was giving error, not sure why so i commented this part */
-                //if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos) {
-                //Toast.makeText(getActivity(), "reach bottom", Toast.LENGTH_SHORT).show();
+
                 userScrolled = false;
 
-                //objsearch.getSearch(searchFragment, mParam1, querySearch, adapter);
-                //}
                 myLastVisiblePos = currentFirstVisPos;
             }
         });
