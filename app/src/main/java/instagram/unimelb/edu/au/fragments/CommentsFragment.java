@@ -27,12 +27,7 @@ import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Globals;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CommentsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CommentsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment of the comments from userfeed's posts
  */
 public class CommentsFragment extends Fragment {
 
@@ -62,24 +57,25 @@ public class CommentsFragment extends Fragment {
 
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CommentsFragment.
+     * Constructor of the CommentsFragment
+     * @param user_comment comment to be added
+     * @param comments previous post's comments
+     * @param id id of the post
+     * @param token access_token of the applicaion
+     * @param ctx fragment context
+     * @param adapter comment's listview adapter
+     * @param pos positon of the comment in the comments' list
+     * @return
      */
-    // TODO: Rename and change types and number of parameters
-    public static CommentsFragment newInstance(Comments param1, ArrayList<Comments> param2, String id, String token, Context ctx, UserFeedAdapter adapter, Integer pos) {
+    public static CommentsFragment newInstance(Comments user_comment, ArrayList<Comments> comments, String id, String token, Context ctx, UserFeedAdapter adapter, Integer pos) {
         CommentsFragment fragment = new CommentsFragment();
-        userComment = param1;
-        userfeedComments = param2;
+        userComment = user_comment;
+        userfeedComments = comments;
         media_id = id;
         access_token = token;
         context = ctx;
         userfeedAdapter = adapter;
         userfeedItemposition = pos;
-       //userfeedItem = item;
 
         return fragment;
     }
@@ -97,12 +93,14 @@ public class CommentsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
+        //To keep the view
         if (rootView != null) {
             return rootView;
         }
+
         commentsFragment = this;
 
+        //Hide the main tabs
         TabLayout tabLayout = (TabLayout)Globals.mainActivity.findViewById(R.id.tabs);
         tabLayout.setVisibility(View.GONE);
 
@@ -199,7 +197,8 @@ public class CommentsFragment extends Fragment {
     }
 
 
-    // TODO: Rename method, update argument and hook method into UI event
+    //Default methods when creating new fragment
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -209,12 +208,6 @@ public class CommentsFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-//        try {
-//            mListener = (OnFragmentInteractionListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override
@@ -223,18 +216,7 @@ public class CommentsFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
 

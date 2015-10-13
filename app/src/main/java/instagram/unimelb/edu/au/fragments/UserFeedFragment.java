@@ -34,27 +34,21 @@ import instagram.unimelb.edu.au.utils.Utils;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link UserFeedFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link UserFeedFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment for the userfeed
  */
 public class UserFeedFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private static String mParam1;
-    private String mParam2;
+    private static final String ARG_ACCESS_TOKEN = "access_token";
+    private static final String ARG_CLIENT_ID = "client_id";
+
+
+    private static String mAccessToken;
+    private String mClientId;
 
     private static UserFeedAdapter adapter;
 
-    //private ListView listView;
+
     private static StickyListHeadersListView listView;
     static boUserFeed objuserfeed;
 
@@ -84,19 +78,16 @@ public class UserFeedFragment extends Fragment {
 
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment UserFeedFragment.
+     * Creates new instance for UserFeedFragment
+     * @param accesstoken access_token for the application
+     * @param client_id id of the authenticated user
+     * @return a new instance of UserFeedFragment
      */
-    // TODO: Rename and change types and number of parameters
-    public static UserFeedFragment newInstance(String param1, String param2) {
+    public static UserFeedFragment newInstance(String accesstoken, String client_id) {
         UserFeedFragment fragment = new UserFeedFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_ACCESS_TOKEN, accesstoken);
+        args.putString(ARG_CLIENT_ID, client_id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -109,8 +100,8 @@ public class UserFeedFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mAccessToken = getArguments().getString(ARG_ACCESS_TOKEN);
+            mClientId = getArguments().getString(ARG_CLIENT_ID);
         }
 
     }
@@ -132,8 +123,9 @@ public class UserFeedFragment extends Fragment {
         userfeedFragment = this;
 
         // Create the adapter to convert the array to views
-        adapter = new UserFeedAdapter(getActivity(),R.layout.item_userfeed, mParam1 ,new ArrayList<UserFeed>());
+        adapter = new UserFeedAdapter(getActivity(),R.layout.item_userfeed, mAccessToken,new ArrayList<UserFeed>());
 
+        //A custom listview to provide sticky headers functionality
         listView = (StickyListHeadersListView) rootView.findViewById(R.id.lv_userfeed);
         listView.setDrawingListUnderStickyHeader(true);
         listView.setAreHeadersSticky(true);
@@ -143,22 +135,21 @@ public class UserFeedFragment extends Fragment {
         listView.setStickyHeaderTopOffset(-20);
 
         objuserfeed = new boUserFeed();
-        Log.i("uriimages", "e1");
-        objuserfeed.getUserFeedData(userfeedFragment, mParam1, adapter, sortType); // the first sort is by the default type (Datetime)
+
+        objuserfeed.getUserFeedData(userfeedFragment, mAccessToken, adapter, sortType); // the first sort is by the default type (Datetime)
 
         //To handle refresh of userfeed when user swipe down onto the screen
         swipeLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefresh() {
+            public void onRefresh() { //When refresh we clear some parameters
                 swipeLayout.setRefreshing(false);
                 userSwiped = true;
                 Globals.USERFEED_MAX_ID = "";
                 adapter.clear();
-                Log.i("uriimages", "e3");
                 byLocationUserFeed.clear();
                 currentUserfeeddata.clear();
-                objuserfeed.getUserFeedData(userfeedFragment, mParam1, adapter, sortType);
+                objuserfeed.getUserFeedData(userfeedFragment, mAccessToken, adapter, sortType);
 
             }
         });
@@ -170,7 +161,7 @@ public class UserFeedFragment extends Fragment {
 
     /**
      * Is called from MainActivity to initialize the feed and sort the data based on datetime or location
-     * @param sortBy
+     * @param sortBy 0 by Date/Time , 1 by Location
      */
     public static void getData(int sortBy, double latitude, double longitude){
 
@@ -178,32 +169,33 @@ public class UserFeedFragment extends Fragment {
         userLongitude = longitude;
 
         if (sortBy != sortType) { // If there is a change in the type of sorting all the list is refreshed
-            Log.i("uriimages", "change in sorttype");
+
             changeSortType = true;
             adapter.clear();
 
             byLocationUserFeed.clear();
             currentUserfeeddata.clear();
 
-            //just to avoid any bug with the onscrolllistener method
+            //just to avoid any issue with the onscrolllistener method
             userScrolled = false;
             lockScroll = true;
 
             Globals.USERFEED_MAX_ID = "";
         }
         sortType = sortBy;
-        objuserfeed.getUserFeedData(userfeedFragment, mParam1, adapter, sortBy);
+        objuserfeed.getUserFeedData(userfeedFragment, mAccessToken, adapter, sortBy);
     }
 
 
     /**
-     * Adds data to the user feed listview
-     * @param userfeeddata
+     * Add data to the userfeed's listview
+     * @param userfeeddata new UserFeed data to be added
+     * @param sortBy 0 to identify by date/time sort and 1 to identify by Location sort
      */
     public void addUserFeedData(ArrayList<UserFeed> userfeeddata, final int sortBy) {
 
         ArrayList<UserFeed> newUserfeeddata;
-        Log.i("uriimages", "e4");
+
         lockScroll = false; //release the scroll to sense when user reach bottom of list
 
         if (userSwiped) adapter.clear();
@@ -226,8 +218,7 @@ public class UserFeedFragment extends Fragment {
             adapter.notifyDataSetChanged();
             if (changeSortType) listView.setAdapter(adapter);
             Globals.switchState = true;
-        }else {
-            Log.i("uriimages", "e6");
+        }else { //If the sort if by Date/Time
             adapter.addAll(userfeeddata);
             if (changeSortType) listView.setAdapter(adapter);
             Globals.switchState = false;
@@ -237,16 +228,17 @@ public class UserFeedFragment extends Fragment {
 
         if (userSwiped) {
             userSwiped = false;
-            //adapter.notifyDataSetChanged();
-            //if (sortBy!=1)
+
             listView.setAdapter(adapter);
 
+            //To notify when the userfeed is updated
             Toast toast = Toast.makeText(getActivity(), "UserFeed is up to date", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.TOP, 0, 10);
             toast.show();
         }
 
 
+        //Onscrolllistener to load new data when user scrolls down.
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             int myLastVisiblePos = 0;
 
@@ -261,11 +253,11 @@ public class UserFeedFragment extends Fragment {
                 int currentFirstVisPos = view.getFirstVisiblePosition();
 
                 //To only send a new request when user has scrolled down until reach the bottom and while the totalitemcount is lesser than the number of posts
-                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos - 1 && !userSwiped && !lockScroll) {
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled
+                        && currentFirstVisPos > myLastVisiblePos - 1 && !userSwiped && !lockScroll) {
                     userScrolled = false;
-                    lockScroll = true; // lock the scroll to avoi duplicated requests
-                    Log.i("uriimages", "e2");
-                    objuserfeed.getUserFeedData(userfeedFragment, mParam1, adapter, sortBy);
+                    lockScroll = true; // lock the scroll to avoid duplicated requests
+                    objuserfeed.getUserFeedData(userfeedFragment, mAccessToken, adapter, sortBy);
                 }
                 myLastVisiblePos = currentFirstVisPos;
             }
@@ -276,8 +268,8 @@ public class UserFeedFragment extends Fragment {
 
     /**
      * Looks for changed on top ten post in the userfeed location-based
-     * @param currentArr
-     * @param newArr
+     * @param currentArr current array of UserFeed data
+     * @param newArr new array of UserFeed data
      * @return true in case of change on top ten post, false otherwise.
      */
     public boolean closerLocationschanged(ArrayList<UserFeed> currentArr, ArrayList<UserFeed> newArr){
@@ -433,7 +425,7 @@ public class UserFeedFragment extends Fragment {
     }
 
 
-    // TODO: Rename method, update argument and hook method into UI event
+    // Default methods when creating new Fragment
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -451,18 +443,7 @@ public class UserFeedFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
 

@@ -23,22 +23,15 @@ import instagram.unimelb.edu.au.networking.ImageRequest;
 import instagram.unimelb.edu.au.utils.Globals;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ProfileFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment for userProfile tab
  */
 public class ProfileFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String ARG_ACCESS_TOKEN = "access_token";
+    private static final String ARG_CLIENT_ID = "client_id";
+
+    private String mAccessToken;
+    private String mClientId;
 
     private OnFragmentInteractionListener mListener;
 
@@ -67,19 +60,16 @@ public class ProfileFragment extends Fragment {
 
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
+     * Create a new instance of ProfileFragment
+     * @param accesstoken access_token of the application
+     * @param clientid id of the authenticated user
+     * @return
      */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
+    public static ProfileFragment newInstance(String accesstoken, String clientid) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_ACCESS_TOKEN, accesstoken);
+        args.putString(ARG_CLIENT_ID, clientid);
         fragment.setArguments(args);
         return fragment;
     }
@@ -93,8 +83,8 @@ public class ProfileFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mAccessToken = getArguments().getString(ARG_ACCESS_TOKEN);
+            mClientId = getArguments().getString(ARG_CLIENT_ID);
         }
 
 
@@ -128,7 +118,7 @@ public class ProfileFragment extends Fragment {
 
         setProfileData(Globals.profile);
         objprofile = new boProfile();
-        objprofile.getProfileMedia(profileFragment, mParam1, mParam2, gridAdapter);
+        objprofile.getProfileMedia(profileFragment, mAccessToken, mClientId, gridAdapter);
 
         return rootView;
 
@@ -136,8 +126,11 @@ public class ProfileFragment extends Fragment {
 
 
 
+    /**
+     * Set the profile data of the authenticated user
+     * @param userprofile profilefragment
+     */
     public void setProfileData(Profile userprofile) {
-
         profilepic = (ImageView)header_profile.findViewById(R.id.iv_profilepic);
         numberposts = (TextView)header_profile.findViewById(R.id.tv_numberposts);
         numberfollowers = (TextView)header_profile.findViewById(R.id.tv_numberfollowers);
@@ -146,19 +139,22 @@ public class ProfileFragment extends Fragment {
         String profile_pic_url = userprofile.getProfilepic_url();
         ImageRequest.makeImageRequest(profile_pic_url, getActivity(), profilepic, gridAdapter);
 
-        //profilepic.setImageBitmap(userprofile.getProfilepic());
         numberposts.setText(String.valueOf(userprofile.getNumberposts()));
         nposts = userprofile.getNumberposts();
         numberfollowers.setText(String.valueOf(userprofile.getNumberfollowers()));
         numberfollowing.setText(String.valueOf(userprofile.getNumberfollowing()));
-
-
     }
 
+
+    /**
+     * Add new media data to the userprofile's gridview
+     * @param usermedia Array of ImageItems
+     */
     public void addProfileMedia(ArrayList<ImageItem> usermedia) {
 
         gridAdapter.addAll(usermedia);
 
+        //onScrollListener for gridview, everytime the user moves down new data is loaded
         gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             int myLastVisiblePos = 0;
 
@@ -174,10 +170,10 @@ public class ProfileFragment extends Fragment {
                 int currentFirstVisPos = view.getFirstVisiblePosition();
 
                 //To only send a new request when user has scrolled down until reach the bottom and while the totalitemcount is lesser than the number of posts
-                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled && currentFirstVisPos > myLastVisiblePos && totalItemCount < nposts) {
-                    //Toast.makeText(getActivity(), "reach bottom", Toast.LENGTH_SHORT).show();
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && userScrolled
+                        && currentFirstVisPos > myLastVisiblePos && totalItemCount < nposts) {
                     userScrolled = false;
-                    objprofile.getProfileMedia(profileFragment, mParam1, mParam2,gridAdapter);
+                    objprofile.getProfileMedia(profileFragment, mAccessToken, mClientId,gridAdapter);
                 }
                 myLastVisiblePos = currentFirstVisPos;
             }
@@ -190,8 +186,8 @@ public class ProfileFragment extends Fragment {
     }
 
 
+    //Default methods when creating new Fragment
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -201,12 +197,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        /*try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
     }
 
     @Override
@@ -215,18 +205,7 @@ public class ProfileFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
 
