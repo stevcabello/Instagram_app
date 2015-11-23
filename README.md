@@ -1,6 +1,6 @@
 # Instagram_app #
 
-Is an ***Instagram-like android app***
+Is an ***Instagram-like android app*** developed for educational purposes
 
 The app provides the same tabs that the real Instagram has: UserFeed, Discover, Photo, Activity and Profile. 
 Nevertheless, some of them have limited functionalities due to restrictions of the Instagram API (it doesn't allow POST) 
