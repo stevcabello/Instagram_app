@@ -10,7 +10,7 @@ For instance, the leave of Likes and Comments is not allowed, but I have *simula
 And also some calls only return a limited amount of information i.e. if a post has 400 comments I only can see the last 8 comments.
 
 
-However, 2 other functionalities have beed added (in the UserFeed tab).
+However, 2 other functionalities have been added (in the UserFeed tab).
 
 ## New Functionalities ##
 
@@ -19,14 +19,17 @@ However, 2 other functionalities have beed added (in the UserFeed tab).
   A toggle button placed in the toolbar allows the user to sort the posts by date/time (as Instagram does) or by Location        (showing the closets posts on top of the list) 
 
 
-**2. Share a post to a bluetooth-in range available device** ..(***See Note 1***)
+**2. Share a post to a Bluetooth-in range available device** ..(***See Note***)
 
   By swipping the photo of a post we can select a Bluetooth device near to us and share the post with that device.
   The shared post will appear first on the userfeed with the tag ***In Range***, to indicate that this post was received via     Bluetooth.
 
 
-## Access to information ##
+## Various tidbits ##
+
+### Access to information ###
 The access to data is through the Instragram API ***(no web services or external databases were created)***
+
 
 ### People Suggestion ###
 The algorithm for suggestion of people basically consists on select friends of my friends with whom I have likes in common. i.e. Likes to the same posts
@@ -38,6 +41,11 @@ The algorithm for suggestion of people basically consists on select friends of m
 
 ### Upload Post ###
 Due to Instagram API restrictions, the post of a picture or photo is not allowed. A ***Share button*** is used to accomplish this task.
+
+
+
+**Note:** 
+There may be some problems with Android 5.0
 
 
   
