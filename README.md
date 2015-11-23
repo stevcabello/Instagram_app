@@ -3,9 +3,9 @@
 Is an ***Instagram-like android app***
 
 The app provides the same tabs that the real Instagram has: UserFeed, Discover, Photo, Activity and Profile. 
-Nevertheless, some of them have limited functionalities due to restrictions of the Instagram API (doesn't allow POST) 
+Nevertheless, some of them have limited functionalities due to restrictions of the Instagram API (it doesn't allow POST) 
 
-For instance, the leave of Likes and Comments is not allowed, but I have *simulated* this functionalities, and anyway showing the error that the Instagram API returns when I want to leave a Like or Comment.
+For instance, the leave of Likes and Comments is not allowed, but I have *simulated* these functionalities, and anyway showing the error that the Instagram API returns when I want to leave a Like or Comment.
 
 And also some calls only return a limited amount of information i.e. if a post has 400 comments I only can see the last 8 comments.
 
