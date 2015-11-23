@@ -1,7 +1,43 @@
-# README #
+# Instagram_app #
+
+Is an ***Instagram-like android app***
+
+The app provides the same tabs that the real Instagram has: UserFeed, Discover, Photo, Activity and Profile. 
+Nevertheless, some of them have limited functionalities due to restrictions of the Instagram API (doesn't allow POST) 
+
+For instance, the leave of Likes and Comments is not allowed, but I have *simulated* this functionalities, and anyway showing the error that the Instagram API returns when I want to leave a Like or Comment.
+
+And also some calls only return a limited amount of information i.e. if a post has 400 comments I only can see the last 8 comments.
 
 
-### Instagram-like android app ###
+However, 2 other functionalities have beed added (in the UserFeed tab).
 
-* Provide instagram app functionalities
-* Version 1.0.2
+## New Functionalities ##
+
+**1. Sort userfeed by location**
+
+  A toggle button placed in the toolbar allows the user to sort the posts by date/time (as Instagram does) or by Location        (showing the closets posts on top of the list) 
+
+
+**2. Share a post to a bluetooth-in range available device** ..(***See Note 1***)
+
+  By swipping the photo of a post we can select a Bluetooth device near to us and share the post with that device.
+  The shared post will appear first on the userfeed with the tag ***In Range***, to indicate that this post was received via     Bluetooth.
+
+
+## Access to information ##
+The access to data is through the Instragram API ***(no web services or external databases were created)***
+
+### People Suggestion ###
+The algorithm for suggestion of people basically consists on select friends of my friends with whom I have likes in common. i.e. Likes to the same posts
+
+
+### Photo Filters ###
+  Only 3 dummy filters are provided. And the user can change the brigth and contrast of the image.
+
+
+### Upload Post ###
+Due to Instagram API restrictions, the post of a picture or photo is not allowed. A ***Share button*** is used to accomplish this task.
+
+
+  
