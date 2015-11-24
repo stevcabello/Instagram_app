@@ -48,4 +48,10 @@ Due to Instagram API restrictions, the post of a picture or photo is not allowed
 There may be some problems with Android 5.0
 
 
+## VIDEO DEMO ##
+https://youtu.be/s3KGtHUhYQk
+
+https://youtu.be/ZdfwFVQK7hw
+
+
   
