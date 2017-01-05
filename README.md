@@ -1,6 +1,6 @@
 # Instagram_app #
 
-Is an ***Instagram-like android app*** developed for educational purposes
+Is an ***Instagram-like android app*** (with some new functionalities) developed for educational purposes by using the Instagram API and Bluetooth technology.
 
 The app provides the same tabs that the real Instagram has: UserFeed, Discover, Photo, Activity and Profile. 
 Nevertheless, some of them have limited functionalities due to restrictions of the Instagram API (it doesn't allow POST) 
@@ -48,7 +48,7 @@ Due to Instagram API restrictions, the post of a picture or photo is not allowed
 There may be some problems with Android 5.0
 
 
-## VIDEO DEMO ##
+## DEMO VIDEO ##
 https://youtu.be/s3KGtHUhYQk
 
 https://youtu.be/ZdfwFVQK7hw
