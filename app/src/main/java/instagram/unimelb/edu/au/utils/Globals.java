@@ -16,8 +16,8 @@ import instagram.unimelb.edu.au.models.Profile;
 public class Globals {
 
     //This variables are used in the authorization request
-    public static final String CLIENT_ID = "3bffcf826cf8466da6c0042de97281be";
-    public static final String CLIENT_SECRET = "65e961dd08e34810872b14e63654da80";
+    public static final String CLIENT_ID = "2e9740b925d740c18c1866ed2172b86e";
+    public static final String CLIENT_SECRET = "a339407a2a0e4cee85ca7858093f65ee";
     public static final String CALLBACK_URL = "instagram://connect";
 
     //URL for the authorization request
